@@ -15,5 +15,5 @@ Design documents can find [here](https://github.com/librerespire/ventilator)
 
 ## Team contacts
 
-email: team@librerespire.org
-slack: librerespireorg.slack.com
+- Team email: [team@librerespire.org](mailto:team@librerespire.org)
+- Slack channel: [librerespireorg.slack.com](https://librerespireorg.slack.com)
