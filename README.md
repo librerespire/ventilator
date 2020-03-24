@@ -12,3 +12,8 @@ LibreRespire is a multi-disciplinary Sri Lankan team focused on developing an op
 ## Repository
 
 Design documents can find [here](https://github.com/librerespire/ventilator)
+
+## Team contacts
+
+email: team@librerespire.org
+slack: librerespireorg.slack.com
