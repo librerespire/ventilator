@@ -1,1 +1,1 @@
-# Design docs need to come under this folder
+# All docs need to come under this folder
