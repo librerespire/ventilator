@@ -1,1 +1,1 @@
-## All designs come under this folder
+## All design concepts come under this folder
