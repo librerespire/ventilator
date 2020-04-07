@@ -3,9 +3,9 @@
 The design of the ventilator is based on the minimum standards published by the British government [here](https://www.gov.uk/government/publications/coronavirus-covid-19-ventilator-supply-specification/rapidly-manufactured-ventilator-system-specification)
 
 
-##Objectives
+## Objectives
 
-- Design a ventilator composed of mechanical components freely available to most
+- Design a ventilator composed of mechanical components freely available in most
 regions of the world.
 - Design a ventilator without the use of a Bellow or a “Bag”, which is either not
 available or limited in number in an emergency situation.
@@ -45,4 +45,43 @@ e. Data analytic as an added feature for pattern recognition etc. for assisting
 doctors
 
 
-##Hardware specification
+## Hardware specification
+
+| Parameter | Range | Accuracy | Adjustments |
+|-----------|-------|----------|-------------|
+| Tidal volume (TV) | 250-1000 ml |  25 ml |  10 ml |
+| Respiratory rate (RR)) | 10 – 30 bpm | 0.5 bpm | 1 bpm |
+| I:E ratio | 1:3 - 2:1 |   |  0.1 |
+| Oxygen saturation | FiO2 0.21 - 1.0 | 0.05 |  |
+| FiO<sub>2</sub> | 0.21 - 1.0 |  5% |  10% |
+| Peak inspiratory pressure | 40 mmHg |  1 mmHg |  1 mmHg |
+| Safety valve | 40 - 60 mmHg |  Absolute |  +5 mmHg |
+| Inspiratory pause | 25% |   |  1% |
+
+## Main control unit
+
+- Processing
+  - 32 bit ARM
+- Display
+  - LCD, 5", capacitive touchscreen (option to use a low cost 3” to high end10” designs)
+- Alarms
+  - Low RR
+  - Low TV
+  - PIP
+  - Circuit leaks/disconnections
+  - Circuit obstruction
+
+## Sensors
+
+- Pressure sensors
+- Oxygen sensor
+- Flow sensor
+
+## Valve Specifications
+
+- Actuated pneumatic solenoid valve NC
+- Needle valve
+- Solenoid Valve NO
+- Safety valves
+- One way rubber diaphragm valves
+- PEEP Valve
