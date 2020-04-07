@@ -1,1 +1,1 @@
-All previous concpet desigs are moved here. 
+All previous design concepts are moved here. 
