@@ -41,8 +41,19 @@ If you wish to collaborate and contribute to the project, please take a moment t
 
 
 ## Team
-The core team consists of, Manjula Herath, Anuradha Rajapaksha, Nushen Senevirathna, Chamath Divarathne, Roshana Mallawaarachchi, Nipuna Perera,  Rajive Wisidagama, Chamila Dissanayake, Evaggelia Papia, Prasad Ranaraja, Sahan Wasala and Sameera Nanayakkara.
-
+The core team consists of, 
+- Manjula Herath (BDS,MD)
+- Anuradha Rajapaksha (MBBS, MD,MRCS)
+- Nushen Senevirathna (BSc Eng, MSc Eng) 
+- Chamath Divarathne (Bsc Eng, MSc Eng, PhD)
+- Roshana Mallawaarachchi (MBBS,MD)
+- Nipuna Perera (Bsc)
+- Chamila Dissanayake (Bsc Eng, MSc Eng)
+- Rajive Wisidagama (BSc Eng, MSc Eng)
+- Evaggelia Papia (PhD, DT),
+- Prasad Ranaraja (Bsc Eng,Pg Dip, MBA)
+- Sahan Wasala (ME (Aerospace), PhD) 
+- Sameera Nanayakkara (BSc Eng, MSc Eng)
 
 ## Disclaimer
 
