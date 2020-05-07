@@ -104,7 +104,7 @@ if __name__ == "__main__" :
         sr.sensor_reader()
 
     threads = list()
-    for index in [1,3,4,5]
+    for index in [1,3,4,5]:
         x = threading.Thread(target=threadSlice, args=(index,))
         threads.append(x)
         x.start()
