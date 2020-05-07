@@ -1,6 +1,7 @@
 import smbus
 import time
 import threading
+import datetime
 
 
 class SensorReader:
@@ -92,10 +93,12 @@ class SensorReader:
         var2 = p * (dig_P8) / 32768.0
         self.pressure = (p + (var1 + var2 + (dig_P7)) / 16.0) / 100
         # Output data to screen
-        print("Reading sensor on i2c bus %d" % self.bus_number)
+        print("======== bus %d ==========" % self.bus_number)
         print("Temperature in Celsius : %.2f C" % self.cTemp)
         print("Temperature in Fahrenheit : %.2f F" % self.fTemp)
-        print("Pressure : %.2f hPa " % self.pressure +"\n")
+        print("Pressure : %.2f hPa " % self.pressure)
+        print("Time:" + datetime.datetime.now())
+        print("======== bus %d ==========\n")
 
 
 if __name__ == "__main__" :
