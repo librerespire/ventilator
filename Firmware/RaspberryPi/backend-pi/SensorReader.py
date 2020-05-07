@@ -125,6 +125,7 @@ class SensorReader:
         var1 = (dig_P9) * p * p / 2147483648.0
         var2 = p * (dig_P8) / 32768.0
         self.pressure = (p + (var1 + var2 + (dig_P7)) / 16.0) / 100
+        return self.pressure
         # Output data to screen ** uncomment this part to see values form sensors
         # print("""\t======== bus %d ==========
         # Temperature in Celsius : %.2f C
@@ -149,7 +150,7 @@ class SensorReader:
 if __name__ == "__main__" :
     def threadSlice(index):
         sr = SensorReader(index)
-        pressure = sr.get_pressure(self)
+        pressure = sr.read_pressure()
         print("Pressure %.2f" % pressure)
 
     threads = list()
