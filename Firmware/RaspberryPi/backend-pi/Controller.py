@@ -9,7 +9,7 @@ import threading
 from SensorReader import SensorReader
 
 NUMDER_OF_SENSORS = 4
-pressure_data = [None] * 4
+pressure_data = [None] * 5
 
 def threadSlice(pressure_data, index):
     sr = SensorReader(index)
