@@ -27,7 +27,7 @@ def read_data():
     for index, thread in enumerate(threads):
         thread.join()
 
-    print(pressure_data)
+    return pressure_data[1], pressure_data[3], pressure_data[4], pressure_data[5]
 
 
 # def calculate_k(p1, p2, flow_rate):
@@ -201,4 +201,4 @@ def read_data():
 #     wait_phase()
 
 if __name__ == "__main__":
-    read_data()
+    print(read_data())
