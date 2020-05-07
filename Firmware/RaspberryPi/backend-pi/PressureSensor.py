@@ -11,8 +11,9 @@ class SensorReader:
     bus_number = 0
 
     def __init__(self, bus_number):
-        # Get I2C bus
-        self.bus = smbus.SMBus(bus_number)
+        # Get I2C
+        self.bus_number = bus_number
+        self.bus = smbus.SMBus(self.bus_number)
 
 
     def sensor_reader(self):
