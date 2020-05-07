@@ -1,7 +1,6 @@
 import smbus
 import time
 from datetime import datetime
-import threading
 
 
 class SensorReader:
@@ -137,27 +136,14 @@ class SensorReader:
         #             self.pressure,
         #             datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")))
 
-        def get_pressure(self):
-            self.read_pressure()
-            return self.pressure
+    def get_pressure(self):
+        self.read_pressure()
+        return self.pressure
 
-        def get_ftemp(self):
-            return self.fTemp
+    def get_ftemp(self):
+        self.read_temp(self)
+        return self.fTemp
 
-        def get_ctemp(self):
-            return self.cTemp
-
-if __name__ == "__main__" :
-    def threadSlice(index):
-        sr = SensorReader(index)
-        pressure = sr.read_pressure()
-        print("Pressure %.2f" % pressure)
-
-    threads = list()
-    for index in [1,3,4,5]:
-        x = threading.Thread(target=threadSlice, args=(index,))
-        threads.append(x)
-        x.start()
-
-    for index, thread in enumerate(threads):
-        thread.join()
+    def get_ctemp(self):
+        self.read_temp(self)
+        return self.cTemp
