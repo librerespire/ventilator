@@ -149,7 +149,7 @@ class SensorReader:
 if __name__ == "__main__" :
     def threadSlice(index):
         sr = SensorReader(index)
-        pressure = sr.get_pressure()
+        pressure = sr.get_pressure(self)
         print("Pressure %.2f" % pressure)
 
     threads = list()
