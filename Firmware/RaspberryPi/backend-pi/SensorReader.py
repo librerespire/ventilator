@@ -64,7 +64,7 @@ class SensorReader:
             dig_T2 -= 65536
         dig_T3 = b1[5] * 256 + b1[4]
         if dig_T3 > 32767 :
-            dig_T3 -= 65536        
+            dig_T3 -= 65536
         # Pressure coefficents
         dig_P1 = b1[7] * 256 + b1[6]
         dig_P2 = b1[9] * 256 + b1[8]
@@ -136,19 +136,19 @@ class SensorReader:
         #             self.pressure,
         #             datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")))
 
-        def get_pressure():
+        def get_pressure(self):
+            self.read_pressure()
             return self.pressure
 
-        def get_ftemp():
+        def get_ftemp(self):
             return self.fTemp
 
-        def get_ctemp():
+        def get_ctemp(self):
             return self.cTemp
 
 if __name__ == "__main__" :
     def threadSlice(index):
         sr = SensorReader(index)
-        sr.read_pressure()
         pressure = sr.get_pressure()
         print("Pressure %.2f" % pressure)
 
