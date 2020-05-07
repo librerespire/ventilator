@@ -1,7 +1,6 @@
 import smbus
 import time
 import threading
-import datetime
 
 
 class SensorReader:
@@ -97,7 +96,7 @@ class SensorReader:
         print("Temperature in Celsius : %.2f C" % self.cTemp)
         print("Temperature in Fahrenheit : %.2f F" % self.fTemp)
         print("Pressure : %.2f hPa " % self.pressure)
-        print("Time:" + datetime.datetime.now())
+        print("Time: " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
         print("======== bus %d ==========\n")
 
 
