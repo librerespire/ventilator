@@ -17,7 +17,6 @@ BUS_4 = 5
 
 pressure_data = []
 
-@threading
 def threadSlice(pressure_data, index):
     sr = SensorReader(index)
     pressure = sr.read_pressure()
