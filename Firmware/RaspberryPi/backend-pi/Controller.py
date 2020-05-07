@@ -15,7 +15,7 @@ BUS_2 = 3
 BUS_3 = 4
 BUS_4 = 5
 
-pressure_data = []
+pressure_data = [0] * 6
 
 def threadSlice(pressure_data, index):
     sr = SensorReader(index)
