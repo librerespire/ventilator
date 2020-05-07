@@ -9,10 +9,11 @@ class SensorReader:
     cTemp = 999
     fTemp = 999
     bus_number = 0
+    delay = 0.5
 
     def __init__(self, bus_number):
         # Get I2C bus
-        self.bus = smbus.SMBus(self.bus_number)
+        self.bus = smbus.SMBus(bus_number)
 
 
     def sensor_reader(self):
