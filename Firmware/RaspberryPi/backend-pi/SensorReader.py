@@ -99,7 +99,7 @@ class SensorReader:
 
 
 if __name__ == "__main__" :
-    def threadSlice(index)
+    def threadSlice(index):
         sr = SensorReader(index)
         sr.sensor_reader()
 
