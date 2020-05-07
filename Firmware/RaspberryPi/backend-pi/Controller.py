@@ -9,7 +9,7 @@ import threading
 from SensorReader import SensorReader
 
 NUMDER_OF_SENSORS = 4
-pressure_data = [None] * 5
+pressure_data = [0,1,2,3,4,5]
 
 def threadSlice(pressure_data, index):
     sr = SensorReader(index)
@@ -27,7 +27,7 @@ def read_data():
     for index, thread in enumerate(threads):
         thread.join()
 
-    print(pressure_data(1), pressure_data(3), pressure_data(4), pressure_data(5))
+    print(pressure_data)
 
 
 # def calculate_k(p1, p2, flow_rate):
