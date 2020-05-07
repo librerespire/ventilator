@@ -9,7 +9,6 @@ class SensorReader:
     cTemp = 999
     fTemp = 999
     bus_number = 0
-    delay = 0.5
 
     def __init__(self, bus_number):
         # Get I2C bus
@@ -63,7 +62,7 @@ class SensorReader:
         # Select Configuration register, 0xF5(245)
         #		0xA0(00)	Stand_by time = 1000 ms
         self.bus.write_byte_data(0x76, 0xF5, 0xA0)
-        time.sleep(delay)
+        time.sleep(self.delay)
         # BMP280 address, 0x76(118)
         # Read data back from 0xF7(247), 8 bytes
         # Pressure MSB, Pressure LSB, Pressure xLSB, Temperature MSB, Temperature LSB
