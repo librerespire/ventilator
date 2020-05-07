@@ -91,9 +91,9 @@ class SensorReader:
         self.pressure = (p + (var1 + var2 + (dig_P7)) / 16.0) / 100
         # Output data to screen
         print("Reading sensor on i2c bus %d" % self.bus_number)
-        print "Temperature in Celsius : %.2f C" % self.cTemp
-        print "Temperature in Fahrenheit : %.2f F" % self,fTemp
-        print "Pressure : %.2f hPa " % self.pressure +"\n"
+        print("Temperature in Celsius : %.2f C" % self.cTemp)
+        print("Temperature in Fahrenheit : %.2f F" % self.fTemp)
+        print("Pressure : %.2f hPa " % self.pressure +"\n")
 
 
 if __name__ == "__main__" :
