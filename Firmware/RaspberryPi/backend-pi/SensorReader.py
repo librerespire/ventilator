@@ -1,5 +1,6 @@
 import smbus
 import time
+import threading
 
 
 class SensorReader:
@@ -98,5 +99,15 @@ class SensorReader:
 
 
 if __name__ == "__main__" :
-    sr = SensorReader(3)
-    sr.sensor_reader()
+    def threadSlice(index)
+        sr = SensorReader(index)
+        sr.sensor_reader()
+
+    threads = list()
+    for index in [1,3,4,5]
+        x = threading.Thread(target=threadSlice, args=(index,))
+        threads.append(x)
+        x.start()
+
+    for index, thread in enumerate(threads):
+        thread.join()
