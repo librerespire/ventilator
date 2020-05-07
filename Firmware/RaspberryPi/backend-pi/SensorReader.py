@@ -93,12 +93,12 @@ class SensorReader:
         var2 = p * (dig_P8) / 32768.0
         self.pressure = (p + (var1 + var2 + (dig_P7)) / 16.0) / 100
         # Output data to screen
-        print("======== bus %d ==========" % self.bus_number)
-        print("Temperature in Celsius : %.2f C" % self.cTemp)
-        print("Temperature in Fahrenheit : %.2f F" % self.fTemp)
-        print("Pressure : %.2f hPa " % self.pressure)
-        print("Time: " + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
-        print("======== bus %d ==========\n")
+        print("""======== bus %d ==========
+        Temperature in Celsius : %.2f C
+        Temperature in Fahrenheit : %.2f F
+        Pressure : %.2f hPa
+        Time: %s
+        ======== bus %d ==========\n""" % self.bus_number, self.cTemp, self.fTemp, self.pressure, strftime("%Y-%m-%d %H:%M:%S", gmtime()))
 
 
 if __name__ == "__main__" :
