@@ -98,7 +98,7 @@ class SensorReader:
         Temperature in Fahrenheit : %.2f F
         Pressure : %.2f hPa
         Time: %s
-        =======================\n""" % self.bus_number, self.cTemp, self.fTemp, self.pressure, strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+        =======================\n""" % (self.bus_number, self.cTemp, self.fTemp, self.pressure, strftime("%Y-%m-%d %H:%M:%S", gmtime())))
 
 
 if __name__ == "__main__" :
