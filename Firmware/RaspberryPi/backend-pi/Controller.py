@@ -9,6 +9,7 @@ import RPi.GPIO as GPIO
 from SensorReader import SensorReader
 from PWMController import PWMController
 import logging
+import logging.config
 
 # Parameters
 Ti = 5  # inspiratory time
@@ -34,11 +35,8 @@ pressure_data = [0] * 6
 threads_map = {}
 
 # declare logger parameters
+logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
-c_handler = logging.StreamHandler()
-c_handler.setLevel(logging.INFO)
-c_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger.addHandler(c_handler)
 
 
 def thread_slice(pressure_data, index):
