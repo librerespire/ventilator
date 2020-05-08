@@ -3,8 +3,8 @@ from PWMController import PWMController
 import time
 import RPi.GPIO as GPIO
 
-SOL_I = 20
-SOL_E = 21
+SOL_I = 21
+SOL_E = 20
 PWM_PERIOD = 2
 threads_map = {}
 
@@ -44,3 +44,4 @@ GPIO.setup(SOL_E, GPIO.OUT)
 while True:
     control_solenoid(SOL_I, 0.2)
     control_solenoid(SOL_E, 0.8)
+    time.sleep(2)
