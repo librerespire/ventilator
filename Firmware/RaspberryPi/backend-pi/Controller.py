@@ -168,7 +168,7 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (datetime.now() - start_time).total_seconds()
-        logger.info("Flow rate: %.2f VI: %.2f TI: %.2f" % (q2, vi, ti))
+        logger.info("In flow rate: %.2f VI: %.2f TI: %.2f" % (q2, vi, ti))
 
     logger.info("Leaving inspiratory phase.")
 
@@ -199,7 +199,7 @@ def exp_phase():
             control_solenoid(SE_PIN, 0)
 
         ti = (datetime.now() - start_time).total_seconds()
-        logger.info("Flow rate: %.2f VI: %.2f P3: %.2f TI: %.2f" % (q2, vi, p3, ti))
+        logger.info("Ex flow rate: %.2f VI: %.2f P3: %.2f TI: %.2f" % (q2, vi, p3, ti))
 
     logger.info("Leaving expiratory phase.")
     logger.info("Actual tidal volume delivered : %.3f L " % vi)
