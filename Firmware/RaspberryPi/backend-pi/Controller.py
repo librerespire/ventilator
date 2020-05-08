@@ -79,8 +79,7 @@ def calibrate_flow_meter(flow_rate):
 
     ki /= nSamples
     ke /= nSamples
-    print("Flow meter was calibrated. k_ins = %.4f" % ki)
-    print("Flow meter was calibrated. k_exp = %.4f" % ke)
+    print("Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
     return ki, ke
 
 
