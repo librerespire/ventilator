@@ -94,7 +94,7 @@ def control_solenoid(pin, duty_ratio):
         threads_map[pin].join()
         print("Main: Stopped existing thread")
 
-    t = PWMController(pin, on_time, off_time)
+    t = PWMController(datetime.now().strftime('%Y%m%d%H%M%S%f'), pin, on_time, off_time)
     threads_map[pin] = t
 
     # Don't want these threads to run when the main program is terminated
