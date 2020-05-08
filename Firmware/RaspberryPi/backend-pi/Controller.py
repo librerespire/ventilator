@@ -15,7 +15,7 @@ Tw = 1  # waiting time
 Vt = 2  # tidal volume
 Pi = 2000  # peak inspiratory pressure in cmH2O
 Peep = 1200
-PWM_PERIOD = 0.5  # time period for PWM
+PWM_PERIOD = 5  # time period for PWM
 
 # Constants
 SI_PIN = 20  # PIN number for inspiratory solenoid
@@ -85,14 +85,14 @@ def calibrate_flow_meter(flow_rate):
 
 def control_solenoid(pin, duty_ratio):
     # read four pressure sensors from the smbus and return actual values
-    print("Entering control_solenoid()...")
+    # print("Entering control_solenoid()...")
     on_time = PWM_PERIOD * duty_ratio
     off_time = PWM_PERIOD * (1 - duty_ratio)
 
     if pin in threads_map:
         threads_map[pin].stop()
         threads_map[pin].join()
-        print("Main: Stopped existing thread")
+        # print("Main: Stopped existing thread")
 
     t = PWMController(datetime.now().strftime('%Y%m%d%H%M%S%f'), pin, on_time, off_time)
     threads_map[pin] = t
@@ -100,11 +100,11 @@ def control_solenoid(pin, duty_ratio):
     # Don't want these threads to run when the main program is terminated
     t.daemon = True
     t.start()
-    print("Main: Started thread")
+    # print("Main: Started thread")
 
     # time.sleep(0.02)
 
-    print("Leaving control_solenoid().")
+    # print("Leaving control_solenoid().")
 
 
 def get_average_volume_rate(is_insp_phase):
