@@ -42,6 +42,6 @@ GPIO.setup(SOL_I, GPIO.OUT)
 GPIO.setup(SOL_E, GPIO.OUT)
 
 while True:
-    control_solenoid(SOL_I, 0.2)
+    control_solenoid(SOL_I, 0.8)
     control_solenoid(SOL_E, 0.8)
     time.sleep(2)
