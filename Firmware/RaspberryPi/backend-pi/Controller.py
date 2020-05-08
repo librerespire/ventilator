@@ -36,7 +36,7 @@ threads_map = {}
 # declare logger parameters
 logger = logging.getLogger(__name__)
 c_handler = logging.StreamHandler()
-c_handler.setLevel(logging.DEBUG)
+c_handler.setLevel(logging.INFO)
 c_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger.addHandler(c_handler)
 
@@ -241,8 +241,8 @@ while True:
     logger.info("***** Slower cycle end *****")
 
     # faster flow rate
-    #logger.info("***** Faster flow rate cycle *****")
-    #insp_phase(2)
-    #exp_phase()
-    #wait_phase()
-    #logger.info("***** Faster cycle end *****")
+    # logger.info("***** Faster flow rate cycle *****")
+    # insp_phase(2)
+    # exp_phase()
+    # wait_phase()
+    # logger.info("***** Faster cycle end *****")
