@@ -112,7 +112,7 @@ def get_average_volume_rate(is_insp_phase):
     """ read p1 and p2 over 200 milliseconds and return average volume rate """
 
     nSamples = 4  # average over 4 samples
-    delay = 0.05  # 50 milliseconds
+    delay = 0.005  # 50 milliseconds
     n = 0
     q = 0
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate flow rate
