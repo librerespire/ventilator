@@ -10,9 +10,9 @@ from SensorReader import SensorReader
 from PWMController import PWMController
 
 # Parameters
-Ti = 6  # inspiratory time
-Te = 6  # expiratory time
-Tw = 2  # waiting time
+Ti = 5  # inspiratory time
+Te = 5  # expiratory time
+Tw = 1  # waiting time
 Vt = 5  # tidal volume
 Pi = 2000  # peak inspiratory pressure in cmH2O
 Peep = 900
