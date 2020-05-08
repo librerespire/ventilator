@@ -1,6 +1,11 @@
 import threading
 import time
 import RPi.GPIO as GPIO
+import logging
+import logging.config
+
+# declare logger parameters
+logger = logging.getLogger(__name__)
 
 
 class PWMController(threading.Thread):
