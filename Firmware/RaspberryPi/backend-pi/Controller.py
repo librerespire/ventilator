@@ -5,17 +5,18 @@ import math
 import time
 from datetime import datetime
 import threading
+import RPi.GPIO as GPIO
 from SensorReader import SensorReader
 from PWMController import PWMController
 
 # Parameters
-Ti = 11  # inspiratory time
-Te = 11  # expiratory time
-Tw = 5  # waiting time
+Ti = 6  # inspiratory time
+Te = 6  # expiratory time
+Tw = 2  # waiting time
 Vt = 5  # tidal volume
 Pi = 2000  # peak inspiratory pressure in cmH2O
 Peep = 900
-PWM_PERIOD = 3  # time period for PWM
+PWM_PERIOD = 2  # time period for PWM
 
 # Constants
 SI_PIN = 20  # PIN number for inspiratory solenoid
@@ -216,6 +217,13 @@ def convert_pressure(p_hpa):
 
 
 #######################################################################################################
+
+# Initialize digital output pins
+GPIO.setmode(GPIO.BCM)
+# GPIO.setwarnings(False)
+GPIO.setup(SI_PIN, GPIO.OUT)
+GPIO.setup(SE_PIN, GPIO.OUT)
+
 # 12 here is the intended flow_rate for calibration in L/min
 Ki, Ke = calibrate_flow_meter(12)
 

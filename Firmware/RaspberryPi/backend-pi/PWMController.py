@@ -16,9 +16,9 @@ class PWMController(threading.Thread):
         self.__stop_event = threading.Event()
 
         # TODO: Setting up the pins should be moved to the main script 'Controller.py'
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
-        GPIO.setup(pin, GPIO.OUT)
+        # GPIO.setmode(GPIO.BCM)
+        # GPIO.setwarnings(False)
+        # GPIO.setup(pin, GPIO.OUT)
 
     def stop(self):
         self.__stop_event.set()
@@ -32,11 +32,11 @@ class PWMController(threading.Thread):
             if self.stopped():
                 # print(str(self.__thread_id) + ": thread has stopped. exiting")
                 break;
-            # print(str(self.__thread_id) + ": ON--")
+            print(str(self.__thread_id) + ": ON--" + str(self.__on_time))
             if self.__on_time > 0.02:
                 GPIO.output(self.__pin, GPIO.HIGH)
                 time.sleep(self.__on_time)
-            # print(str(self.__thread_id) + ": OFF--")
+            print(str(self.__thread_id) + ": OFF--" + str(self.__off_time))
             if self.__off_time > 0.02:
                 GPIO.output(self.__pin, GPIO.LOW)
                 time.sleep(self.__off_time)
