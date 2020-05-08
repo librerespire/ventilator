@@ -1,10 +1,11 @@
 from datetime import datetime
 from PWMController import PWMController
 import time
+import RPi.GPIO as GPIO
 
-SOL_I = 10
-SOL_E = 20
-PWM_PERIOD = 0.5
+SOL_I = 20
+SOL_E = 21
+PWM_PERIOD = 2
 threads_map = {}
 
 
@@ -34,6 +35,11 @@ def control_solenoid(pin, duty_ratio):
 
 ######################################################################3
 
+# Initialize digital output pins
+GPIO.setmode(GPIO.BCM)
+# GPIO.setwarnings(False)
+GPIO.setup(SOL_I, GPIO.OUT)
+GPIO.setup(SOL_E, GPIO.OUT)
 
 while True:
     control_solenoid(SOL_I, 0.2)
