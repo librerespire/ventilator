@@ -8,6 +8,8 @@ import threading
 import RPi.GPIO as GPIO
 from SensorReader import SensorReader
 from PWMController import PWMController
+import logging
+import logging.config
 
 # Parameters
 Ti = 5  # inspiratory time
@@ -23,7 +25,7 @@ SI_PIN = 20  # PIN number for inspiratory solenoid
 SE_PIN = 21  # PIN number for expiratory solenoid
 DUTY_RATIO_100 = 1
 DUTY_RATIO_0 = 0
-NUMDER_OF_SENSORS = 4
+NUMBER_OF_SENSORS = 4
 BUS_1 = 1
 BUS_2 = 3
 BUS_3 = 4
@@ -32,8 +34,12 @@ BUS_4 = 5
 pressure_data = [0] * 6
 threads_map = {}
 
+# declare logger parameters
+logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
 
-def threadSlice(pressure_data, index):
+
+def thread_slice(pressure_data, index):
     sr = SensorReader(index)
     pressure = sr.read_pressure()
     pressure_data[index] = pressure
@@ -43,13 +49,14 @@ def read_data():
     # read four pressure sensors from the smbus and return actual values
     threads = list()
     for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
-        x = threading.Thread(target=threadSlice, args=(pressure_data, index,))
-        threads.append(x)
-        x.start()
+        thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
+        threads.append(thread)
+        thread.start()
 
     for index, thread in enumerate(threads):
         thread.join()
-
+    logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
+                 (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
     return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
 
 
@@ -66,7 +73,7 @@ def calibrate_flow_meter(flow_rate):
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     nSamples = 10  # average over 10 samples
-    delay = 0.5  # 0.5 seconds
+    delay = 0.005  # 0.5 seconds
     n = 0
     ki = 0
     ke = 0
@@ -80,20 +87,19 @@ def calibrate_flow_meter(flow_rate):
 
     ki /= nSamples
     ke /= nSamples
-    print("Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
+    logger.debug("Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
     return ki, ke
 
 
 def control_solenoid(pin, duty_ratio):
     # read four pressure sensors from the smbus and return actual values
-    # print("Entering control_solenoid()...")
+    logger.info("Entering control_solenoid()...")
     on_time = PWM_PERIOD * duty_ratio
     off_time = PWM_PERIOD * (1 - duty_ratio)
 
     if pin in threads_map:
         threads_map[pin].stop()
         threads_map[pin].join()
-        # print("Main: Stopped existing thread")
 
     t = PWMController(datetime.now().strftime('%Y%m%d%H%M%S%f'), pin, on_time, off_time)
     threads_map[pin] = t
@@ -101,11 +107,8 @@ def control_solenoid(pin, duty_ratio):
     # Don't want these threads to run when the main program is terminated
     t.daemon = True
     t.start()
-    # print("Main: Started thread")
 
-    # time.sleep(0.02)
-
-    # print("Leaving control_solenoid().")
+    logger.info("Leaving control_solenoid().")
 
 
 def get_average_volume_rate(is_insp_phase):
@@ -143,7 +146,7 @@ def insp_phase(demo_level):
     """ inspiratory phase tasks
         demo_level is a temporary hack to introduce two flow rate levels until pid controller is implemented """
 
-    print("Entering inspiratory phase...")
+    logger.info("Entering inspiratory phase...")
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
@@ -165,14 +168,14 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (datetime.now() - start_time).total_seconds()
-        print(q2, vi, ti)
+        logger.info("Flow rate: %.2f VI: %.2f TI: %.2f" % (q2, vi, ti))
 
-    print("Leaving inspiratory phase.")
+    logger.info("Leaving inspiratory phase.")
 
 
 def exp_phase():
     """ expiratory phase tasks """
-    print("Entering expiratory phase...")
+    logger.info("Entering expiratory phase...")
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
@@ -196,19 +199,19 @@ def exp_phase():
             control_solenoid(SE_PIN, 0)
 
         ti = (datetime.now() - start_time).total_seconds()
-        print(q2, vi, p3, ti)
+        logger.info("Flow rate: %.2f VI: %.2f P3: %.2f TI: %.2f" % (q2, vi, p3, ti))
 
-    print("Leaving expiratory phase.")
-    print("Actual tidal volume delivered : %.3f L " % vi)
+    logger.info("Leaving expiratory phase.")
+    logger.info("Actual tidal volume delivered : %.3f L " % vi)
 
 
 def wait_phase():
     """ waiting phase tasks """
-    print("Entering wait phase...")
+    logger.info("Entering wait phase...")
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
     time.sleep(Tw)
-    print("Leaving wait phase.")
+    logger.info("Leaving wait phase.")
 
 
 def convert_pressure(p_hpa):
@@ -227,21 +230,17 @@ GPIO.setup(SE_PIN, GPIO.OUT)
 # 12 here is the intended flow_rate for calibration in L/min
 Ki, Ke = calibrate_flow_meter(12)
 
-# print(k)
-# results = DataManipulator(1000, 964, 800, 700, k)
-# print("Flow rate : %.2f L/min " % results.get_flow_rate())
-# print("Inspiratory pressure : %.2f cmH2O " % results.get_insp_pressure() + "\n")
-
-
 while True:
     # slow flow rate
-    print("\nSlower flow rate cycle")
+    logger.info("***** Slower flow rate cycle *****")
     insp_phase(1)
     exp_phase()
     wait_phase()
+    logger.info("***** Slower cycle end *****")
 
     # faster flow rate
-    print("\nFaster flow rate cycle")
-    insp_phase(2)
-    exp_phase()
-    wait_phase()
+    # logger.info("***** Faster flow rate cycle *****")
+    # insp_phase(2)
+    # exp_phase()
+    # wait_phase()
+    # logger.info("***** Faster cycle end *****")

@@ -2,23 +2,29 @@ from datetime import datetime
 from PWMController import PWMController
 import time
 import RPi.GPIO as GPIO
+import logging
+import logging.config
 
 SOL_I = 21
 SOL_E = 20
 PWM_PERIOD = 2
 threads_map = {}
 
+# declare logger parameters
+logger = logging.getLogger(__name__)
+logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
+
 
 def control_solenoid(pin, duty_ratio):
     # read four pressure sensors from the smbus and return actual values
-    print("Entering control_solenoid()...")
+    logger.debug("Entering control_solenoid()...")
     on_time = PWM_PERIOD * duty_ratio
     off_time = PWM_PERIOD * (1 - duty_ratio)
 
     if pin in threads_map:
         threads_map[pin].stop()
         threads_map[pin].join()
-        print("Main: Stopped existing thread")
+        logger.debug("Main: Stopped existing thread")
 
     t = PWMController(datetime.now().strftime('%Y%m%d%H%M%S%f'), pin, on_time, off_time)
     threads_map[pin] = t
@@ -26,11 +32,11 @@ def control_solenoid(pin, duty_ratio):
     # Don't want these threads to run when the main program is terminated
     t.daemon = True
     t.start()
-    print("Main: Started thread")
+    logger.debug("Main: Started thread")
 
     time.sleep(3)
 
-    print("Leaving control_solenoid().")
+    logger.debug("Leaving control_solenoid().")
 
 
 ######################################################################3

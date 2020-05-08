@@ -1,6 +1,11 @@
 import threading
 import time
 import RPi.GPIO as GPIO
+import logging
+import logging.config
+
+# declare logger parameters
+logger = logging.getLogger(__name__)
 
 
 class PWMController(threading.Thread):
@@ -32,11 +37,13 @@ class PWMController(threading.Thread):
             if self.stopped():
                 # print(str(self.__thread_id) + ": thread has stopped. exiting")
                 break;
-            print(str(self.__pin) + ": ON--" + str(self.__on_time))
+            logger.debug(str(self.__pin) + ": ON--" + str(self.__on_time))
             if self.__on_time > 0.02:
                 GPIO.output(self.__pin, GPIO.HIGH)
+                logger.debug("On wait time: %.3f" % self.__on_time)
                 time.sleep(self.__on_time)
-            print(str(self.__pin) + ": OFF--" + str(self.__off_time))
+            logger.debug(str(self.__pin) + ": OFF--" + str(self.__off_time))
             if self.__off_time > 0.02:
                 GPIO.output(self.__pin, GPIO.LOW)
+                logger.debug("Off wait time: %.3f" % self.__off_time)
                 time.sleep(self.__off_time)
