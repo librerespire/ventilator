@@ -37,11 +37,11 @@ class PWMController(threading.Thread):
             if self.stopped():
                 # print(str(self.__thread_id) + ": thread has stopped. exiting")
                 break;
-            print(str(self.__pin) + ": ON--" + str(self.__on_time))
+            logger.debug(str(self.__pin) + ": ON--" + str(self.__on_time))
             if self.__on_time > 0.02:
                 GPIO.output(self.__pin, GPIO.HIGH)
                 time.sleep(self.__on_time)
-            print(str(self.__pin) + ": OFF--" + str(self.__off_time))
+            logger.debug(str(self.__pin) + ": OFF--" + str(self.__off_time))
             if self.__off_time > 0.02:
                 GPIO.output(self.__pin, GPIO.LOW)
                 time.sleep(self.__off_time)

@@ -199,7 +199,7 @@ def exp_phase():
             control_solenoid(SE_PIN, 0)
 
         ti = (datetime.now() - start_time).total_seconds()
-        logger.info(q2, vi, p3, ti)
+        logger.info("Flow rate: %.2f VI: %.2f P3: %.2f TI: %.2f" % (q2, vi, p3, ti))
 
     logger.info("Leaving expiratory phase.")
     logger.info("Actual tidal volume delivered : %.3f L " % vi)
