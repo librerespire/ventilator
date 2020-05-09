@@ -104,7 +104,7 @@ def control_solenoid(pin, duty_ratio):
     elif pin == SE_PIN:
         pwm_e.ChangeDutyCycle(duty_ratio)
 
-    logger.debug("Changed duty cycle on pin " + str(pin))
+    logger.debug("Changed duty cycle to " + str(duty_ratio) + "on pin " + str(pin))
 
 # def control_solenoid(pin, duty_ratio):
 #     # read four pressure sensors from the smbus and return actual values
