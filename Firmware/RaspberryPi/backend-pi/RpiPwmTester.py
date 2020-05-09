@@ -30,7 +30,7 @@ while True:
 
     # inspiratory phase
     logger.debug("Enter inspiratory")
-    pwm_i.ChangeDutyCycle(80)
+    pwm_i.ChangeDutyCycle(100)
     pwm_e.ChangeDutyCycle(0)
     time.sleep(2)
     logger.debug("Leave inspiratory\n")
