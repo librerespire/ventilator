@@ -6,7 +6,7 @@ import logging.config
 # Constants
 SOL_I = 12
 SOL_E = 13
-PWM_FREQ = 1
+PWM_FREQ = 0.5
 
 # declare logger parameters
 logger = logging.getLogger(__name__)
@@ -27,8 +27,8 @@ pwm_i.start(0)
 pwm_e.start(0)
 
 while True:
-    pwm_i.ChangeDutyCycle(0.5)
-    pwm_e.ChangeDutyCycle(0.5)
+    pwm_i.ChangeDutyCycle(0.2)
+    pwm_e.ChangeDutyCycle(0.8)
 
 # while True:
 #     pwm_i.ChangeDutyCycle(0.8)
