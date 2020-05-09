@@ -18,27 +18,30 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 GPIO.setup(SOL_I, GPIO.OUT)
-# GPIO.setup(SOL_E, GPIO.OUT)
+GPIO.setup(SOL_E, GPIO.OUT)
 
 pwm_i = GPIO.PWM(SOL_I, PWM_FREQ)
-# pwm_e = GPIO.PWM(SOL_E, PWM_FREQ)
+pwm_e = GPIO.PWM(SOL_E, PWM_FREQ)
 
 pwm_i.start(0)
-# pwm_e.start(0)
+pwm_e.start(0)
 
-pwm_i.ChangeDutyCycle(0.2)
-# pwm_e.ChangeDutyCycle(0.8)
-
-d = 0;
+pwm_i.ChangeDutyCycle(20)
+pwm_e.ChangeDutyCycle(80)
 
 while True:
-    d += 1
-    pwm_i.ChangeDutyCycle(d)
-    # pwm_e.ChangeDutyCycle(0.8)
-    time.sleep(1)
-    if d > 99:
-        d = 0
     pass
+
+# d = 0;
+
+# while True:
+#     d += 1
+#     pwm_i.ChangeDutyCycle(d)
+#     # pwm_e.ChangeDutyCycle(0.8)
+#     time.sleep(1)
+#     if d > 99:
+#         d = 0
+#     pass
 
 # while True:
 #     pwm_i.ChangeDutyCycle(0.8)
