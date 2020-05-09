@@ -7,23 +7,21 @@ from datetime import datetime
 import threading
 import RPi.GPIO as GPIO
 from SensorReader import SensorReader
-from PWMController import PWMController
-import logging
 import logging.config
 
 # Parameters
-Ti = 5  # inspiratory time
-Te = 5  # expiratory time
-Tw = 1  # waiting time
-Vt = 5  # tidal volume
-Pi = 2000  # peak inspiratory pressure in cmH2O
-Peep = 900
-PWM_PERIOD = 2  # time period for PWM
+Ti = 5          # inspiratory time
+Te = 5          # expiratory time
+Tw = 1          # waiting time
+Vt = 5          # tidal volume
+Pi = 2000       # peak inspiratory pressure in cmH2O
+Peep = 900      # PEEP
+PWM_FREQ = 4    # frequency for PWM
 
 # Constants
-SI_PIN = 20  # PIN number for inspiratory solenoid
-SE_PIN = 21  # PIN number for expiratory solenoid
-DUTY_RATIO_100 = 1
+SI_PIN = 12     # PIN (PWM) for inspiratory solenoid
+SE_PIN = 13     # PIN (PWM) for expiratory solenoid
+DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
 NUMBER_OF_SENSORS = 4
 BUS_1 = 1
@@ -32,7 +30,16 @@ BUS_3 = 4
 BUS_4 = 5
 
 pressure_data = [0] * 6
-threads_map = {}
+
+# Initialize digital output pins
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+GPIO.setup(SI_PIN, GPIO.OUT)
+GPIO.setup(SE_PIN, GPIO.OUT)
+
+pwm_i = GPIO.PWM(SI_PIN, PWM_FREQ)
+pwm_e = GPIO.PWM(SE_PIN, PWM_FREQ)
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
@@ -69,11 +76,11 @@ def calibrate_flow_meter(flow_rate):
     """ returns the calibrated k for both insp and exp flow meters, calculated based on multiple pressure readings """
 
     # Turn ON both the solenoids fully for calibration
-    control_solenoid(SI_PIN, DUTY_RATIO_100)
-    control_solenoid(SE_PIN, DUTY_RATIO_100)
+    pwm_i.start(100)
+    pwm_e.start(100)
 
     nSamples = 10  # average over 10 samples
-    delay = 0.005  # 0.5 seconds
+    delay = 0.5  # 0.5 seconds
     n = 0
     ki = 0
     ke = 0
@@ -92,30 +99,38 @@ def calibrate_flow_meter(flow_rate):
 
 
 def control_solenoid(pin, duty_ratio):
-    # read four pressure sensors from the smbus and return actual values
-    logger.info("Entering control_solenoid()...")
-    on_time = PWM_PERIOD * duty_ratio
-    off_time = PWM_PERIOD * (1 - duty_ratio)
+    if pin == SI_PIN:
+        pwm_i.ChangeDutyCycle(duty_ratio)
+    elif pin == SE_PIN:
+        pwm_e.ChangeDutyCycle(duty_ratio)
 
-    if pin in threads_map:
-        threads_map[pin].stop()
-        threads_map[pin].join()
+    logger.debug("Changed duty cycle to " + str(duty_ratio) + "on pin " + str(pin))
 
-    t = PWMController(datetime.now().strftime('%Y%m%d%H%M%S%f'), pin, on_time, off_time)
-    threads_map[pin] = t
-
-    # Don't want these threads to run when the main program is terminated
-    t.daemon = True
-    t.start()
-
-    logger.info("Leaving control_solenoid().")
+# def control_solenoid(pin, duty_ratio):
+#     # read four pressure sensors from the smbus and return actual values
+#     logger.info("Entering control_solenoid()...")
+#     on_time = PWM_PERIOD * duty_ratio
+#     off_time = PWM_PERIOD * (1 - duty_ratio)
+#
+#     if pin in threads_map:
+#         threads_map[pin].stop()
+#         threads_map[pin].join()
+#
+#     t = PWMController(datetime.now().strftime('%Y%m%d%H%M%S%f'), pin, on_time, off_time)
+#     threads_map[pin] = t
+#
+#     # Don't want these threads to run when the main program is terminated
+#     t.daemon = True
+#     t.start()
+#
+#     logger.info("Leaving control_solenoid().")
 
 
 def get_average_volume_rate(is_insp_phase):
     """ read p1 and p2 over 200 milliseconds and return average volume rate """
 
     nSamples = 4  # average over 4 samples
-    delay = 0.005  # 50 milliseconds
+    delay = 0.05  # 50 milliseconds
     n = 0
     q = 0
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate flow rate
@@ -135,9 +150,9 @@ def get_average_volume_rate(is_insp_phase):
 def calculate_pid_duty_ratio(demo_level):
     """ TODO: implement the PID controller to determine the required duty ratio to achieve the desired pressure curve
         Currently a temporary hack is implemented with demo_level """
-    duty_ratio = 0.8
+    duty_ratio = 100
     if demo_level == 1:
-        duty_ratio = 0.2
+        duty_ratio = 20
 
     return duty_ratio
 
@@ -168,7 +183,7 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (datetime.now() - start_time).total_seconds()
-        logger.info("Flow rate: %.2f VI: %.2f TI: %.2f" % (q2, vi, ti))
+        logger.info("Flow rate: %.2f L/min, Volume: %.2f L,  Time: %.1f sec" % (q2, vi, ti))
 
     logger.info("Leaving inspiratory phase.")
 
@@ -186,7 +201,7 @@ def exp_phase():
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
-    while ti < Te and p3 <= Peep:
+    while ti < Te and p3 >= Peep:
         t1 = t2
         q1 = q2
         q2 = get_average_volume_rate(False)
@@ -199,7 +214,8 @@ def exp_phase():
             control_solenoid(SE_PIN, 0)
 
         ti = (datetime.now() - start_time).total_seconds()
-        logger.info("Flow rate: %.2f VI: %.2f P3: %.2f TI: %.2f" % (q2, vi, p3, ti))
+        logger.info("Flow rate: %.2f L/min, Volume: %.2f L, Pressure_insp: %.2f cmH20, Time: %.1f sec"
+                    % (q2, vi, convert_pressure(p3), ti))
 
     logger.info("Leaving expiratory phase.")
     logger.info("Actual tidal volume delivered : %.3f L " % vi)
@@ -220,27 +236,20 @@ def convert_pressure(p_hpa):
 
 
 #######################################################################################################
-
-# Initialize digital output pins
-GPIO.setmode(GPIO.BCM)
-# GPIO.setwarnings(False)
-GPIO.setup(SI_PIN, GPIO.OUT)
-GPIO.setup(SE_PIN, GPIO.OUT)
-
 # 12 here is the intended flow_rate for calibration in L/min
 Ki, Ke = calibrate_flow_meter(12)
 
 while True:
     # slow flow rate
-    logger.info("***** Slower flow rate cycle *****")
-    insp_phase(1)
-    exp_phase()
-    wait_phase()
-    logger.info("***** Slower cycle end *****")
-
-    # faster flow rate
-    # logger.info("***** Faster flow rate cycle *****")
-    # insp_phase(2)
+    # logger.info("***** Slower flow rate cycle *****")
+    # insp_phase(1)
     # exp_phase()
     # wait_phase()
-    # logger.info("***** Faster cycle end *****")
+    # logger.info("***** Slower cycle end *****")
+
+    # faster flow rate
+    logger.info("***** Faster flow rate cycle *****")
+    insp_phase(2)
+    exp_phase()
+    wait_phase()
+    logger.info("***** Faster cycle end *****")
