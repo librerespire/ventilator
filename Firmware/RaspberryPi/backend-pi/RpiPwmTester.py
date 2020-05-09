@@ -29,16 +29,22 @@ pwm_e.start(0)
 while True:
 
     # inspiratory phase
+    logger.debug("Enter inspiratory")
     pwm_i.ChangeDutyCycle(80)
     pwm_e.ChangeDutyCycle(0)
     time.sleep(2)
+    logger.debug("Leave inspiratory\n")
 
     # expiratory phase
+    logger.debug("Enter expiratory")
     pwm_i.ChangeDutyCycle(0)
     pwm_e.ChangeDutyCycle(100)
     time.sleep(2)
+    logger.debug("Leave inspiratory\n")
 
     # waiting phase
-    pwm_i.ChangeDutyCycle(00)
+    logger.debug("Enter waiting")
+    pwm_i.ChangeDutyCycle(0)
     pwm_e.ChangeDutyCycle(0)
     time.sleep(1)
+    logger.debug("Leave waiting\n")
