@@ -201,7 +201,7 @@ def exp_phase():
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
-    while ti < Te and p3 <= Peep:
+    while ti < Te and p3 >= Peep:
         t1 = t2
         q1 = q2
         q2 = get_average_volume_rate(False)
