@@ -21,6 +21,8 @@ PWM_FREQ = 4    # frequency for PWM
 # Constants
 SI_PIN = 12     # PIN (PWM) for inspiratory solenoid
 SE_PIN = 13     # PIN (PWM) for expiratory solenoid
+INSP_FLOW = True
+EXP_FLOW = False
 DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
 NUMBER_OF_SENSORS = 4
@@ -76,8 +78,8 @@ def calibrate_flow_meter(flow_rate):
     """ returns the calibrated k for both insp and exp flow meters, calculated based on multiple pressure readings """
 
     # Turn ON both the solenoids fully for calibration
-    pwm_i.start(100)
-    pwm_e.start(100)
+    pwm_i.start(DUTY_RATIO_100)
+    pwm_e.start(DUTY_RATIO_100)
 
     nSamples = 10  # average over 10 samples
     delay = 0.5  # 0.5 seconds
@@ -103,7 +105,7 @@ def control_solenoid(pin, duty_ratio):
         pwm_i.ChangeDutyCycle(duty_ratio)
     elif pin == SE_PIN:
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
-        pwm_e.ChangeDutyCycle(100 - duty_ratio)
+        pwm_e.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
     logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
 
@@ -175,7 +177,7 @@ def insp_phase(demo_level):
     while ti < Ti and vi < Vt:
         t1 = t2
         q1 = q2
-        q2 = get_average_volume_rate(True)
+        q2 = get_average_volume_rate(INSP_FLOW)
         t2 = datetime.now()
 
         vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
@@ -205,7 +207,7 @@ def exp_phase():
     while ti < Te:
         t1 = t2
         q1 = q2
-        q2 = get_average_volume_rate(False)
+        q2 = get_average_volume_rate(EXP_FLOW)
         t2 = datetime.now()
 
         vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
