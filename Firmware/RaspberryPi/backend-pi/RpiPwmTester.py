@@ -26,24 +26,19 @@ pwm_e = GPIO.PWM(SOL_E, PWM_FREQ)
 pwm_i.start(0)
 pwm_e.start(0)
 
-pwm_i.ChangeDutyCycle(50)
-pwm_e.ChangeDutyCycle(50)
-
 while True:
-    pass
 
-# d = 0;
+    # inspiratory phase
+    pwm_i.ChangeDutyCycle(80)
+    pwm_e.ChangeDutyCycle(0)
+    time.sleep(2)
 
-# while True:
-#     d += 1
-#     pwm_i.ChangeDutyCycle(d)
-#     # pwm_e.ChangeDutyCycle(0.8)
-#     time.sleep(1)
-#     if d > 99:
-#         d = 0
-#     pass
+    # expiratory phase
+    pwm_i.ChangeDutyCycle(0)
+    pwm_e.ChangeDutyCycle(100)
+    time.sleep(2)
 
-# while True:
-#     pwm_i.ChangeDutyCycle(0.8)
-#     pwm_e.ChangeDutyCycle(0.8)
-#     time.sleep(2)
+    # waiting phase
+    pwm_i.ChangeDutyCycle(00)
+    pwm_e.ChangeDutyCycle(0)
+    time.sleep(1)
