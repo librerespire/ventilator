@@ -30,6 +30,9 @@ pwm_i.ChangeDutyCycle(0.2)
 pwm_e.ChangeDutyCycle(0.8)
 
 while True:
+    pwm_i.ChangeDutyCycle(0.2)
+    pwm_e.ChangeDutyCycle(0.8)
+    time.sleep(1)
     pass
 
 # while True:
