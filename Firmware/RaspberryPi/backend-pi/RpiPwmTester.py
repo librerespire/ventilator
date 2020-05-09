@@ -29,10 +29,15 @@ pwm_e.start(0)
 pwm_i.ChangeDutyCycle(0.2)
 pwm_e.ChangeDutyCycle(0.8)
 
+d = 0;
+
 while True:
+    d += 1
     pwm_i.ChangeDutyCycle(0.2)
-    pwm_e.ChangeDutyCycle(0.8)
+    # pwm_e.ChangeDutyCycle(0.8)
     time.sleep(1)
+    if d > 99:
+        d = 0
     pass
 
 # while True:
