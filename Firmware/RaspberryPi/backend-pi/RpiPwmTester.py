@@ -33,7 +33,7 @@ d = 0;
 
 while True:
     d += 1
-    pwm_i.ChangeDutyCycle(0.2)
+    pwm_i.ChangeDutyCycle(d)
     # pwm_e.ChangeDutyCycle(0.8)
     time.sleep(1)
     if d > 99:
