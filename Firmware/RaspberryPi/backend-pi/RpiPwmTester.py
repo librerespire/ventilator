@@ -26,8 +26,8 @@ pwm_e = GPIO.PWM(SOL_E, PWM_FREQ)
 pwm_i.start(0)
 pwm_e.start(0)
 
-pwm_i.ChangeDutyCycle(20)
-pwm_e.ChangeDutyCycle(80)
+pwm_i.ChangeDutyCycle(50)
+pwm_e.ChangeDutyCycle(50)
 
 while True:
     pass
