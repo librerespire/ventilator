@@ -102,9 +102,10 @@ def control_solenoid(pin, duty_ratio):
     if pin == SI_PIN:
         pwm_i.ChangeDutyCycle(duty_ratio)
     elif pin == SE_PIN:
-        pwm_e.ChangeDutyCycle(duty_ratio)
+        # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
+        pwm_e.ChangeDutyCycle(100 - duty_ratio)
 
-    logger.debug("Changed duty cycle to " + str(duty_ratio) + "on pin " + str(pin))
+    logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
 
 # def control_solenoid(pin, duty_ratio):
 #     # read four pressure sensors from the smbus and return actual values
@@ -201,7 +202,7 @@ def exp_phase():
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
-    while ti < Te and p3 >= Peep:
+    while ti < Te:
         t1 = t2
         q1 = q2
         q2 = get_average_volume_rate(False)
@@ -210,8 +211,8 @@ def exp_phase():
         vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
         p1, p2, p3, p4 = read_data()
-        if p3 < Peep:
-            control_solenoid(SE_PIN, 0)
+        # if p3 < Peep:
+        #     control_solenoid(SE_PIN, 0)
 
         ti = (datetime.now() - start_time).total_seconds()
         logger.info("Flow rate: %.2f L/min, Volume: %.2f L, Pressure_insp: %.2f cmH20, Time: %.1f sec"
