@@ -173,9 +173,10 @@ def insp_phase(demo_level):
     logger.info("Entering inspiratory phase...")
     start_time = datetime.now()
     t1, t2 = start_time, start_time
-    ti = 0
-    q1, q2 = 0, 0
-    vi = 0
+    ti = 0              # instantaneous time
+    q1, q2 = 0, 0       # flow rates
+    vi = 0              # volume
+    solenoids_closed = False
 
     # Control solenoids
     control_solenoid(SI_PIN, DUTY_RATIO_100)
@@ -184,10 +185,18 @@ def insp_phase(demo_level):
     while ti < Ti:
 
         if vi > Vt:
-            # Tidal volume has reached, CLOSE all solonoids and wait until Ti is reached
-            control_solenoid(SI_PIN, DUTY_RATIO_0)
-            control_solenoid(SE_PIN, DUTY_RATIO_0)
-            time.sleep(0.1)
+            if not solenoids_closed:
+                # Tidal volume has reached, CLOSE all solonoids
+                control_solenoid(SI_PIN, DUTY_RATIO_0)
+                control_solenoid(SE_PIN, DUTY_RATIO_0)
+                solenoids_closed = True
+
+            p1, p2, p3, p4 = read_data()
+
+            ti = (datetime.now() - start_time).total_seconds()
+            logger.info(
+                "<<PRESSURE CHART>>Pressure: %.2f L, <<FLOW CHART>>Flow rate: %.2f L/min, <<VOLUME CHART>>Volume: "
+                "%.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), 0, vi, ti))
             continue
 
         t1 = t2
