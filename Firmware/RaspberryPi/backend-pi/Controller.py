@@ -175,6 +175,7 @@ def insp_phase(demo_level):
     vi = 0
 
     # Control solenoids
+    control_solenoid(SI_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
 
     while ti < Ti and vi < Vt:
