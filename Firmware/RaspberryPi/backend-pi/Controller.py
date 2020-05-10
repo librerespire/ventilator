@@ -81,6 +81,9 @@ def calibrate_flow_meter(flow_rate):
     pwm_i.start(DUTY_RATIO_100)
     pwm_e.start(DUTY_RATIO_100)
 
+    # Introduce a delay to achieve a stable flow across the flow meters
+    time.sleep(2)
+
     nSamples = 10  # average over 10 samples
     delay = 0.5  # 0.5 seconds
     n = 0
