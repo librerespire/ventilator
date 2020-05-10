@@ -132,13 +132,14 @@ def control_solenoid(pin, duty_ratio):
 #     logger.info("Leaving control_solenoid().")
 
 
-def get_average_volume_rate(is_insp_phase):
+def get_average_flow_rate_and_pressure(is_insp_phase):
     """ read p1 and p2 over 200 milliseconds and return average volume rate """
 
     nSamples = 4  # average over 4 samples
     delay = 0.05  # 50 milliseconds
     n = 0
     q = 0
+    p = 0
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate flow rate
     while n < nSamples:
         p1, p2, p3, p4 = read_data()
@@ -147,10 +148,12 @@ def get_average_volume_rate(is_insp_phase):
         else:
             q += Ke * math.sqrt(abs(p3 - p4))
 
+        p += p3
+
         n += 1
         time.sleep(delay)
 
-    return q / nSamples
+    return q / nSamples, p / nSamples
 
 
 def calculate_pid_duty_ratio(demo_level):
@@ -178,10 +181,18 @@ def insp_phase(demo_level):
     control_solenoid(SI_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
 
-    while ti < Ti and vi < Vt:
+    while ti < Ti:
+
+        if vi > Vt:
+            # Tidal volume has reached, CLOSE all solonoids and wait until Ti is reached
+            control_solenoid(SI_PIN, DUTY_RATIO_0)
+            control_solenoid(SE_PIN, DUTY_RATIO_0)
+            time.sleep(0.1)
+            continue
+
         t1 = t2
         q1 = q2
-        q2 = get_average_volume_rate(INSP_FLOW)
+        q2, p3 = get_average_flow_rate_and_pressure(INSP_FLOW)
         t2 = datetime.now()
 
         vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
@@ -190,7 +201,8 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (datetime.now() - start_time).total_seconds()
-        logger.info("Flow rate: %.2f L/min, Volume: %.2f L,  Time: %.1f sec" % (q2, vi, ti))
+        logger.info("<<PRESSURE CHART>>Pressure: %.2f L, <<FLOW CHART>>Flow rate: %.2f L/min, <<VOLUME CHART>>Volume: "
+                    "%.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), q2, vi, ti))
 
     logger.info("Leaving inspiratory phase.")
 
@@ -211,21 +223,17 @@ def exp_phase():
     while ti < Te:
         t1 = t2
         q1 = q2
-        q2 = get_average_volume_rate(EXP_FLOW)
+        q2, p3 = get_average_flow_rate_and_pressure(EXP_FLOW)
         t2 = datetime.now()
 
         vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
-        p1, p2, p3, p4 = read_data()
-        # if p3 < Peep:
-        #     control_solenoid(SE_PIN, 0)
-
         ti = (datetime.now() - start_time).total_seconds()
-        logger.info("Flow rate: %.2f L/min, Volume: %.2f L, Pressure_insp: %.2f cmH20, Time: %.1f sec"
-                    % (q2, vi, convert_pressure(p3), ti))
+        logger.info("<<PRESSURE CHART>>Pressure_insp: %.2f cmH20, <<FLOW CHART>>Flow rate: %.2f L/min, <<VOLUME "
+                    "CHART>>Volume: %.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), -1*q2, vi, ti))
 
     logger.info("Leaving expiratory phase.")
-    logger.info("Actual tidal volume delivered : %.3f L " % vi)
+    logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)
 
 
 def wait_phase():
