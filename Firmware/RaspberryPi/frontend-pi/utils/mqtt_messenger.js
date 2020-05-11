@@ -16,9 +16,9 @@ module.exports = {
     client.on('message', (topic, message) => {
       switch (topic) {
         case 'Ventilator/p1':
-          return self.ven_p1(message)
+          return module.exports.ven_p1(message)
         case 'Ventilator/p2':
-          return self.ven_p2(message)
+          return module.exports.ven_p2(message)
       }
       console.log('No handler for topic %s', topic)
     });
