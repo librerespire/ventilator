@@ -1,5 +1,5 @@
 const mqtt = require('mqtt')
-var database = require("./utils/database.js")
+var database = require("database.js")
 const client = mqtt.connect('mqtt://localhost:1883')
 
 module.exports = {
