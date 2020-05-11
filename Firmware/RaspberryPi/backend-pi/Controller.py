@@ -8,7 +8,7 @@ import threading
 import RPi.GPIO as GPIO
 from SensorReader import SensorReader
 from PWMController import PWMController
-from MQTTTransciver import MQTTTransciver
+from MQTTTransceiver import MQTTTransceiver
 import logging
 import logging.config
 
