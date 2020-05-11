@@ -8,6 +8,7 @@ import threading
 import RPi.GPIO as GPIO
 from SensorReader import SensorReader
 from PWMController import PWMController
+from MQTTTransciver import MQTTTransciver
 import logging
 import logging.config
 
@@ -33,6 +34,7 @@ BUS_4 = 5
 
 pressure_data = [0] * 6
 threads_map = {}
+mqtt = new MQTTTransciver()
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
@@ -169,6 +171,7 @@ def insp_phase(demo_level):
 
         ti = (datetime.now() - start_time).total_seconds()
         logger.info("Flow rate: %.2f VI: %.2f TI: %.2f" % (q2, vi, ti))
+        mqtt.sender(mqtt.FLOWRATE_TOPIC, q2)
 
     logger.info("Leaving inspiratory phase.")
 

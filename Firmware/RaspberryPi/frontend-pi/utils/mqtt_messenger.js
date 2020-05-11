@@ -12,6 +12,7 @@ var self = module.exports = {
     client.on('connect', () => {
       client.subscribe('Ventilator/pressure')
       client.subscribe('Ventilator/flow_rate')
+      client.subscribe('Ventilator/volume')
     });
 
     client.on('message', (topic, message) => {
@@ -22,6 +23,9 @@ var self = module.exports = {
         case 'Ventilator/flow_rate':
           console.log(topic + " : " + message)
           return self.mqtt_flowrate(message)
+        case 'Ventilator/volume':
+          console.log(topic + " : " + message)
+          return self.mqtt_volume(message)
       }
       console.log('No handler for topic %s', topic)
     });
@@ -29,12 +33,17 @@ var self = module.exports = {
 
   mqtt_pressure: function(message) {
     console.log("Pressure : " + message)
-    database.add_pressure(parseFloat(message))
+    database.set_pressure(parseFloat(message))
   },
 
   mqtt_flowrate: function(message) {
-    console.log("Flowrate : " +  message)
-    database.add_flow_rate(parseFloat(message))
+    console.log("Flowrate : " + message)
+    database.set_flow_rate(parseFloat(message))
+  },
+
+  mqtt_volume: function(message) {
+    console.log("Volume : " + message)
+    database.set_volume(parseFloat(message))
   }
 
 };

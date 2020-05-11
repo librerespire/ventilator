@@ -1,19 +1,32 @@
-var pressure = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-var flow_rate = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var pressure = new Array(60).fill(0);
+var flow_rate = new Array(60).fill(0);
+var volume = new Array(60).fill(0);
 
 module.exports = {
-  add_pressure: function(data){
+  set_pressure: function(data){
     pressure.pop()
     pressure.unshift(data)
     console.log(pressure);
     return pressure
   },
 
-  add_flow_rate: function(data){
+  set_flow_rate: function(data){
     flow_rate.pop()
     flow_rate.unshift(data)
     console.log(flow_rate);
     return flow_rate
+  },
+
+  set_volume: function(data){
+    volume.pop()
+    volume.unshift(data)
+    console.log(volume);
+    return volume
+  },
+
+  get_volume: function(){
+    console.log(volume);
+    return volume
   },
 
   get_pressure: function(){
