@@ -23,6 +23,7 @@ class MQTTTransceiver:
 
     def mqtt_subscriber(self):
         client = mqtt.Client()
+        client.connect("127.0.0.1", 1883, 60)
         client.subscribe(self.FIO2_CONFIG_TOPIC)
         client.on_message = self.on_message
         client.loop_forever()
