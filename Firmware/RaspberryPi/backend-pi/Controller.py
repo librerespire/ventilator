@@ -34,7 +34,7 @@ BUS_4 = 5
 
 pressure_data = [0] * 6
 threads_map = {}
-mqtt = new MQTTTransciver()
+mqtt = MQTTTransciver()
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
