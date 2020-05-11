@@ -10,32 +10,19 @@ module.exports = {
   mqtt_receiver: function() {
     console.log("Receiver called");
     client.on('connect', () => {
-      client.subscribe('Ventilator/p1')
-      client.subscribe('Ventilator/p2')
+      client.subscribe('Ventilator/pressure')
+      client.subscribe('Ventilator/flow_rate')
     });
 
     client.on('message', (topic, message) => {
       switch (topic) {
-        case 'Ventilator/p1':
-          return module.exports.ven_p1(message)
-        case 'Ventilator/p2':
-          return module.exports.ven_p2(message)
+        case 'Ventilator/pressure':
+          return database.add_pressure(message)
+        case 'Ventilator/flow_rate':
+          return database.flow_rate(message)
       }
       console.log('No handler for topic %s', topic)
     });
   },
 
-  ven_p1: function(message){
-    console.log('%d', message);
-    database.add_p1(message)
-    p1 = database.get_p1();
-    console.log("P1: " + p1);
-  },
-
-  ven_p2: function(message){
-    console.log('%d', message);
-    database.add_p2(message)
-    p2 = database.get_p2();
-    console.log("P2: " + p2);
-  }
 };
