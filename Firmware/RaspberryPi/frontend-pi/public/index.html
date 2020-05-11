@@ -280,14 +280,14 @@
           data: PressureData
         }],
       });
-    //  setInterval(function() {
+      setInterval(function() {
         $.get("/api/graphs/pressure", function(data, status) {
           console.log(data['data']);
           PressureData = data['data'];
         });
         console.log(PressureData);
         pressureChart.series[0].setData(PressureData);
-    //  }, 1000);
+      }, 500);
     });
     $(function() {
       // Flow chart
