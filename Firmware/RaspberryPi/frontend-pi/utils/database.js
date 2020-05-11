@@ -9,7 +9,7 @@ module.exports = {
         return console.error(err.message);
       }
       console.log('Connected to the in-memory SQlite database.');
-      db.run('CREATE TABLE p1(value real)'function(err) {
+      db.run('CREATE TABLE p1(value real)', function(err) {
         if (err) {
           return console.log(err.message);
         }
@@ -18,6 +18,5 @@ module.exports = {
 
     });
   },
-
 
 }
