@@ -8,7 +8,7 @@ class MQTTTransceiver:
     FLOWRATE_TOPIC = 'Ventilator/volume'
     FIO2_CONFIG_TOPIC = 'Config/fio2'
 
-    def __init__():
+    def __init__(self):
         mqtt_subscriber()
 
     def mqtt_publish(topic, value):
