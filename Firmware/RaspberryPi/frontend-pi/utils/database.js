@@ -1,5 +1,5 @@
-var pressure = new Array.apply(null, Array(60)).map(Number.prototype.valueOf,0);;
-var flow_rate = new Array.apply(null, Array(60)).map(Number.prototype.valueOf,0);;
+var pressure = new Array(60).fill(0);
+var flow_rate = new Array(60).fill(0);
 
 module.exports = {
   add_pressure: function(data){
