@@ -282,6 +282,7 @@
       });
       setInterval(function() {
         $.get("/api/graphs/pressure", function(data, status) {
+          console.log(data);
           for (i=0; i <= data.length; i++){
             PressureData[i] = parseFloat(data[i]);
           }
