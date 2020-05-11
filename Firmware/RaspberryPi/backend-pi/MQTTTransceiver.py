@@ -13,7 +13,7 @@ class MQTTTransceiver:
 
     def mqtt_publish(topic, value):
         client = mqtt.Client()
-        client.connect("localhost", 1883, 60)
+        client.connect("127.0.0.1", 1883, 60)
         client.publish(topic, value)
         client.disconnect()
 
