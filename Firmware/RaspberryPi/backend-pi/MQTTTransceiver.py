@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import threading
 
 
-class MQTTTransciver:
+class MQTTTransceiver:
     PRESSURE_TOPIC = 'Ventilator/pressure'
     FLOWRATE_TOPIC = 'Ventilator/flow_rate'
     FLOWRATE_TOPIC = 'Ventilator/volume'
