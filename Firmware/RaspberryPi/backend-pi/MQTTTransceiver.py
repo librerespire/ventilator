@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class MQTTTransceiver:
     PRESSURE_TOPIC = 'Ventilator/pressure'
     FLOWRATE_TOPIC = 'Ventilator/flow_rate'
-    FLOWRATE_TOPIC = 'Ventilator/volume'
+    VOLUME_TOPIC = 'Ventilator/volume'
     FIO2_CONFIG_TOPIC = 'Config/fio2'
 
     def __init__(self):

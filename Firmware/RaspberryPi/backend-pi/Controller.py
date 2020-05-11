@@ -172,6 +172,7 @@ def insp_phase(demo_level):
         ti = (datetime.now() - start_time).total_seconds()
         logger.info("Flow rate: %.2f VI: %.2f TI: %.2f" % (q2, vi, ti))
         mqtt.sender(mqtt.FLOWRATE_TOPIC, q2)
+        mqtt.sender(mqtt.VOLUME_TOPIC, vi)
 
     logger.info("Leaving inspiratory phase.")
 
@@ -203,6 +204,9 @@ def exp_phase():
 
         ti = (datetime.now() - start_time).total_seconds()
         logger.info("Flow rate: %.2f VI: %.2f P3: %.2f TI: %.2f" % (q2, vi, p3, ti))
+        mqtt.sender(mqtt.FLOWRATE_TOPIC, q2)
+        mqtt.sender(mqtt.PRESSURE_TOPIC, p3)
+        mqtt.sender(mqtt.VOLUME_TOPIC, vi)
 
     logger.info("Leaving expiratory phase.")
     logger.info("Actual tidal volume delivered : %.3f L " % vi)
