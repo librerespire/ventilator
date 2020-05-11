@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Nipuna Perera",
+  "license": "GPLv3",
   "dependencies": {
     "express": "^4.17.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "mqtt": "^4.0.1",
+    "nvm": "0.0.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
