@@ -17,8 +17,10 @@ var self = module.exports = {
     client.on('message', (topic, message) => {
       switch (topic) {
         case 'Ventilator/pressure':
+          console.log(topic + " : " + message)
           return self.mqtt_pressure(message)
         case 'Ventilator/flow_rate':
+          console.log(topic + " : " + message)
           return self.mqtt_flowrate(message)
       }
       console.log('No handler for topic %s', topic)
