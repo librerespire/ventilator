@@ -280,7 +280,7 @@
           data: PressureData
         }],
       });
-      setInterval(function() {
+    //  setInterval(function() {
         $.get("/api/graphs/pressure", function(data, status) {
           console.log(data);
           for (i=0; i <= data.length; i++){
@@ -289,7 +289,7 @@
         });
         console.log(PressureData);
         pressureChart.series[0].setData(PressureData);
-      }, 1000);
+    //  }, 1000);
     });
     $(function() {
       // Flow chart
@@ -343,11 +343,11 @@
           data: flowData
         }],
       });
-      setInterval(function() {
+    //  setInterval(function() {
         var remove = flowData.pop();
         flowData.unshift(remove);
         flowChart.series[0].setData(flowData);
-      }, 1000);
+    //  }, 1000);
     });
 
     $(function() {
@@ -403,11 +403,11 @@
           data: volumeData
         }],
       });
-      setInterval(function() {
+    //  setInterval(function() {
         var remove = volumeData.pop();
         volumeData.unshift(remove);
         volumeChart.series[0].setData(volumeData);
-      }, 1000);
+    //  }, 1000);
     });
   </script>
   <script>
