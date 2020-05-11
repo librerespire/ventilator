@@ -33,7 +33,7 @@ var self = module.exports = {
   },
 
   mqtt_flowrate: function(message) {
-    console.log("Flowrate : ": +  message)
+    console.log("Flowrate : " +  message)
     database.add_flow_rate(message)
   }
 
