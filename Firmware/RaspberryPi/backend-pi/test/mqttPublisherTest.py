@@ -7,4 +7,5 @@ import paho.mqtt.client as mqtt
 client = mqtt.Client()
 client.connect("localhost", 1883, 60)
 client.publish("Ventilator/p1", 10);
+client.publish("Ventilator/p2", 20);
 client.disconnect();
