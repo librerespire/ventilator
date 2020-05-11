@@ -29,12 +29,12 @@ var self = module.exports = {
 
   mqtt_pressure: function(message) {
     console.log("Pressure : " + message)
-    database.add_pressure(message)
+    database.add_pressure(parseFloat(message))
   },
 
   mqtt_flowrate: function(message) {
     console.log("Flowrate : " +  message)
-    database.add_flow_rate(message)
+    database.add_flow_rate(parseFloat(message))
   }
 
 };
