@@ -19,13 +19,13 @@ var self = module.exports = {
       switch (topic) {
         case 'Ventilator/pressure':
           console.log(topic + " : " + message)
-          return self.mqtt_pressure(Number((message).toFixed(1)))
+          return self.mqtt_pressure(message)
         case 'Ventilator/flow_rate':
           console.log(topic + " : " + message)
-          return self.mqtt_flowrate(Number((message).toFixed(1)))
+          return self.mqtt_flowrate(message)
         case 'Ventilator/volume':
           console.log(topic + " : " + message)
-          return self.mqtt_volume(Number((message).toFixed(1)))
+          return self.mqtt_volume(message)
       }
       console.log('No handler for topic %s', topic)
     });
@@ -33,17 +33,17 @@ var self = module.exports = {
 
   mqtt_pressure: function(message) {
     console.log("Pressure : " + message)
-    database.set_pressure(parseFloat(message))
+    database.set_pressure(Number((parseFloat(message)).toFixed(1)))
   },
 
   mqtt_flowrate: function(message) {
     console.log("Flowrate : " + message)
-    database.set_flow_rate(parseFloat(message))
+    database.set_flow_rate(Number((parseFloat(message)).toFixed(1)))
   },
 
   mqtt_volume: function(message) {
     console.log("Volume : " + message)
-    database.set_volume(parseFloat(message))
+    database.set_volume(Number((parseFloat(message)).toFixed(1)))
   }
 
 };
