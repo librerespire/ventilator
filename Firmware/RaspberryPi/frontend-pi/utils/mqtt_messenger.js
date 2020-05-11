@@ -19,13 +19,13 @@ var self = module.exports = {
       switch (topic) {
         case 'Ventilator/pressure':
           console.log(topic + " : " + message)
-          return self.mqtt_pressure(message)
+          return self.mqtt_pressure(Number((message).toFixed(1)))
         case 'Ventilator/flow_rate':
           console.log(topic + " : " + message)
-          return self.mqtt_flowrate(message)
+          return self.mqtt_flowrate(Number((message).toFixed(1)))
         case 'Ventilator/volume':
           console.log(topic + " : " + message)
-          return self.mqtt_volume(message)
+          return self.mqtt_volume(Number((message).toFixed(1)))
       }
       console.log('No handler for topic %s', topic)
     });
