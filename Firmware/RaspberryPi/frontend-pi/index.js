@@ -1,10 +1,7 @@
 const express = require('express');
 var logger = require('morgan');
 var mqtt_messenger = require("./utils/mqtt_messenger.js")
-var database = require("./utils/database.js")
 
-p1 = database.add(10);
-console.log(p1);
 mqtt_messenger.mqtt_receiver();
 const app = express();
 const port = process.env.PORT || "8000";
