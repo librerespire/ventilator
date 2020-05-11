@@ -17,7 +17,7 @@ class MQTTTransceiver:
     def mqtt_publish(self, topic, value):
         client = mqtt.Client()
         client.connect("127.0.0.1", 1883, 60)
-        logger.debug("MQTT Send: [%s] - [%s]" % (topic, message))
+        logger.debug("MQTT Send: [%s] - [%s]" % (topic, value))
         client.publish(topic, value)
         client.disconnect()
 
