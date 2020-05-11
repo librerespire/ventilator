@@ -237,14 +237,7 @@
   <script type="text/javascript">
     $(function() {
       // Pressure chart
-      var PressureData = [
-        3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-      ]
+      var PressureData = new Array(60).fill(0)
       var pressureChart = Highcharts.chart({
         chart: {
           renderTo: 'pressureChart',
@@ -288,8 +281,10 @@
         }],
       });
       setInterval(function() {
-        var remove = PressureData.pop();
-        PressureData.unshift(remove);
+        $.get("/api/graphs/pressure", function(data, status) {
+          PressureData = data;
+        });
+        console.log(PressureData);
         pressureChart.series[0].setData(PressureData);
       }, 1000);
     });
@@ -438,7 +433,6 @@
     $("#peep_input").bind("change paste keyup", function() {
       $("#peep").html($(this).val())
     });
-
   </script>
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
