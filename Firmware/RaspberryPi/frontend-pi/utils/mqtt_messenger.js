@@ -17,12 +17,24 @@ module.exports = {
     client.on('message', (topic, message) => {
       switch (topic) {
         case 'Ventilator/pressure':
-          return database.add_pressure(message)
+          return module.exports.mqtt_pressure()
         case 'Ventilator/flow_rate':
           return database.flow_rate(message)
       }
       console.log('No handler for topic %s', topic)
     });
   },
+
+  mqtt_pressure: function(message){
+    console.log(message)
+    database.add_pressure(message)
+    console.log(database.get_pressure)
+  },
+
+  mqtt_flowrate: function(message){
+    console.log(message)
+    database.add_flow_rate(message)
+    console.log(database.get_flow_rate)
+  }
 
 };
