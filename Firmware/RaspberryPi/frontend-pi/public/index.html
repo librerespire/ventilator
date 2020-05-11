@@ -12,7 +12,7 @@
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <link rel="stylesheet" href="css/jquery.numpad.css">
   <script type="text/javascript" src="js/jquery.numpad.js"></script>
   <title>LibreRespire Ventilator</title>
@@ -141,7 +141,7 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Min. Volume</div>
+                      <div>Minute Volume</div>
                       <div id="min_volume" style="font-size:60px;font-style:initial;">5.6</div>
                     </div>
                   </div>
@@ -237,7 +237,7 @@
   <script type="text/javascript">
     $(function() {
       // Pressure chart
-      var PressureData = new Array(60).fill(0)
+      var PressureData = new Array(60).fill(0);
       var pressureChart = Highcharts.chart({
         chart: {
           renderTo: 'pressureChart',
@@ -282,23 +282,15 @@
       });
       setInterval(function() {
         $.get("/api/graphs/pressure", function(data, status) {
-          console.log(data['data']);
           PressureData = data['data'];
         });
-        console.log(PressureData);
         pressureChart.series[0].setData(PressureData);
-      }, 500);
+      }, 1000);
     });
     $(function() {
       // Flow chart
-      var flowData = [
-        0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-      ];
+      var flowData = new Array(60).fill(0);
+
       var flowChart = Highcharts.chart({
         chart: {
           renderTo: 'flowChart',
@@ -341,23 +333,17 @@
           data: flowData
         }],
       });
-    //  setInterval(function() {
-        var remove = flowData.pop();
-        flowData.unshift(remove);
+      setInterval(function() {
+        $.get("/api/graphs/flowrate", function(data, status) {
+          flowData = data['data'];
+        });
         flowChart.series[0].setData(flowData);
-    //  }, 1000);
+      }, 1000);
     });
 
     $(function() {
       // Flow chart
-      var volumeData = [
-        0, 0, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-      ];
+      var volumeData = new Array(60).fill(0);
       // Volume chart
       var volumeChart = Highcharts.chart({
         chart: {
@@ -401,11 +387,12 @@
           data: volumeData
         }],
       });
-    //  setInterval(function() {
-        var remove = volumeData.pop();
-        volumeData.unshift(remove);
+      setInterval(function() {
+        $.get("/api/graphs/volume", function(data, status) {
+          volumeData = data['data'];
+        });
         volumeChart.series[0].setData(volumeData);
-    //  }, 1000);
+      }, 1000);
     });
   </script>
   <script>
@@ -433,6 +420,9 @@
     });
     $("#peep_input").bind("change paste keyup", function() {
       $("#peep").html($(this).val())
+    });
+    $("#vt_input").bind("change paste keyup", function() {
+      $("#tidle_volume").html($(this).val())
     });
   </script>
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
