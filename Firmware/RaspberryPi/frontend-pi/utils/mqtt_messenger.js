@@ -26,12 +26,14 @@ module.exports = {
   },
 
   ven_p1: function(message){
-    console.log('%s',message);
-    p1 = database.add(10);
+    console.log('%d', message);
+    p1 = database.get_p1();
     console.log("P1: " + p1);
   },
 
   ven_p2: function(message){
-    console.log(message);
+    console.log('%d', message);
+    p2 = database.get_p2();
+    console.log("P2: " + p2);
   }
 };
