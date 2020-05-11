@@ -3,7 +3,7 @@ var logger = require('morgan');
 var mqtt_messenger = require("./utils/mqtt_messenger.js")
 var database = require("./utils/database.js")
 
-p1 = database.update_p1(10);
+p1 = database.add(10);
 console.log(p1);
 mqtt_messenger.mqtt_receiver();
 const app = express();

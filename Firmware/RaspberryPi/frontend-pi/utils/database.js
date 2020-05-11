@@ -1,7 +1,7 @@
-var p1 = [];
+var p1 = [0,0];
 
 module.exports = {
-  update_p1: function(p1_data){
+  add: function(p1_data){
     p1.unshift(p1_data)
     p1.pop()
     return p1
