@@ -24,7 +24,7 @@ class MQTTTransceiver:
     def mqtt_subscriber(self):
         client = mqtt.Client()
         client.subscribe(self.FIO2_CONFIG_TOPIC)
-        client.on_message = self.on_message()
+        client.on_message = self.on_message
         client.loop_forever()
 
     def on_message(client, obj, msg):
