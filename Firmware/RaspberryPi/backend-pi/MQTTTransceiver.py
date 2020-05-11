@@ -9,7 +9,7 @@ class MQTTTransceiver:
     FIO2_CONFIG_TOPIC = 'Config/fio2'
 
     def __init__(self):
-        thread = threading.Thread(target=self.mqtt_subscriber, args=(self,))
+        thread = threading.Thread(target=self.mqtt_subscriber, args=())
         thread.start()
 
     def mqtt_publish(topic, value):
@@ -18,7 +18,7 @@ class MQTTTransceiver:
         client.publish(topic, value)
         client.disconnect()
 
-    def sender(topic, value):
+    def sender(self, topic, value):
         thread = threading.Thread(target=mqtt_publish, args=(topic, value,))
         thread.start()
 
