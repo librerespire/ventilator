@@ -4,15 +4,15 @@ var flow_rate = new Array(60).fill(0);
 module.exports = {
   add_pressure: function(data){
     pressure.unshift(data)
-    pressure.pop()
     console.log(pressure);
+    pressure.pop()
     return pressure
   },
 
   add_flow_rate: function(data){
     flow_rate.unshift(data)
-    flow_rate.pop()
     console.log(flow_rate);
+    flow_rate.pop()
     return flow_rate
   },
 
