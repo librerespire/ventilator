@@ -33,17 +33,17 @@ var self = module.exports = {
 
   mqtt_pressure: function(message) {
     console.log("Pressure : " + message)
-    database.set_pressure(Number((parseFloat(message)).toFixed(1)))
+    database.set_pressure(Number((parseFloat(message)).toFixed(2)))
   },
 
   mqtt_flowrate: function(message) {
     console.log("Flowrate : " + message)
-    database.set_flow_rate(Number((parseFloat(message)).toFixed(1)))
+    database.set_flow_rate(Number((parseFloat(message)).toFixed(2)))
   },
 
   mqtt_volume: function(message) {
     console.log("Volume : " + message)
-    database.set_volume(Number((parseFloat(message)).toFixed(1)))
+    database.set_volume(Number((parseFloat(message)).toFixed(2)))
   }
 
 };
