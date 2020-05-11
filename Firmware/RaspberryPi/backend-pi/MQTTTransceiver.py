@@ -14,7 +14,7 @@ class MQTTTransceiver:
         thread = threading.Thread(target=self.mqtt_subscriber, args=())
         thread.start()
 
-    def mqtt_publish(topic, value):
+    def mqtt_publish(self, topic, value):
         client = mqtt.Client()
         client.connect("127.0.0.1", 1883, 60)
         logger.DEBUG("MQTT Send: [%s] - [%s]" % (topic, message))
