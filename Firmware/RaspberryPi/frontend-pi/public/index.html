@@ -283,7 +283,7 @@
     //  setInterval(function() {
         $.get("/api/graphs/pressure", function(data, status) {
           console.log(data['data']);
-          PressureData[i] = data['data'];
+          PressureData = data['data'];
         });
         console.log(PressureData);
         pressureChart.series[0].setData(PressureData);
