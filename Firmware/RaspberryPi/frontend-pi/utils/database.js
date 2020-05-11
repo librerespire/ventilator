@@ -3,7 +3,7 @@ var p2 = new Array(60);
 
 module.exports = {
   add_p1: function(data){
-    p1.unshift(p1_data)
+    p1.unshift(data)
     p1.pop()
     return p1
   },
