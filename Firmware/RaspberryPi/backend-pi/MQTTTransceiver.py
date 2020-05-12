@@ -48,7 +48,7 @@ class MQTTTransceiver:
         client.loop_forever()
 
     def on_message(self, client, obj, msg):
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload.decode()))
         if (msg.topic == self.FIO2_CONFIG_TOPIC):
             self.va.set_fio2(float(msg.payload.decode()))
             logger.debug("FIO2 receved: %.2f" % self.va.fio2)

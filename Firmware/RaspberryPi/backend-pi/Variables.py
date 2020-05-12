@@ -1,3 +1,7 @@
+import logging
+import logging.config
+
+logger = logging.getLogger(__name__)
 
 class Variables:
     fio2 = 0
@@ -7,6 +11,7 @@ class Variables:
     peep = 0
 
     def set_fio2(self, val):
+        logger.debug("Fio2 set %.2f" % val)
         self.fio2 = val
 
     def set_rr(self, val):
