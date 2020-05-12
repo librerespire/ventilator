@@ -20,19 +20,31 @@ GPIO.setwarnings(False)
 GPIO.setup(SOL_I, GPIO.OUT)
 GPIO.setup(SOL_E, GPIO.OUT)
 
-pwm_i = GPIO.PWM(SOL_I, PWM_FREQ)
-pwm_e = GPIO.PWM(SOL_E, PWM_FREQ)
+PWM_I = GPIO.PWM(SOL_I, PWM_FREQ)
+PWM_E = GPIO.PWM(SOL_E, PWM_FREQ)
 
-pwm_i.start(0)
-pwm_e.start(0)
-
-pwm_i.ChangeDutyCycle(0.2)
-pwm_e.ChangeDutyCycle(0.8)
+PWM_I.start(0)
+PWM_E.start(0)
 
 while True:
-    pass
 
-# while True:
-#     pwm_i.ChangeDutyCycle(0.8)
-#     pwm_e.ChangeDutyCycle(0.8)
-#     time.sleep(2)
+    # inspiratory phase
+    logger.debug("Enter inspiratory")
+    PWM_I.ChangeDutyCycle(100)
+    PWM_E.ChangeDutyCycle(0)
+    time.sleep(2)
+    logger.debug("Leave inspiratory\n")
+
+    # expiratory phase
+    logger.debug("Enter expiratory")
+    PWM_I.ChangeDutyCycle(0)
+    PWM_E.ChangeDutyCycle(100)
+    time.sleep(2)
+    logger.debug("Leave inspiratory\n")
+
+    # waiting phase
+    logger.debug("Enter waiting")
+    PWM_I.ChangeDutyCycle(0)
+    PWM_E.ChangeDutyCycle(0)
+    time.sleep(1)
+    logger.debug("Leave waiting\n")
