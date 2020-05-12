@@ -1,5 +1,5 @@
 var express = require('express');
-var mqtt_messenger = require("./utils/mqtt_messenger.js")
+var mqtt_messenger = require("../utils/mqtt_messenger.js")
 
 var router = express.Router();
 
