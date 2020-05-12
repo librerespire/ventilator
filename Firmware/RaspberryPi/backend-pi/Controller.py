@@ -247,7 +247,7 @@ def insp_phase(demo_level):
         mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(p3))
         mqtt.sender(mqtt.VOLUME_TOPIC, vi)
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
-            va.fio2, va.vt, va.ie, va.rr, va.peep))
+            va.get_fio2(), va.vt, va.ie, va.rr, va.peep))
 
     logger.info("Leaving inspiratory phase.")
 
