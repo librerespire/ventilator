@@ -45,7 +45,7 @@ PWM_I, PWM_E = None, None
 threads_map = {}
 
 mqtt = MQTTTransceiver()
-
+global Ki, Ke
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
@@ -81,7 +81,6 @@ def calculate_k(p1, p2, flow_rate):
 def calibrate_flow_meter(flow_rate):
     """ returns the calibrated k for both insp and exp flow meters, calculated based on multiple pressure readings """
 
-    global Ki, Ke
     # Turn ON both the solenoids fully for calibration
     PWM_I.start(DUTY_RATIO_100)
     PWM_E.start(DUTY_RATIO_100)
