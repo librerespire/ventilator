@@ -4,11 +4,11 @@ import logging.config
 logger = logging.getLogger(__name__)
 
 class Variables:
-    global fio2 = 0
-    global rr = 0
-    global ie = 0
-    global vt = 0
-    global peep = 0
+    fio2 = 0
+    rr = 0
+    ie = 0
+    vt = 0
+    peep = 0
 
     def set_fio2(self, val):
         logger.debug("Fio2 set %.2f" % val)
