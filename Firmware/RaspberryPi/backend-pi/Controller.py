@@ -6,11 +6,12 @@ import time
 from datetime import datetime
 import threading
 import RPi.GPIO as GPIO
+import logging
+import logging.config
 from SensorReader import SensorReader
 from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
-import logging
-import logging.config
+from Variables import Variables
 
 # Input Parameters
 RR = 12         # RR set via UI
@@ -45,6 +46,7 @@ PWM_I, PWM_E = None, None
 threads_map = {}
 
 mqtt = MQTTTransceiver()
+va = Variables()
 Ki, Ke = 0, 0
 
 # declare logger parameters
@@ -63,7 +65,8 @@ def read_data(cycle=""):
     threads = list()
     if (cycle == "insp_phase"):
         for index in [BUS_1, BUS_2, BUS_3]:
-            thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
+            thread = threading.Thread(
+                target=thread_slice, args=(pressure_data, index,))
             threads.append(thread)
             thread.start()
         for index, thread in enumerate(threads):
@@ -73,7 +76,8 @@ def read_data(cycle=""):
         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]
     elif (cycle == "exp_phase"):
         for index in [BUS_3, BUS_4]:
-            thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
+            thread = threading.Thread(
+                target=thread_slice, args=(pressure_data, index,))
             threads.append(thread)
             thread.start()
         for index, thread in enumerate(threads):
@@ -83,7 +87,8 @@ def read_data(cycle=""):
         return pressure_data[BUS_3], pressure_data[BUS_4]
     else:
         for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
-            thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
+            thread = threading.Thread(
+                target=thread_slice, args=(pressure_data, index,))
             threads.append(thread)
             thread.start()
         for index, thread in enumerate(threads):
@@ -91,6 +96,7 @@ def read_data(cycle=""):
         logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
                      (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
+
 
 def calculate_k(p1, p2, flow_rate):
     return flow_rate / math.sqrt(abs(p1 - p2))
@@ -122,7 +128,8 @@ def calibrate_flow_meter(flow_rate):
 
     ki /= nSamples
     ke /= nSamples
-    logger.debug("Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
+    logger.debug(
+        "Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
 
 
 def control_solenoid(pin, duty_ratio):
@@ -132,7 +139,8 @@ def control_solenoid(pin, duty_ratio):
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
-    logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
+    logger.debug("Changed duty cycle to " +
+                 str(duty_ratio) + " on pin " + str(pin))
 
 # def control_solenoid(pin, duty_ratio):
 #     # read four pressure sensors from the smbus and return actual values
@@ -238,7 +246,8 @@ def insp_phase(demo_level):
         mqtt.sender(mqtt.FLOWRATE_TOPIC, q2)
         mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(p3))
         mqtt.sender(mqtt.VOLUME_TOPIC, vi)
-
+        logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
+            va.fio2, va.vt, va.ie, va.rr, va.peep))
 
     logger.info("Leaving inspiratory phase.")
 
@@ -267,7 +276,7 @@ def exp_phase():
         ti = (datetime.now() - start_time).total_seconds()
 
         logger.info("<<PRESSURE CHART>>Pressure_insp: %.2f cmH20, <<FLOW CHART>>Flow rate: %.2f L/min, <<VOLUME "
-                    "CHART>>Volume: %.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), -1*q2, vi, ti))
+                    "CHART>>Volume: %.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), -1 * q2, vi, ti))
         mqtt.sender(mqtt.FLOWRATE_TOPIC, (-1 * q2))
         mqtt.sender(mqtt.PRESSURE_TOPIC, p3)
         mqtt.sender(mqtt.VOLUME_TOPIC, vi)
