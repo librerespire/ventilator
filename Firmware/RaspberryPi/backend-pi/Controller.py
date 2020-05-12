@@ -130,6 +130,7 @@ def calibrate_flow_meter(flow_rate):
     ke /= nSamples
     logger.debug(
         "Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
+    return ki, ke    
 
 
 def control_solenoid(pin, duty_ratio):
@@ -326,7 +327,7 @@ def init_parameters():
 init_parameters()
 
 # 12 here is the intended flow_rate for calibration in L/min
-calibrate_flow_meter(12)
+Ki, Ke = calibrate_flow_meter(12)
 
 while True:
     # slow flow rate
