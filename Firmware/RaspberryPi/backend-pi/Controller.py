@@ -9,13 +9,19 @@ import RPi.GPIO as GPIO
 from SensorReader import SensorReader
 import logging.config
 
-# Parameters
-Ti = 5          # inspiratory time
-Te = 5          # expiratory time
-Tw = 1          # waiting time
-Vt = 5          # tidal volume
+# Input Parameters
+RR = 12         # RR set via UI
+IE_NI = 1       # first digit of IE ratio set via UI. e.g. 1:2 (IE_NI:IE_NE)
+IE_NE = 2       # second digit of IE ratio set via UI
+V_TIDAL = 5     # tidal volume
+
+# Internal parameters
+T_IN = 2        # inspiratory time
+T_EX = 3        # expiratory time
+T_WT = 1        # waiting time
+
 Pi = 2000       # peak inspiratory pressure in cmH2O
-Peep = 900      # PEEP
+PEEP = 900      # PEEP
 PWM_FREQ = 4    # frequency for PWM
 
 # Constants
@@ -32,16 +38,8 @@ BUS_3 = 4
 BUS_4 = 5
 
 pressure_data = [0] * 6
+PWM_I, PWM_E = None, None
 
-# Initialize digital output pins
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
-GPIO.setup(SI_PIN, GPIO.OUT)
-GPIO.setup(SE_PIN, GPIO.OUT)
-
-pwm_i = GPIO.PWM(SI_PIN, PWM_FREQ)
-pwm_e = GPIO.PWM(SE_PIN, PWM_FREQ)
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
@@ -77,9 +75,10 @@ def calculate_k(p1, p2, flow_rate):
 def calibrate_flow_meter(flow_rate):
     """ returns the calibrated k for both insp and exp flow meters, calculated based on multiple pressure readings """
 
+    global Ki, Ke
     # Turn ON both the solenoids fully for calibration
-    pwm_i.start(DUTY_RATIO_100)
-    pwm_e.start(DUTY_RATIO_100)
+    PWM_I.start(DUTY_RATIO_100)
+    PWM_E.start(DUTY_RATIO_100)
 
     # Introduce a delay to achieve a stable flow across the flow meters
     time.sleep(2)
@@ -100,15 +99,14 @@ def calibrate_flow_meter(flow_rate):
     ki /= nSamples
     ke /= nSamples
     logger.debug("Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
-    return ki, ke
 
 
 def control_solenoid(pin, duty_ratio):
     if pin == SI_PIN:
-        pwm_i.ChangeDutyCycle(duty_ratio)
+        PWM_I.ChangeDutyCycle(duty_ratio)
     elif pin == SE_PIN:
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
-        pwm_e.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
+        PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
     logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
 
@@ -182,9 +180,9 @@ def insp_phase(demo_level):
     control_solenoid(SI_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
 
-    while ti < Ti:
+    while ti < T_IN:
 
-        if vi > Vt:
+        if vi > V_TIDAL:
             if not solenoids_closed:
                 # Tidal volume has reached, CLOSE all solonoids
                 control_solenoid(SI_PIN, DUTY_RATIO_0)
@@ -224,12 +222,12 @@ def exp_phase():
     ti = 0
     q1, q2 = 0, 0
     vi = 0
-    p3 = Peep
+    p3 = PEEP
 
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
-    while ti < Te:
+    while ti < T_EX:
         t1 = t2
         q1 = q2
         q2, p3 = get_average_flow_rate_and_pressure(EXP_FLOW)
@@ -250,7 +248,7 @@ def wait_phase():
     logger.info("Entering wait phase...")
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
-    time.sleep(Tw)
+    time.sleep(T_WT)
     logger.info("Leaving wait phase.")
 
 
@@ -259,9 +257,34 @@ def convert_pressure(p_hpa):
     return p_hpa * 1.0197442
 
 
+# Initialize the parameters
+def init_parameters():
+
+    global T_IN, T_EX
+    global PWM_I, PWM_E
+
+    # Initialize digital output pins
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+
+    GPIO.setup(SI_PIN, GPIO.OUT)
+    GPIO.setup(SE_PIN, GPIO.OUT)
+
+    PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
+    PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
+
+    one_breath_time = 60 / RR
+    T_IN = one_breath_time * IE_NI / (IE_NI + IE_NE)
+    T_EX = one_breath_time * IE_NE / (IE_NI + IE_NE)
+    pass
+
+
 #######################################################################################################
+
+init_parameters()
+
 # 12 here is the intended flow_rate for calibration in L/min
-Ki, Ke = calibrate_flow_meter(12)
+calibrate_flow_meter(12)
 
 while True:
     # slow flow rate
