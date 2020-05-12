@@ -414,26 +414,23 @@
 
     $("#fio2_input").bind("change paste keyup", function() {
       $("#fio2").html($(this).val())
-      $.put("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
+      $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
     });
     $("#rr_input").bind("change paste keyup", function() {
       $("#rr").html("1:" + $(this).val())
-      $.put("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
+      $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
     });
     $("#ie_ratio_input").bind("change paste keyup", function() {
       $("#ie_ratio").html("1:" + $(this).val())
-      $.put("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
+      $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
     });
     $("#peep_input").bind("change paste keyup", function() {
       $("#peep").html($(this).val())
-      $.put("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
+      $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
     });
     $("#vt_input").bind("change paste keyup", function() {
       $("#tidle_volume").html($(this).val())
-      $.put("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
-    });
-    $("#vt_input").bind("change paste keyup", function() {
-      $("#tidle_volume").html($(this).val())
+      $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
     });
   </script>
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
