@@ -12,7 +12,7 @@
   <script src="https://code.highcharts.com/modules/exporting.js"></script>
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <link rel="stylesheet" href="css/jquery.numpad.css">
   <script type="text/javascript" src="js/jquery.numpad.js"></script>
   <title>LibreRespire Ventilator</title>
@@ -141,7 +141,7 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Min. Volume</div>
+                      <div>Minute Volume</div>
                       <div id="min_volume" style="font-size:60px;font-style:initial;">5.6</div>
                     </div>
                   </div>
@@ -237,14 +237,7 @@
   <script type="text/javascript">
     $(function() {
       // Pressure chart
-      var PressureData = [
-        3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-        3, 3, 3, 3, 3, 3, 8, 10, 12, 15, 15, 15, 15, 6,
-      ]
+      var PressureData = new Array(60).fill(0);
       var pressureChart = Highcharts.chart({
         chart: {
           renderTo: 'pressureChart',
@@ -288,21 +281,16 @@
         }],
       });
       setInterval(function() {
-        var remove = PressureData.pop();
-        PressureData.unshift(remove);
+        $.get("/api/graphs/pressure", function(data, status) {
+          PressureData = data['data'];
+        });
         pressureChart.series[0].setData(PressureData);
       }, 1000);
     });
     $(function() {
       // Flow chart
-      var flowData = [
-        0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-        0, 0, 0, 0, 0, 0, 8, 10, 12, 15, -15, -12, -10, -6,
-      ];
+      var flowData = new Array(60).fill(0);
+
       var flowChart = Highcharts.chart({
         chart: {
           renderTo: 'flowChart',
@@ -346,22 +334,16 @@
         }],
       });
       setInterval(function() {
-        var remove = flowData.pop();
-        flowData.unshift(remove);
+        $.get("/api/graphs/flowrate", function(data, status) {
+          flowData = data['data'];
+        });
         flowChart.series[0].setData(flowData);
       }, 1000);
     });
 
     $(function() {
       // Flow chart
-      var volumeData = [
-        0, 0, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-        0, 0, 0, 0, 0, 0, 8, 14, 15, 15, 15, 15, 12, 0, 0,
-      ];
+      var volumeData = new Array(60).fill(0);
       // Volume chart
       var volumeChart = Highcharts.chart({
         chart: {
@@ -406,8 +388,9 @@
         }],
       });
       setInterval(function() {
-        var remove = volumeData.pop();
-        volumeData.unshift(remove);
+        $.get("/api/graphs/volume", function(data, status) {
+          volumeData = data['data'];
+        });
         volumeChart.series[0].setData(volumeData);
       }, 1000);
     });
@@ -438,7 +421,9 @@
     $("#peep_input").bind("change paste keyup", function() {
       $("#peep").html($(this).val())
     });
-
+    $("#vt_input").bind("change paste keyup", function() {
+      $("#tidle_volume").html($(this).val())
+    });
   </script>
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
