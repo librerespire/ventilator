@@ -11,27 +11,27 @@ const IE_CONFIG_TOPIC = 'Config/ie';
 
 router.put('/fio2', function (req, res) {
   mqtt_messenger.mqtt_sender(FIO2_CONFIG_TOPIC, req.query.fio2);
-  res.send(200);
+  res.sendStatus(200);
 })
 
 router.put('/rr', function (req, res) {
   mqtt_messenger.mqtt_sender(RR_CONFIG_TOPIC, req.query.rr);
-  res.send(200);
+  res.sendStatus(200);
 })
 
 router.put('/vt', function (req, res) {
   mqtt_messenger.mqtt_sender(VT_CONFIG_TOPIC, req.query.vt);
-  res.send(200);
+  res.sendStatus(200);
 })
 
 router.put('/peep', function (req, res) {
   mqtt_messenger.mqtt_sender(PEEP_CONFIG_TOPIC, req.query.peep);
-  res.send(200);
+  res.sendStatus(200);
 })
 
 router.put('/ie', function (req, res) {
   mqtt_messenger.mqtt_sender(IE_CONFIG_TOPIC, req.query.ie);
-  res.send(200);
+  res.sendStatus(200);
 })
 
 module.exports = router;
