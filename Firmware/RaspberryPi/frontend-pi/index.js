@@ -4,7 +4,6 @@ var mqtt_messenger = require("./utils/mqtt_messenger.js")
 var graphs = require('./routes/graphs.js');
 var configs = require('./routes/configs.js');
 
-
 mqtt_messenger.mqtt_receiver();
 const app = express();
 const port = process.env.PORT || "8000";
