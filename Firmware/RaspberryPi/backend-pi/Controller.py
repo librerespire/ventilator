@@ -8,10 +8,11 @@ import threading
 import RPi.GPIO as GPIO
 import logging
 import logging.config
+import Variables
 from SensorReader import SensorReader
 from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
-from Variables import Variables
+
 
 # Input Parameters
 RR = 12         # RR set via UI
