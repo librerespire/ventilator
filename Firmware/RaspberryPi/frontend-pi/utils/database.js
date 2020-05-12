@@ -29,7 +29,7 @@ module.exports = {
     return pressure
   },
 
-  get_flow_rate: function(){    
+  get_flow_rate: function(){
     return flow_rate
   }
 }

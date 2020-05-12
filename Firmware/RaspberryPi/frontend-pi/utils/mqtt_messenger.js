@@ -2,28 +2,33 @@ const mqtt = require('mqtt')
 var database = require("./database.js")
 const client = mqtt.connect('mqtt://localhost')
 
+const PRESSURE_TOPIC = 'Ventilator/pressure'
+const FLOWRATE_TOPIC = 'Ventilator/flow_rate'
+const VOLUME_TOPIC = 'Ventilator/volume'
+
 var self = module.exports = {
-  mqtt_sender: function() {
+  mqtt_sender: function(topic, message) {
+    client.publish(topic, message)
     console.log("Sender called");
   },
 
   mqtt_receiver: function() {
     console.log("Receiver called");
     client.on('connect', () => {
-      client.subscribe('Ventilator/pressure')
-      client.subscribe('Ventilator/flow_rate')
-      client.subscribe('Ventilator/volume')
+      client.subscribe(PRESSURE_TOPIC)
+      client.subscribe(FLOWRATE_TOPIC)
+      client.subscribe(VOLUME_TOPIC)
     });
 
     client.on('message', (topic, message) => {
       switch (topic) {
-        case 'Ventilator/pressure':
+        case PRESSURE_TOPIC:
           console.log(topic + " : " + message)
           return self.mqtt_pressure(message)
-        case 'Ventilator/flow_rate':
+        case FLOWRATE_TOPIC:
           console.log(topic + " : " + message)
           return self.mqtt_flowrate(message)
-        case 'Ventilator/volume':
+        case VOLUME_TOPIC:
           console.log(topic + " : " + message)
           return self.mqtt_volume(message)
       }
