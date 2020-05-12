@@ -7,6 +7,9 @@ from datetime import datetime
 import threading
 import RPi.GPIO as GPIO
 from SensorReader import SensorReader
+from PWMController import PWMController
+from MQTTTransceiver import MQTTTransceiver
+import logging
 import logging.config
 
 # Input Parameters
@@ -39,6 +42,9 @@ BUS_4 = 5
 
 pressure_data = [0] * 6
 PWM_I, PWM_E = None, None
+threads_map = {}
+
+mqtt = MQTTTransceiver()
 
 
 # declare logger parameters
@@ -208,8 +214,13 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (datetime.now() - start_time).total_seconds()
+
         logger.info("<<PRESSURE CHART>>Pressure: %.2f L, <<FLOW CHART>>Flow rate: %.2f L/min, <<VOLUME CHART>>Volume: "
                     "%.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), q2, vi, ti))
+        mqtt.sender(mqtt.FLOWRATE_TOPIC, q2)
+        mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(p3))
+        mqtt.sender(mqtt.VOLUME_TOPIC, vi)
+
 
     logger.info("Leaving inspiratory phase.")
 
@@ -236,8 +247,12 @@ def exp_phase():
         vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
         ti = (datetime.now() - start_time).total_seconds()
+
         logger.info("<<PRESSURE CHART>>Pressure_insp: %.2f cmH20, <<FLOW CHART>>Flow rate: %.2f L/min, <<VOLUME "
                     "CHART>>Volume: %.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), -1*q2, vi, ti))
+        mqtt.sender(mqtt.FLOWRATE_TOPIC, (-1 * q2))
+        mqtt.sender(mqtt.PRESSURE_TOPIC, p3)
+        mqtt.sender(mqtt.VOLUME_TOPIC, vi)
 
     logger.info("Leaving expiratory phase.")
     logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)
