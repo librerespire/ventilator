@@ -250,7 +250,7 @@ def exp_phase():
 
         logger.info("<<PRESSURE CHART>>Pressure_insp: %.2f cmH20, <<FLOW CHART>>Flow rate: %.2f L/min, <<VOLUME "
                     "CHART>>Volume: %.2f L, <<X AXIS>>Time: %.1f sec " % (convert_pressure(p3), -1*q2, vi, ti))
-        mqtt.sender(mqtt.FLOWRATE_TOPIC, ()-1 * q2))
+        mqtt.sender(mqtt.FLOWRATE_TOPIC, (-1 * q2))
         mqtt.sender(mqtt.PRESSURE_TOPIC, p3)
         mqtt.sender(mqtt.VOLUME_TOPIC, vi)
 
