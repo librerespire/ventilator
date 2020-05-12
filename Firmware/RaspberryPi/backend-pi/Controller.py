@@ -8,7 +8,7 @@ import threading
 import RPi.GPIO as GPIO
 import logging
 import logging.config
-import Variables
+import Variables as val
 from SensorReader import SensorReader
 from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
@@ -47,7 +47,6 @@ PWM_I, PWM_E = None, None
 threads_map = {}
 
 mqtt = MQTTTransceiver()
-val = Variables()
 Ki, Ke = 0, 0
 
 # declare logger parameters
