@@ -1,6 +1,6 @@
 const express = require('express');
 var logger = require('morgan');
-var mqtt_messenger = require('./utils/mqtt_messenger.js')
+var mqtt_messenger = require('./utils/mqtt_messenger.js');
 var graphs = require('./routes/graphs.js');
 var configs = require('./routes/configs.js');
 
