@@ -2,17 +2,23 @@ import paho.mqtt.client as mqtt
 import threading
 import logging
 import logging.config
+from Variables import Variables
 
 logger = logging.getLogger(__name__)
+
+
 class MQTTTransceiver:
     PRESSURE_TOPIC = 'Ventilator/pressure'
     FLOWRATE_TOPIC = 'Ventilator/flow_rate'
     VOLUME_TOPIC = 'Ventilator/volume'
+    MIN_VOL_TOPIC = 'Ventilator/min_volume'
+    PEAK_PRESSURE_TOPIC = 'Ventilator/peak_pressure'
     FIO2_CONFIG_TOPIC = 'Config/fio2'
     RR_CONFIG_TOPIC = 'Config/rr'
     PEEP_CONFIG_TOPIC = 'Config/peep'
     VT_CONFIG_TOPIC = 'Config/vt'
     IE_CONFIG_TOPIC = 'Config/ie'
+    va = Variables()
 
     def __init__(self):
         thread = threading.Thread(target=self.mqtt_subscriber, args=())
@@ -26,7 +32,8 @@ class MQTTTransceiver:
         client.disconnect()
 
     def sender(self, topic, value):
-        thread = threading.Thread(target=self.mqtt_publish, args=(topic, value,))
+        thread = threading.Thread(
+            target=self.mqtt_publish, args=(topic, value,))
         thread.start()
 
     def mqtt_subscriber(self):
@@ -40,5 +47,17 @@ class MQTTTransceiver:
         client.on_message = self.on_message
         client.loop_forever()
 
-    def on_message(client, obj, msg):
+    def on_message(self, client, obj, msg):
         print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        if (msg.topic == self.FIO2_CONFIG_TOPIC):
+            self.va.fio2 = float(msg.payload.decode())
+        elif (msg.topic == self.RR_CONFIG_TOPIC):
+            self.va.rr = float(msg.payload.decode())
+        elif (msg.topic == self.PEEP_CONFIG_TOPIC):
+            self.va.peep = float(msg.payload.decode())
+        elif (msg.topic == self.VT_CONFIG_TOPIC):
+            self.va.vt = float(msg.payload.decode())
+        elif (msg.topic == self.IE_CONFIG_TOPIC):
+            self.va.ie = float(msg.payload.decode())
+        else:
+            logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))

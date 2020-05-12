@@ -58,20 +58,39 @@ def thread_slice(pressure_data, index):
     pressure_data[index] = pressure
 
 
-def read_data():
+def read_data(cycle=""):
     # read four pressure sensors from the smbus and return actual values
     threads = list()
-    for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
-        thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
-        threads.append(thread)
-        thread.start()
-
-    for index, thread in enumerate(threads):
-        thread.join()
-    logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
-                 (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
-    return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
-
+    if (cycle == "insp_phase"):
+        for index in [BUS_1, BUS_2, BUS_3]:
+            thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
+            threads.append(thread)
+            thread.start()
+        for index, thread in enumerate(threads):
+            thread.join()
+        logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f]" %
+                     (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]))
+        return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]
+    elif (cycle == "exp_phase"):
+        for index in [BUS_3, BUS_4]:
+            thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
+            threads.append(thread)
+            thread.start()
+        for index, thread in enumerate(threads):
+            thread.join()
+        logger.debug("Pressure: P3[%.2f], P4[%.2f]" %
+                     (pressure_data[BUS_3], pressure_data[BUS_4]))
+        return pressure_data[BUS_3], pressure_data[BUS_4]
+    else:
+        for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
+            thread = threading.Thread(target=thread_slice, args=(pressure_data, index,))
+            threads.append(thread)
+            thread.start()
+        for index, thread in enumerate(threads):
+            thread.join()
+        logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
+                     (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
+        return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
 
 def calculate_k(p1, p2, flow_rate):
     return flow_rate / math.sqrt(abs(p1 - p2))
