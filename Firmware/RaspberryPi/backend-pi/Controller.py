@@ -11,7 +11,7 @@ import logging.config
 from SensorReader import SensorReader
 from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
-from Variables import Variables
+from Variables import Variables as va
 
 # Input Parameters
 RR = 12         # RR set via UI
@@ -46,7 +46,6 @@ PWM_I, PWM_E = None, None
 threads_map = {}
 
 mqtt = MQTTTransceiver()
-va = Variables()
 Ki, Ke = 0, 0
 
 # declare logger parameters
@@ -130,7 +129,7 @@ def calibrate_flow_meter(flow_rate):
     ke /= nSamples
     logger.debug(
         "Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
-    return ki, ke    
+    return ki, ke
 
 
 def control_solenoid(pin, duty_ratio):
