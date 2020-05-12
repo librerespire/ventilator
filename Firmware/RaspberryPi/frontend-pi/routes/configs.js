@@ -3,35 +3,35 @@ var mqtt_messenger = require("../utils/mqtt_messenger.js")
 
 var router = express.Router();
 
-const FIO2_CONFIG_TOPIC = 'Config/fio2'
-const RR_CONFIG_TOPIC = 'Config/rr'
-const PEEP_CONFIG_TOPIC = 'Config/peep'
-const VT_CONFIG_TOPIC = 'Config/vt'
-const IE_CONFIG_TOPIC = 'Config/ie'
+const FIO2_CONFIG_TOPIC = 'Config/fio2';
+const RR_CONFIG_TOPIC = 'Config/rr';
+const PEEP_CONFIG_TOPIC = 'Config/peep';
+const VT_CONFIG_TOPIC = 'Config/vt';
+const IE_CONFIG_TOPIC = 'Config/ie';
 
 router.put('/fio2', function (req, res) {
-  console.log(FIO2_CONFIG_TOPIC, req.query.fio2);
-  console.log("set fio2");
+  mqtt_messenger.mqtt_sender(FIO2_CONFIG_TOPIC, req.query.fio2);
+  res.send(200);
 })
 
 router.put('/rr', function (req, res) {
-  console.log(RR_CONFIG_TOPIC, req.query.rr);
-  console.log("set rr");
+  mqtt_messenger.mqtt_sender(RR_CONFIG_TOPIC, req.query.rr);
+  res.send(200);
 })
 
 router.put('/vt', function (req, res) {
-  console.log(VT_CONFIG_TOPIC, req.query.vt);
-  console.log("set vt");
+  mqtt_messenger.mqtt_sender(VT_CONFIG_TOPIC, req.query.vt);
+  res.send(200);
 })
 
 router.put('/peep', function (req, res) {
-  console.log(PEEP_CONFIG_TOPIC, req.query.peep);
-  console.log("set peep");
+  mqtt_messenger.mqtt_sender(PEEP_CONFIG_TOPIC, req.query.peep);
+  res.send(200);
 })
 
 router.put('/ie', function (req, res) {
-  console.log(IE_CONFIG_TOPIC, req.query.ie);
-  console.log("set ie_ratio");
+  mqtt_messenger.mqtt_sender(IE_CONFIG_TOPIC, req.query.ie);
+  res.send(200);
 })
 
 module.exports = router;

@@ -9,6 +9,10 @@ class MQTTTransceiver:
     FLOWRATE_TOPIC = 'Ventilator/flow_rate'
     VOLUME_TOPIC = 'Ventilator/volume'
     FIO2_CONFIG_TOPIC = 'Config/fio2'
+    RR_CONFIG_TOPIC = 'Config/rr'
+    PEEP_CONFIG_TOPIC = 'Config/peep'
+    VT_CONFIG_TOPIC = 'Config/vt'
+    IE_CONFIG_TOPIC = 'Config/ie'
 
     def __init__(self):
         thread = threading.Thread(target=self.mqtt_subscriber, args=())
@@ -29,6 +33,10 @@ class MQTTTransceiver:
         client = mqtt.Client()
         client.connect("127.0.0.1", 1883, 60)
         client.subscribe(self.FIO2_CONFIG_TOPIC)
+        client.subscribe(self.RR_CONFIG_TOPIC)
+        client.subscribe(self.PEEP_CONFIG_TOPIC)
+        client.subscribe(self.VT_CONFIG_TOPIC)
+        client.subscribe(self.IE_CONFIG_TOPIC)
         client.on_message = self.on_message
         client.loop_forever()
 
