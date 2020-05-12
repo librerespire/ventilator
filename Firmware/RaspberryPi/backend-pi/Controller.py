@@ -47,7 +47,6 @@ PWM_I, PWM_E = None, None
 threads_map = {}
 
 mqtt = MQTTTransceiver()
-val = Variables()
 Ki, Ke = 0, 0
 
 # declare logger parameters
@@ -249,7 +248,7 @@ def insp_phase(demo_level):
         mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(p3))
         mqtt.sender(mqtt.VOLUME_TOPIC, vi)
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
-            val.fio2, val.vt, val.ie, val.rr, val.peep))
+            Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
 
     logger.info("Leaving inspiratory phase.")
 

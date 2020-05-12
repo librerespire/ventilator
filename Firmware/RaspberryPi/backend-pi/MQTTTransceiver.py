@@ -18,7 +18,6 @@ class MQTTTransceiver:
     PEEP_CONFIG_TOPIC = 'Config/peep'
     VT_CONFIG_TOPIC = 'Config/vt'
     IE_CONFIG_TOPIC = 'Config/ie'
-    va = Variables()
 
     def __init__(self):
         thread = threading.Thread(target=self.mqtt_subscriber, args=())
@@ -50,19 +49,19 @@ class MQTTTransceiver:
     def on_message(self, client, obj, msg):
         print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload.decode()))
         if (msg.topic == self.FIO2_CONFIG_TOPIC):
-            self.va.set_fio2(float(msg.payload.decode()))
-            logger.debug("FIO2 receved: %.2f" % self.va.fio2)
+            Variables.fio2 = float(msg.payload.decode())
+            logger.debug("FIO2 receved: %.2f" % Variables.fio2)
         elif (msg.topic == self.RR_CONFIG_TOPIC):
-            self.va.set_rr(float(msg.payload.decode()))
-            logger.debug("RR receved: %.2f" % self.va.rr)
+            Variables.rr = float(msg.payload.decode())
+            logger.debug("RR receved: %.2f" % Variables.rr)
         elif (msg.topic == self.PEEP_CONFIG_TOPIC):
-            self.va.set_peep(float(msg.payload.decode()))
-            logger.debug("PEEP receved: %.2f" % self.va.peep)
+            Variables.peep = float(msg.payload.decode())
+            logger.debug("PEEP receved: %.2f" % Variables.peep)
         elif (msg.topic == self.VT_CONFIG_TOPIC):
-            self.va.set_vt(float(msg.payload.decode()))
-            logger.debug("VT receved: %.2f" % self.va.vt)
+            Variables.vt = float(msg.payload.decode())
+            logger.debug("VT receved: %.2f" % Variables.vt)
         elif (msg.topic == self.IE_CONFIG_TOPIC):
-            self.va.set_ie(float(msg.payload.decode()))
-            logger.debug("IE receved: %.2f" % self.va.ie)
+            Variables.ie = float(msg.payload.decode())
+            logger.debug("IE receved: %.2f" % Variables.ie)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
