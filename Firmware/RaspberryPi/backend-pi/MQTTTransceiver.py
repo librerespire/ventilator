@@ -51,13 +51,18 @@ class MQTTTransceiver:
         print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
         if (msg.topic == self.FIO2_CONFIG_TOPIC):
             self.va.fio2 = float(msg.payload.decode())
+            logger.debug("FIO2 receved: %.2f" % self.va.fio2)
         elif (msg.topic == self.RR_CONFIG_TOPIC):
             self.va.rr = float(msg.payload.decode())
+            logger.debug("RR receved: %.2f" % self.va.rr)
         elif (msg.topic == self.PEEP_CONFIG_TOPIC):
             self.va.peep = float(msg.payload.decode())
+            logger.debug("PEEP receved: %.2f" % self.va.peep)
         elif (msg.topic == self.VT_CONFIG_TOPIC):
             self.va.vt = float(msg.payload.decode())
+            logger.debug("VT receved: %.2f" % self.va.vt)
         elif (msg.topic == self.IE_CONFIG_TOPIC):
             self.va.ie = float(msg.payload.decode())
+            logger.debug("IE receved: %.2f" % self.va.ie)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
