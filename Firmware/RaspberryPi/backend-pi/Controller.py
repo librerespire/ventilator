@@ -290,6 +290,7 @@ def exp_phase():
         ti = (t2 - start_time).total_seconds()
         delta_t = (t2 - t1).total_seconds()
         send_to_display(delta_t, p3, (-1 * q2), vi)
+        logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
 
     logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)
     # mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, vi)
