@@ -13,13 +13,6 @@ from SensorReader import SensorReader
 from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
 
-
-# Input Parameters
-RR = 12         # RR set via UI
-IE_NI = 1       # first digit of IE ratio set via UI. e.g. 1:2 (IE_NI:IE_NE)
-IE_NE = 2       # second digit of IE ratio set via UI
-V_TIDAL = 5     # tidal volume
-
 # Internal parameters
 T_IN = 2        # inspiratory time
 T_EX = 3        # expiratory time
@@ -41,6 +34,8 @@ BUS_1 = 1
 BUS_2 = 3
 BUS_3 = 4
 BUS_4 = 5
+INSP_CYCLE = "inspiratory"
+EXP_CYCLE = "expiratory"
 
 pressure_data = [0] * 6
 PWM_I, PWM_E = None, None
@@ -215,7 +210,7 @@ def insp_phase(demo_level):
 
     while ti < T_IN:
 
-        if vi > V_TIDAL:
+        if vi > Variables.vt:
             if not solenoids_closed:
                 # Tidal volume has reached, CLOSE all solonoids
                 control_solenoid(SI_PIN, DUTY_RATIO_0)
@@ -300,10 +295,16 @@ def convert_pressure(p_hpa):
     return p_hpa * 1.0197442
 
 
+def calc_respiratory_params():
+    """ calculate inspiratory time and expiratory time using parameters set via UI """
+    global T_IN, T_EX
+    one_breath_time = 60 / Variables.rr
+    T_IN = one_breath_time * Variables.ie_i / (Variables.ie_i + Variables.ie_e)
+    T_EX = one_breath_time * Variables.ie_e / (Variables.ie_i + Variables.ie_e)
+
+
 # Initialize the parameters
 def init_parameters():
-
-    global T_IN, T_EX
     global PWM_I, PWM_E
 
     # Initialize digital output pins
@@ -316,10 +317,7 @@ def init_parameters():
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
     PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
 
-    one_breath_time = 60 / RR
-    T_IN = one_breath_time * IE_NI / (IE_NI + IE_NE)
-    T_EX = one_breath_time * IE_NE / (IE_NI + IE_NE)
-    pass
+    calc_respiratory_params()
 
 
 #######################################################################################################
@@ -343,3 +341,6 @@ while True:
     exp_phase()
     # wait_phase()
     logger.info("***** Faster cycle end *****")
+
+    # use the latest input parameters set via UI
+    calc_respiratory_params()
