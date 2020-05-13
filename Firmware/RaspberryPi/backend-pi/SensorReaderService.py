@@ -41,12 +41,12 @@ class SensorReaderService:
             for index, thread in enumerate(threads):
                 thread.join()
             logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
-                         (pressure_data[Variables.BUS_1], pressure_data[Variables.BUS_2],
-                         pressure_data[Variables.BUS_3], pressure_data[Variables.BUS_4]))
-            Variables.p1 = pressure_data[Variables.BUS_1]
-            Variables.p2 = pressure_data[Variables.BUS_2]
-            Variables.p3 = pressure_data[Variables.BUS_3]
-            Variables.p4 = pressure_data[Variables.BUS_4]
+                         (self.pressure_data[Variables.BUS_1], self.pressure_data[Variables.BUS_2],
+                         self.pressure_data[Variables.BUS_3], self.pressure_data[Variables.BUS_4]))
+            Variables.p1 = self.pressure_data[Variables.BUS_1]
+            Variables.p2 = self.pressure_data[Variables.BUS_2]
+            Variables.p3 = self.pressure_data[Variables.BUS_3]
+            Variables.p4 = self.pressure_data[Variables.BUS_4]
             time.sleep(slef.delay)
 
 if __name__ == "__main__":
