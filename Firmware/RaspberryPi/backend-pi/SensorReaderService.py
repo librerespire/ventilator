@@ -26,7 +26,7 @@ class SensorReaderService:
         pressure_data[index] = pressure
 
     def sensor_reader(self):
-        while loop_flag:
+        while self.loop_flag:
             threads = list()
             for index in [Variables.BUS_1, Variables.BUS_2, Variables.BUS_3, Variables.BUS_4]:
                 thread = threading.Thread(
