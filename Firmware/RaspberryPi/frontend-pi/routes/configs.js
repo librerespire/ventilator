@@ -30,7 +30,7 @@ router.get('/peep', function (req, res) {
 })
 
 router.get('/ie', function (req, res) {
-  mqtt_messenger.mqtt_sender(IEI_CONFIG_TOPIC, req.query.ie);
+  mqtt_messenger.mqtt_sender(IE_CONFIG_TOPIC, req.query.ie);
   res.sendStatus(200);
 })
 
