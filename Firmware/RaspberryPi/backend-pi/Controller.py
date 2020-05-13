@@ -356,7 +356,7 @@ try:
         logger.info("***** Faster flow rate cycle *****")
         insp_phase(2)
         exp_phase()
-        # wait_phase()
+        wait_phase()
         logger.info("***** Faster cycle end *****")
 
         # use the latest input parameters set via UI
