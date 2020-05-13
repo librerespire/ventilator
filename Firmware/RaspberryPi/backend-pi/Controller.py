@@ -203,14 +203,13 @@ def send_to_display(delta_t, pressure, flow_rate, volume):
     # Recalculate the time axis value to fit in the graph
     DISPLAY_TIME_AXIS += delta_t
     DISPLAY_TIME_AXIS %= DISPLAY_TIME_RANGE
-    DISPLAY_TIME_AXIS = round(DISPLAY_TIME_AXIS, 2)
 
     mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
     mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
     mqtt.sender(mqtt.VOLUME_TOPIC, volume)
     # TODO: send also time with each topic so that it can be graphed based on time
     logger.debug("[ %.1f sec ] : Pressure: %.2f L, Flow rate: %.2f L/min, Volume: %.2f L,  "
-                 % (DISPLAY_TIME_AXIS, convert_pressure(pressure), flow_rate, volume))
+                 % (round(DISPLAY_TIME_AXIS, 2), convert_pressure(pressure), flow_rate, volume))
 
 
 def insp_phase(demo_level):
