@@ -135,6 +135,7 @@ def control_solenoid(pin, duty_ratio):
     if pin == SI_PIN:
         PWM_I.ChangeDutyCycle(duty_ratio)
     elif pin == SE_PIN:
+        logger.debug("EXP duty_ratio = " + str(DUTY_RATIO_100 - duty_ratio))
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
