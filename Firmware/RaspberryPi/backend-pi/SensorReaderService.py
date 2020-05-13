@@ -47,7 +47,7 @@ class SensorReaderService:
             Variables.p2 = self.pressure_data[Variables.BUS_2]
             Variables.p3 = self.pressure_data[Variables.BUS_3]
             Variables.p4 = self.pressure_data[Variables.BUS_4]
-            time.sleep(slef.delay)
+            time.sleep(self.delay)
 
 if __name__ == "__main__":
     s = SensorReaderService()
