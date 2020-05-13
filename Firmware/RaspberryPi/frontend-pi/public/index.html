@@ -323,12 +323,12 @@
           data: PressureData
         }],
       });
-      //setInterval(function() {
-      //   $.get("/api/graphs/pressure", function(data, status) {
-      //     PressureData = data['data'];
-      //   });
-      //   pressureChart.series[0].setData(PressureData);
-      // }, 1000);
+      setInterval(function() {
+        $.get("/api/graphs/pressure", function(data, status) {
+          PressureData = data['data'];
+        });
+        pressureChart.series[0].setData(PressureData);
+      }, 1000);
     });
     $(function() {
       // Flow chart
@@ -376,12 +376,12 @@
           data: flowData
         }],
       });
-      //setInterval(function() {
-      //   $.get("/api/graphs/flowrate", function(data, status) {
-      //     flowData = data['data'];
-      //   });
-      //   flowChart.series[0].setData(flowData);
-      // }, 1000);
+      setInterval(function() {
+        $.get("/api/graphs/flowrate", function(data, status) {
+          flowData = data['data'];
+        });
+        flowChart.series[0].setData(flowData);
+      }, 1000);
     });
 
     $(function() {
@@ -430,12 +430,12 @@
           data: volumeData
         }],
       });
-      // setInterval(function() {
-      //   $.get("/api/graphs/volume", function(data, status) {
-      //     volumeData = data['data'];
-      //   });
-      //   volumeChart.series[0].setData(volumeData);
-      // }, 1000);
+      setInterval(function() {
+        $.get("/api/graphs/volume", function(data, status) {
+          volumeData = data['data'];
+        });
+        volumeChart.series[0].setData(volumeData);
+      }, 1000);
     });
   </script>
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
