@@ -1,0 +1,95 @@
+body {
+    font-family: 'Roboto','Helvetica';
+}
+a {
+    text-decoration: none;
+}
+.easy-get:hover {
+    cursor: pointer;
+}
+.easy-numpad-frame {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    justify-content: center;
+    -webkit-justify-content: center;
+    background-color: rgba(2,0,1,0.8);
+}
+.easy-numpad-container {
+    position: relative;
+    width: 100%;
+    max-width: 310px; /*max-width: 300px; per far rietrare i 10 caratteri più i segni . e - utilizzando il font Helvetica*/
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+    background-color: lightgray; /*Aggiunto per migliorare la visibilità dei tasti*/
+    padding: 10px;
+}
+a#easy-numpad-close {
+    position: absolute;
+    right: -54px;
+    top: -56px;
+    background-color: #f44336;
+    color: #fff;
+    line-height: 1;
+    padding: 20px 21px;
+}
+.easy-numpad-output-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden; /*Aggiunto per nascondere i digit oltre lo spazio disponibile*/
+}
+.easy-numpad-output {
+    width: 100%;
+    border: 1px solid #666;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-sizing: border-box;
+    margin: 0px;
+    text-align: center;/*text-align: center;*/
+    min-height: 60px;
+    display: flex;
+    display: -webkit-flex;
+    align-items: center;
+    -webkit-align-items: center;
+    justify-content: center;
+    -webkit-justify-content: flex-end;/*-webkit-justify-content: center;*/
+    font-size: 50px;
+	border-radius: 6px;
+}
+.easy-numpad-number-container > table {
+    width: calc(100% + 6px);
+    position: relative;
+    left: -3px;
+    margin-top: 10px;
+}
+.easy-numpad-number-container > table a {
+    display: block;
+    padding: 16px 10px;
+    background-color: #424242;
+    color: #fff;
+    text-align: center;
+	border-radius: 6px;
+}
+.easy-numpad-number-container > table a:hover {
+    background-color: #616161;
+}
+
+.easy-numpad-number-container .cancel {
+    background-color: #FE642E;
+}
+.easy-numpad-number-container .done {
+    background-color: #388E3C;
+}
+
+@media only screen and (min-width : 300px) and (max-width : 767px) {
+    a#easy-numpad-close {
+        right: 0px
+    }
+}

@@ -1,0 +1,48 @@
+import time
+from SensorReader import SensorReader
+from Variables import Variables
+
+class SensorReaderService:
+    """
+    This class can use for probe sensors periodically with the delay 0.01
+    sensor_reader() will set pressure values in to Variables class
+    """
+    pressure_data = [0] * 6
+    delay = 0.01
+    loop_flag = 1
+
+    def __init__(self):
+        sensor_reader()
+
+    def set_loop_flag(self, flag):
+        if (flag != 0 ):
+            self.loop_flag = 1
+        else:
+            self.loop_flag = 0
+
+    def thread_slice(self, pressure_data, index):
+        sr = SensorReader(index)
+        pressure = sr.read_pressure()
+        pressure_data[index] = pressure
+
+    def sensor_reader(self):
+        while loop_flag:
+            threads = list()
+            for index in [Variables.BUS_1, Variables.BUS_2, Variables.BUS_3, Variables.BUS_4]:
+                thread = threading.Thread(
+                    target=thread_slice, args=(pressure_data, index,))
+                threads.append(thread)
+                thread.start()
+            for index, thread in enumerate(threads):
+                thread.join()
+            logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
+                         (pressure_data[Variables.BUS_1], pressure_data[Variables.BUS_2],
+                         pressure_data[Variables.BUS_3], pressure_data[Variables.BUS_4]))
+            Variables.p1 = pressure_data[Variables.BUS_1]
+            Variables.p2 = pressure_data[Variables.BUS_2]
+            Variables.p3 = pressure_data[Variables.BUS_3]
+            Variables.p4 = pressure_data[Variables.BUS_4]
+            time.sleep(slef.delay)
+
+if __name__ == "__main__":
+    s = SensorReaderService()
