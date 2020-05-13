@@ -1,6 +1,7 @@
 import time
 from SensorReader import SensorReader
 from Variables import Variables
+import threading
 
 class SensorReaderService:
     """
