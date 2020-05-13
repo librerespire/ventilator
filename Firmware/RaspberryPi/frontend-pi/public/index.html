@@ -183,6 +183,24 @@
                   </div>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <div class="card bg-dark text-center">
+                    <div class="card-body">
+                      <div>Test</div>
+                      <div id="ie_ratio" style="font-size:60px;font-style:initial;">123</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="card bg-dark text-center">
+                    <div class="card-body">
+                      <div>IE Ratio</div>
+                      <div id="ie_ratio" style="font-size:60px;font-style:initial;">1:10</div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -215,8 +233,18 @@
         <div class="col-sm">
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
-              <div id="bottom_menu">IE Ratio 1:</div>
-              <input type="tel" class="keyboard form-control" id="ie_ratio_input">
+              <div id="bottom_menu">IE Ratio</div>
+              <div class="row align-items-end">
+                <div class="col-xl">
+                  <input type="tel" class="keyboard form-control" id="iei_ratio_input">
+                </div>
+                <div>
+                  :
+                </div>
+                <div class="col-xl">
+                  <input type="tel" class="keyboard form-control" id="iee_ratio_input">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -406,7 +434,10 @@
       $('#rr_input').numpad();
     });
     $(function() {
-      $('#ie_ratio_input').numpad();
+      $('#iee_ratio_input').numpad();
+    });
+    $(function() {
+      $('#iei_ratio_input').numpad();
     });
     $(function() {
       $('#peep_input').numpad();
@@ -420,9 +451,13 @@
       $("#rr").html("1:" + $(this).val())
       $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
     });
-    $("#ie_ratio_input").bind("change paste keyup", function() {
-      $("#ie_ratio").html("1:" + $(this).val())
-      $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
+    $("#iei_ratio_input").bind("change paste keyup", function() {
+      $("#ie_ratio").html($(this).val() + " : " + $("#iee_ratio_input").val())
+      $.get("/api/configs/iei?iei=" + $(this).val(), function(data, status) {})
+    });
+    $("#iee_ratio_input").bind("change paste keyup", function() {
+      $("#ie_ratio").html($("#iei_ratio_input").val() + " : " + $(this).val())
+      $.get("/api/configs/iee?iee=" + $(this).val(), function(data, status) {})
     });
     $("#peep_input").bind("change paste keyup", function() {
       $("#peep").html($(this).val())
