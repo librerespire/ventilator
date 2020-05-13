@@ -2,6 +2,10 @@ import time
 from SensorReader import SensorReader
 from Variables import Variables
 import threading
+import logging
+import logging.config
+
+logger = logging.getLogger(__name__)
 
 class SensorReaderService:
     """
