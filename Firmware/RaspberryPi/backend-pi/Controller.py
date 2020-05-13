@@ -195,14 +195,15 @@ def calculate_pid_duty_ratio(demo_level):
     return duty_ratio
 
 
-def send_to_display(time, pressure, flow_rate, volume):
+def send_to_display(delta_t, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
 
     global DISPLAY_TIME_AXIS
 
     # Recalculate the time axis value to fit in the graph
-    DISPLAY_TIME_AXIS += time
+    DISPLAY_TIME_AXIS += delta_t
     DISPLAY_TIME_AXIS %= DISPLAY_TIME_RANGE
+    DISPLAY_TIME_AXIS = round(DISPLAY_TIME_AXIS, 2)
 
     mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
     mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
@@ -243,7 +244,8 @@ def insp_phase(demo_level):
                 solenoids_closed = True
 
             ti = (t2 - start_time).total_seconds()
-            send_to_display(ti, p3, 0, vi)          # flowrate is 0 when insp. solenoid is closed
+            delta_t = (t2 - t1).total_seconds()
+            send_to_display(delta_t, p3, 0, vi)          # flow rate is 0 when insp. solenoid is closed
             continue
 
         # Calculate volume
@@ -253,7 +255,8 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (t2 - start_time).total_seconds()
-        send_to_display(ti, p3, q2, vi)
+        delta_t = (delta_t - t1).total_seconds()
+        send_to_display(delta_t, p3, q2, vi)
 
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
             Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
@@ -283,7 +286,8 @@ def exp_phase():
         vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
         ti = (t2 - start_time).total_seconds()
-        send_to_display(ti, p3, (-1 * q2), vi)
+        delta_t = (t2 - t1).total_seconds()
+        send_to_display(delta_t, p3, (-1 * q2), vi)
 
     logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)
     # mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, vi)
