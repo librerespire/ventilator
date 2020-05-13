@@ -258,7 +258,7 @@ def insp_phase(demo_level):
         send_to_display(delta_t, p3, q2, vi)
 
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
-            Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
+            Variables.fio2, Variables.vt, Variables.ie_e, Variables.rr, Variables.peep))
 
     logger.info("Leaving inspiratory phase.")
 
