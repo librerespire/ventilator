@@ -254,7 +254,7 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (t2 - start_time).total_seconds()
-        delta_t = (delta_t - t1).total_seconds()
+        delta_t = (t2 - t1).total_seconds()
         send_to_display(delta_t, p3, q2, vi)
 
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
