@@ -6,6 +6,7 @@ import logging
 import logging.config
 
 logger = logging.getLogger(__name__)
+logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 
 class SensorReaderService:
     """
@@ -51,3 +52,5 @@ class SensorReaderService:
 
 if __name__ == "__main__":
     s = SensorReaderService()
+    time.sleep(10)
+    s.set_loop_flag(0)
