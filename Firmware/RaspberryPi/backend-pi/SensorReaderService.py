@@ -12,7 +12,7 @@ class SensorReaderService:
     loop_flag = 1
 
     def __init__(self):
-        sensor_reader()
+        self.sensor_reader()
 
     def set_loop_flag(self, flag):
         if (flag != 0 ):
