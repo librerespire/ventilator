@@ -1,7 +1,7 @@
 # Controller v1.1
 # 2020-05-09 12.05 AM (Melb)
 
-# import os
+import os
 import math
 import time
 from datetime import datetime
@@ -221,6 +221,8 @@ def insp_phase(demo_level):
     # os.system('play -nq -t alsa synth {} sine {}'.format(1, 440))
 
     logger.info("Entering inspiratory phase...")
+    #beep sound added to inspiratory cycle 
+    os.system("echo -ne '\007'")
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
