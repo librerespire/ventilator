@@ -335,25 +335,32 @@ def init_parameters():
 
 #######################################################################################################
 
-init_parameters()
+try:
+    init_parameters()
 
-# 12 here is the intended flow_rate for calibration in L/min
-Ki, Ke = calibrate_flow_meter(12)
+    # 12 here is the intended flow_rate for calibration in L/min
+    Ki, Ke = calibrate_flow_meter(12)
 
-while True:
-    # slow flow rate
-    # logger.info("***** Slower flow rate cycle *****")
-    # insp_phase(1)
-    # exp_phase()
-    # wait_phase()
-    # logger.info("***** Slower cycle end *****")
+    while True:
+        # slow flow rate
+        # logger.info("***** Slower flow rate cycle *****")
+        # insp_phase(1)
+        # exp_phase()
+        # wait_phase()
+        # logger.info("***** Slower cycle end *****")
 
-    # faster flow rate
-    logger.info("***** Faster flow rate cycle *****")
-    insp_phase(2)
-    exp_phase()
-    # wait_phase()
-    logger.info("***** Faster cycle end *****")
+        # faster flow rate
+        logger.info("***** Faster flow rate cycle *****")
+        insp_phase(2)
+        exp_phase()
+        # wait_phase()
+        logger.info("***** Faster cycle end *****")
 
-    # use the latest input parameters set via UI
-    calc_respiratory_params()
+        # use the latest input parameters set via UI
+        calc_respiratory_params()
+
+finally:
+    # Set the solenoids to desired states before exiting
+    PWM_I.start(DUTY_RATIO_100)
+    PWM_E.start(DUTY_RATIO_100)
+    print("Inspiratory and expiratory solenoids were reset before exiting. Good bye...")
