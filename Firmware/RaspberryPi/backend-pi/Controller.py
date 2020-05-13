@@ -21,7 +21,7 @@ T_WT = 1  # waiting time
 
 Pi = 2000  # peak inspiratory pressure in cmH2O
 PEEP = 900  # PEEP
-PWM_FREQ = 4  # frequency for PWM
+PWM_FREQ = 2  # frequency for PWM
 
 # Constants
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
