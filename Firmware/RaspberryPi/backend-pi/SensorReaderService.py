@@ -18,7 +18,8 @@ class SensorReaderService:
     loop_flag = 1
 
     def __init__(self):
-        self.sensor_reader()
+        thread = threading.Thread(target=self.sensor_reader, args=())
+        thread.start()
 
     def set_loop_flag(self, flag):
         if (flag != 0 ):
