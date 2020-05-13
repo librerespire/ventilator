@@ -18,7 +18,8 @@ class MQTTTransceiver:
     RR_CONFIG_TOPIC = 'Config/rr'
     PEEP_CONFIG_TOPIC = 'Config/peep'
     VT_CONFIG_TOPIC = 'Config/vt'
-    IE_CONFIG_TOPIC = 'Config/ie'
+    IEE_CONFIG_TOPIC = 'Config/iee'
+    IEI_CONFIG_TOPIC = 'Config/iei'
 
     def __init__(self):
         # Setup an mqtt client
@@ -65,9 +66,12 @@ class MQTTTransceiver:
         elif (msg.topic == self.VT_CONFIG_TOPIC):
             Variables.vt = float(msg.payload.decode())
             logger.debug("VT receved: %.2f" % Variables.vt)
-        elif (msg.topic == self.IE_CONFIG_TOPIC):
+        elif (msg.topic == self.IEE_CONFIG_TOPIC):
             Variables.ie_e = float(msg.payload.decode())
             logger.debug("IE receved: %.2f" % Variables.ie_e)
+        elif (msg.topic == self.IEI_CONFIG_TOPIC):
+            Variables.ie_i = float(msg.payload.decode())
+            logger.debug("IE receved: %.2f" % Variables.ie_i)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 
