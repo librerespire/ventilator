@@ -31,7 +31,7 @@ class SensorReaderService:
             threads = list()
             for index in [Variables.BUS_1, Variables.BUS_2, Variables.BUS_3, Variables.BUS_4]:
                 thread = threading.Thread(
-                    target=thread_slice, args=(pressure_data, index,))
+                    target=self.thread_slice, args=(self.pressure_data, index,))
                 threads.append(thread)
                 thread.start()
             for index, thread in enumerate(threads):
