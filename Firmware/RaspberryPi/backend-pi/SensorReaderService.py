@@ -6,7 +6,6 @@ import logging
 import logging.config
 
 logger = logging.getLogger(__name__)
-logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 
 class SensorReaderService:
     """
@@ -20,8 +19,10 @@ class SensorReaderService:
     def __init__(self):
         thread = threading.Thread(target=self.sensor_reader, args=())
         thread.start()
+        logger.debug("SensorReaderService Started")
 
     def set_loop_flag(self, flag):
+        logger.debug("SensorReaderService flag set: %d" % flag)
         if (flag != 0 ):
             self.loop_flag = 1
         else:
@@ -42,16 +43,8 @@ class SensorReaderService:
                 thread.start()
             for index, thread in enumerate(threads):
                 thread.join()
-            logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
-                         (self.pressure_data[Variables.BUS_1], self.pressure_data[Variables.BUS_2],
-                         self.pressure_data[Variables.BUS_3], self.pressure_data[Variables.BUS_4]))
             Variables.p1 = self.pressure_data[Variables.BUS_1]
             Variables.p2 = self.pressure_data[Variables.BUS_2]
             Variables.p3 = self.pressure_data[Variables.BUS_3]
             Variables.p4 = self.pressure_data[Variables.BUS_4]
             time.sleep(self.delay)
-
-if __name__ == "__main__":
-    s = SensorReaderService()
-    time.sleep(10)
-    s.set_loop_flag(0)
