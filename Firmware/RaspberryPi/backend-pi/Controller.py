@@ -363,4 +363,4 @@ finally:
     # Set the solenoids to desired states before exiting
     PWM_I.start(DUTY_RATIO_100)
     PWM_E.start(DUTY_RATIO_100)
-    print("Inspiratory and expiratory solenoids were reset before exiting. Good bye...")
+    print("\nInspiratory and expiratory solenoids were reset before exiting. Good bye...\n")

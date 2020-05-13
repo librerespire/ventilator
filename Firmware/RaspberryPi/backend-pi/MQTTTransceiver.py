@@ -5,6 +5,7 @@ import logging.config
 from Variables import Variables
 
 logger = logging.getLogger(__name__)
+client = None
 
 
 class MQTTTransceiver:
@@ -20,12 +21,18 @@ class MQTTTransceiver:
     IE_CONFIG_TOPIC = 'Config/ie'
 
     def __init__(self):
+        # Setup an mqtt client
+        self.setup_client()
+
         thread = threading.Thread(target=self.mqtt_subscriber, args=())
         thread.start()
 
-    def mqtt_publish(self, topic, value):
+    def setup_client():
+        global client
         client = mqtt.Client()
         client.connect("127.0.0.1", 1883, 60)
+
+    def mqtt_publish(self, topic, value):
         logger.debug("MQTT Send: [%s] - [%s]" % (topic, value))
         client.publish(topic, value)
         client.disconnect()
@@ -36,8 +43,8 @@ class MQTTTransceiver:
         thread.start()
 
     def mqtt_subscriber(self):
-        client = mqtt.Client()
-        client.connect("127.0.0.1", 1883, 60)
+        global client
+
         client.subscribe(self.FIO2_CONFIG_TOPIC)
         client.subscribe(self.RR_CONFIG_TOPIC)
         client.subscribe(self.PEEP_CONFIG_TOPIC)
