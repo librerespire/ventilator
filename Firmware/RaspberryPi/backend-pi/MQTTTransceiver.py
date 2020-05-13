@@ -27,7 +27,7 @@ class MQTTTransceiver:
         thread = threading.Thread(target=self.mqtt_subscriber, args=())
         thread.start()
 
-    def setup_client():
+    def setup_client(self):
         global client
         client = mqtt.Client()
         client.connect("127.0.0.1", 1883, 60)
