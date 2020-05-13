@@ -35,7 +35,6 @@ class MQTTTransceiver:
     def mqtt_publish(self, topic, value):
         logger.debug("MQTT Send: [%s] - [%s]" % (topic, value))
         client.publish(topic, value)
-        client.disconnect()
 
     def sender(self, topic, value):
         thread = threading.Thread(
@@ -71,3 +70,6 @@ class MQTTTransceiver:
             logger.debug("IE receved: %.2f" % Variables.ie)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
+
+    def clean_up(self):
+        client.disconnect()

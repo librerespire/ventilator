@@ -360,6 +360,7 @@ try:
         calc_respiratory_params()
 
 finally:
+    mqtt.clean_up()
     # Set the solenoids to desired states before exiting
     PWM_I.start(DUTY_RATIO_100)
     PWM_E.start(DUTY_RATIO_100)
