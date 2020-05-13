@@ -66,8 +66,8 @@ class MQTTTransceiver:
             Variables.vt = float(msg.payload.decode())
             logger.debug("VT receved: %.2f" % Variables.vt)
         elif (msg.topic == self.IE_CONFIG_TOPIC):
-            Variables.ie = float(msg.payload.decode())
-            logger.debug("IE receved: %.2f" % Variables.ie)
+            Variables.ie_e = float(msg.payload.decode())
+            logger.debug("IE receved: %.2f" % Variables.ie_e)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 
