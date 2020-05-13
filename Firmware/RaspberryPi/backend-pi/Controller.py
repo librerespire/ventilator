@@ -3,6 +3,7 @@
 
 # import os
 import math
+import json
 import time
 from datetime import datetime
 import threading
@@ -197,6 +198,16 @@ def calculate_pid_duty_ratio(demo_level):
     return duty_ratio
 
 
+def create_chart_payload(t, pressure, flow_rate, volume):
+    payload = {
+        'time' : t,
+        'pressure' : pressure,
+        'flow rate' : flow_rate,
+        'volume' : volume
+    }
+    return json.dumps(payload)
+
+
 def send_to_display(delta_t, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
 
@@ -209,6 +220,9 @@ def send_to_display(delta_t, pressure, flow_rate, volume):
     mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
     mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
     mqtt.sender(mqtt.VOLUME_TOPIC, volume)
+
+    payload = create_chart_payload(DISPLAY_TIME_AXIS, pressure, flow_rate, volume)
+    mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
     # TODO: send also time with each topic so that it can be graphed based on time
     logger.debug("[ %.1f sec ] : Pressure: %.2f L, Flow rate: %.2f L/min, Volume: %.2f L,  "
                  % (round(DISPLAY_TIME_AXIS, 2), convert_pressure(pressure), flow_rate, volume))
