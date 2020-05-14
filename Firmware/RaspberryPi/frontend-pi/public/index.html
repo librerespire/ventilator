@@ -332,7 +332,7 @@
     });
     $(function() {
       // Flow chart
-      var flowData = new Array(60).fill(0);
+      var flowData = new Array(60).fill(0).map(() => new Array(2).fill(0));
 
       var flowChart = Highcharts.chart({
         chart: {
@@ -386,7 +386,7 @@
 
     $(function() {
       // Flow chart
-      var volumeData = new Array(60).fill(0);
+      var volumeData = new Array(60).fill(0).map(() => new Array(2).fill(0));;
       // Volume chart
       var volumeChart = Highcharts.chart({
         chart: {
@@ -406,7 +406,7 @@
         },
         xAxis: {
           allowDecimals: false,
-          visible: false,
+<!--          visible: false,-->
         },
         yAxis: {
           title: {

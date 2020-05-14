@@ -1,7 +1,6 @@
 var pressure = new Array(60).fill(0);
-var flow_rate = new Array(60).fill(0);
-var volume = new Array(60).fill(0);
-var time = new Array(60).fill(10);
+var flow_rate = new Array(60).fill(0).map(() => new Array(2).fill(0));
+var volume = new Array(60).fill(0).map(() => new Array(2).fill(0))
 
 var pressure_2d = new Array(60).fill(0).map(() => new Array(2).fill(0))
 
