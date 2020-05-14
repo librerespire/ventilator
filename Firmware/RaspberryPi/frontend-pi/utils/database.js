@@ -19,8 +19,8 @@ module.exports = {
   },
 
   set_pressure_2d: function(data){
-    pressure_data.pop()
-    pressure_data.unshift(data)
+    pressure_2d.pop()
+    pressure_2d.unshift(data)
     return pressure_2d
   },
 
