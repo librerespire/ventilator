@@ -38,8 +38,8 @@ BUS_3 = 4
 BUS_4 = 5
 INSP_PHASE = "inspiratory"
 EXP_PHASE = "expiratory"
-DISPLAY_TIME_AXIS = 0           # time axis value in display
-DISPLAY_TIME_RANGE = 20   # the range of time axis in display
+DISPLAY_TIME_AXIS = 0  # time axis value in display
+DISPLAY_TIME_RANGE = 20  # the range of time axis in display
 
 pressure_data = [0] * 6
 PWM_I, PWM_E = None, None
@@ -142,8 +142,6 @@ def control_solenoid(pin, duty_ratio):
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
 
-
-
 # def control_solenoid(pin, duty_ratio):
 #     """ emulate pwm on a digital out pin """
 #     logger.info("Entering control_solenoid()...")
@@ -200,10 +198,10 @@ def calculate_pid_duty_ratio(demo_level):
 
 def create_chart_payload(t, pressure, flow_rate, volume):
     payload = {
-        'time' : t,
-        'pressure' : pressure,
-        'flow rate' : flow_rate,
-        'volume' : volume
+        'time': t,
+        'pressure': pressure,
+        'flow_rate': flow_rate,
+        'volume': volume
     }
     return json.dumps(payload)
 
@@ -262,7 +260,7 @@ def insp_phase(demo_level):
 
             ti = (t2 - start_time).total_seconds()
             delta_t = (t2 - t1).total_seconds()
-            send_to_display(delta_t, p3, 0, vi)          # flow rate is 0 when insp. solenoid is closed
+            send_to_display(delta_t, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
 
         # Calculate volume

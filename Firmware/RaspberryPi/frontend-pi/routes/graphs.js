@@ -15,4 +15,8 @@ router.get('/volume', function (req, res) {
   res.json({"data": database.get_volume()});
 })
 
+router.get('/time', function (req, res) {
+  res.json({"data": database.get_time()});
+})
+
 module.exports = router;

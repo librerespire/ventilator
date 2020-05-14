@@ -5,6 +5,7 @@ const client = mqtt.connect('mqtt://localhost')
 const PRESSURE_TOPIC = 'Ventilator/pressure'
 const FLOWRATE_TOPIC = 'Ventilator/flow_rate'
 const VOLUME_TOPIC = 'Ventilator/volume'
+const CHART_DATA_TOPIC = 'Ventilator/chart_data'
 
 var self = module.exports = {
   mqtt_sender: function(topic, message) {
@@ -18,6 +19,7 @@ var self = module.exports = {
       client.subscribe(PRESSURE_TOPIC)
       client.subscribe(FLOWRATE_TOPIC)
       client.subscribe(VOLUME_TOPIC)
+      client.subscribe(CHART_DATA_TOPIC)
     });
 
     client.on('message', (topic, message) => {
@@ -31,6 +33,9 @@ var self = module.exports = {
         case VOLUME_TOPIC:
           console.log(topic + " : " + message)
           return self.mqtt_volume(message)
+        case CHART_DATA_TOPIC:
+          console.log(topic + " : " + message)
+          return self.mqtt_chart_data(message)
       }
       console.log('No handler for topic %s', topic)
     });
@@ -49,6 +54,15 @@ var self = module.exports = {
   mqtt_volume: function(message) {
     console.log("Volume : " + message)
     database.set_volume(Number((parseFloat(message)).toFixed(2)))
+  }
+
+  mqtt_chart_data: function(message) {
+    console.log("Chart data : " + message)
+    json_data = JSON.parse(message)
+    database.set_time(Number((json_data.time).toFixed(2)))
+    database.set_pressure(Number((json_data.pressure).toFixed(2)))
+    database.set_flow_rate(Number((json_data.flow_rate).toFixed(2)))
+    database.set_volume(Number((json_data.volume).toFixed(2)))
   }
 
 };
