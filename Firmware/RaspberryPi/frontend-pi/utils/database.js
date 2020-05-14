@@ -46,7 +46,7 @@ module.exports = {
 
   get_flow_rate: function(){
     return flow_rate
-  }
+  },
 
   get_time: function(){
     return time
