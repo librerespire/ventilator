@@ -32,10 +32,11 @@ var self = module.exports = {
           return self.mqtt_flowrate(message)
         case VOLUME_TOPIC:
           console.log(topic + " : " + message)
-          return self.mqtt_volume(message)
+          return self.
+          mqtt_volume(message)
         case CHART_DATA_TOPIC:
           console.log(topic + " : " + message)
-          return self.mqtt_chart_data(message)
+          return self.mqtt_chartdata(message)
       }
       console.log('No handler for topic %s', topic)
     });
@@ -56,7 +57,7 @@ var self = module.exports = {
     database.set_volume(Number((parseFloat(message)).toFixed(2)))
   }
 
-  mqtt_chart_data: function(message) {
+  mqtt_chartdata: function(message) {
     console.log("Chart data : " + message)
     json_data = JSON.parse(message)
 
