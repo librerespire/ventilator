@@ -67,7 +67,7 @@ var self = module.exports = {
 
     database.set_pressure([time, pressure])
     database.set_flow_rate([time, flow_rate])
-    database_set_volume([time, volume])
+    database.set_volume([time, volume])
   }
 
 };
