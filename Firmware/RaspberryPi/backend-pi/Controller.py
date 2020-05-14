@@ -200,10 +200,10 @@ def calculate_pid_duty_ratio(demo_level):
 
 def create_chart_payload(t, pressure, flow_rate, volume):
     payload = {
-        'time': t,
-        'pressure': pressure,
-        'flow_rate': flow_rate,
-        'volume': volume
+        'time': round(t, 2),
+        'pressure': round(pressure, 2),
+        'flow_rate': round(flow_rate, 2),
+        'volume': round(volume, 2)
     }
     return json.dumps(payload)
 

@@ -280,7 +280,7 @@
   <script type="text/javascript">
     $(function() {
       // Pressure chart
-      var PressureData = new Array(60).fill(0);
+      var PressureData = new Array(60).fill(0).map(() => new Array(2).fill(0));
       var pressureChart = Highcharts.chart({
         chart: {
           renderTo: 'pressureChart',
