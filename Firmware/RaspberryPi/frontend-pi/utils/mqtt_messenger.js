@@ -55,7 +55,7 @@ var self = module.exports = {
   mqtt_volume: function(message) {
     console.log("Volume : " + message)
     database.set_volume(Number((parseFloat(message)).toFixed(2)))
-  }
+  },
 
   mqtt_chartdata: function(message) {
     console.log("Chart data : " + message)
