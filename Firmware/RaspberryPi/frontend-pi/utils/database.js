@@ -50,5 +50,9 @@ module.exports = {
 
   get_time: function(){
     return time
+  },
+
+  get_pressure: function(){
+  return pressure_2d
   }
 }
