@@ -21,17 +21,20 @@ class MQTTTransceiver:
     VT_CONFIG_TOPIC = 'Config/vt'
     IE_CONFIG_TOPIC = 'Config/ie'
 
+    MQTT_HOST = "127.0.0.1"
+    MQTT_PORT = 1883
+
     def __init__(self):
         # Setup an mqtt client
         self.setup_client()
-
+        # Start mqtt_subscriber service in a thread
         thread = threading.Thread(target=self.mqtt_subscriber, args=())
         thread.start()
 
     def setup_client(self):
         global client
         client = mqtt.Client()
-        client.connect("127.0.0.1", 1883, 60)
+        client.connect(self.MQTT_HOST, self.MQTT_PORT, 60)
 
     def mqtt_publish(self, topic, value):
         logger.debug("MQTT Send: [%s] - [%s]" % (topic, value))
@@ -67,8 +70,11 @@ class MQTTTransceiver:
             Variables.vt = float(msg.payload.decode())
             logger.debug("VT receved: %.2f" % Variables.vt)
         elif (msg.topic == self.IE_CONFIG_TOPIC):
-            Variables.ie_e = float(msg.payload.decode())
-            logger.debug("IE receved: %.2f" % Variables.ie_e)
+            Variables.ie = float(msg.payload.decode())
+            #TODO remove ie_i and ie_e
+            Variables.ie_i = Variables.ie
+            Variables.ie_e = 1
+            logger.debug("IE receved: %.2f" % Variables.ie)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 

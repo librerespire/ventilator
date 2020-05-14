@@ -13,12 +13,12 @@
   <script src="https://code.highcharts.com/modules/export-data.js"></script>
   <script src="https://code.highcharts.com/modules/accessibility.js"></script>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <link rel="stylesheet" href="css/jquery.numpad.css">
-  <script type="text/javascript" src="js/jquery.numpad.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/easy_numpad.css">
+  <script type="text/javascript" src="js/easy_numpad.js"></script>
   <title>LibreRespire Ventilator</title>
   <style>
     body {
-      background-color: #282b3d;
+      background-color: #000000;
     }
 
     #bottom_menu {
@@ -87,13 +87,38 @@
       background: #f1f7ff;
     }
   </style>
+  <script type="text/javascript">
+    jQuery(document).ready(function() {
+          $("#fio2_input").bind("change paste keyup", function() {
+            console.log("fio2 change called")
+            $("#fio2").html($(this).val())
+            $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
+          });
+          $("#rr_input").bind("change paste keyup", function() {
+            $("#rr").html("1 : " + $(this).val())
+            $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
+          });
+          $("#ie_ratio_input").bind("change paste keyup", function() {
+            $("#ie_ratio").html("1 : " + $(this).val())
+            $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
+          });
+          $("#peep_input").bind("change paste keyup", function() {
+            $("#peep").html($(this).val())
+            $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
+          });
+          $("#vt_input").bind("change paste keyup", function() {
+            $("#tidle_volume").html($(this).val())
+            $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
+          });
+        });
+  </script>
 </head>
 
 <body>
   <dev>
     <div class="container-fluid">
       <div class="row align-items-center" width="100%">
-        <div class="col-2">
+        <div class="col">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Mode
@@ -110,7 +135,7 @@
             <p></p>
           </div>
         </div>
-        <div class="col-2">
+        <div class="col">
           <button type="button" class="btn btn-dark btn-lg btn-block" width="100%" id="ventilator-type">Adult</button>
         </div>
       </div>
@@ -126,7 +151,7 @@
             <div id="volumeChart"></div>
           </figure>
         </div>
-        <div class="col-5">
+        <div class="col-xl">
           <table class="table table-borderless table-dark">
             <tbody>
               <tr>
@@ -183,6 +208,24 @@
                   </div>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <div class="card bg-dark text-center">
+                    <div class="card-body">
+                      <div>Test</div>
+                      <div id="" style="font-size:60px;font-style:initial;">123</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="card bg-dark text-center">
+                    <div class="card-body">
+                      <div>IE Ratio</div>
+                      <div id="ie_ratio" style="font-size:60px;font-style:initial;">1:10</div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -192,7 +235,7 @@
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
               <div id="bottom_menu">FiO<sub>2</sub></div>
-              <input type="tel" class="keyboard form-control" id="fio2_input">
+              <input type="tel" class="keyboard form-control" id="fio2_input" type="number" onclick="this.value = show_easy_numpad(this);">
             </div>
           </div>
         </div>
@@ -200,7 +243,7 @@
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
               <div id="bottom_menu">VT</div>
-              <input type="tel" class="keyboard form-control" id="vt_input">
+              <input type="tel" class="keyboard form-control" id="vt_input" type="number" onclick="show_easy_numpad(this);">
             </div>
           </div>
         </div>
@@ -208,15 +251,15 @@
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
               <div id="bottom_menu">R.R.</div>
-              <input type="tel" class="keyboard form-control" id="rr_input">
+              <input type="tel" class="keyboard form-control" id="rr_input" type="number" onclick="show_easy_numpad(this);">
             </div>
           </div>
         </div>
         <div class="col-sm">
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
-              <div id="bottom_menu">IE Ratio 1:</div>
-              <input type="tel" class="keyboard form-control" id="ie_ratio_input">
+              <div id="bottom_menu">IE Ratio</div>
+              <input type="tel" class="keyboard form-control" id="ie_ratio_input" type="number" onclick="show_easy_numpad(this);">
             </div>
           </div>
         </div>
@@ -224,7 +267,7 @@
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
               <div id="bottom_menu">PEEP</div>
-              <input type="tel" class="keyboard form-control" id="peep_input">
+              <input type="tel" class="keyboard form-control" id="peep_input" type="number" onclick="show_easy_numpad(this);">
             </div>
           </div>
         </div>
@@ -233,7 +276,7 @@
 
 
 
-  <!-- Optional JavaScript -->
+  <!-- Chart JavaScript -->
   <script type="text/javascript">
     $(function() {
       // Pressure chart
@@ -393,44 +436,6 @@
         });
         volumeChart.series[0].setData(volumeData);
       }, 1000);
-    });
-  </script>
-  <script>
-    $(function() {
-      $('#fio2_input').numpad();
-    });
-    $(function() {
-      $('#vt_input').numpad();
-    });
-    $(function() {
-      $('#rr_input').numpad();
-    });
-    $(function() {
-      $('#ie_ratio_input').numpad();
-    });
-    $(function() {
-      $('#peep_input').numpad();
-    });
-
-    $("#fio2_input").bind("change paste keyup", function() {
-      $("#fio2").html($(this).val())
-      $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
-    });
-    $("#rr_input").bind("change paste keyup", function() {
-      $("#rr").html("1:" + $(this).val())
-      $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
-    });
-    $("#ie_ratio_input").bind("change paste keyup", function() {
-      $("#ie_ratio").html("1:" + $(this).val())
-      $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
-    });
-    $("#peep_input").bind("change paste keyup", function() {
-      $("#peep").html($(this).val())
-      $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
-    });
-    $("#vt_input").bind("change paste keyup", function() {
-      $("#tidle_volume").html($(this).val())
-      $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
     });
   </script>
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->

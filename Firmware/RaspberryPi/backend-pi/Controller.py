@@ -1,7 +1,7 @@
 # Controller v1.1
 # 2020-05-09 12.05 AM (Melb)
 
-# import os
+import os
 import math
 import json
 import time
@@ -32,10 +32,10 @@ EXP_FLOW = False
 DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
 NUMBER_OF_SENSORS = 4
-BUS_1 = 1
-BUS_2 = 3
-BUS_3 = 4
-BUS_4 = 5
+BUS_1 = Variables.BUS_1
+BUS_2 = Variables.BUS_2
+BUS_3 = Variables.BUS_3
+BUS_4 = Variables.BUS_4
 INSP_PHASE = "inspiratory"
 EXP_PHASE = "expiratory"
 DISPLAY_TIME_AXIS = 0  # time axis value in display
@@ -233,6 +233,8 @@ def insp_phase(demo_level):
     # os.system('play -nq -t alsa synth {} sine {}'.format(1, 440))
 
     logger.info("Entering inspiratory phase...")
+    #beep sound added to inspiratory cycle
+    os.system("echo -ne '\007'")
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
