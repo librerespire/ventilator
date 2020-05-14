@@ -24,16 +24,15 @@ var self = module.exports = {
 
     client.on('message', (topic, message) => {
       switch (topic) {
-        case PRESSURE_TOPIC:
-          console.log(topic + " : " + message)
-          return self.mqtt_pressure(message)
-        case FLOWRATE_TOPIC:
-          console.log(topic + " : " + message)
-          return self.mqtt_flowrate(message)
-        case VOLUME_TOPIC:
-          console.log(topic + " : " + message)
-          return self.
-          mqtt_volume(message)
+//        case PRESSURE_TOPIC:
+//          console.log(topic + " : " + message)
+////          return self.mqtt_pressure(message)
+//        case FLOWRATE_TOPIC:
+//          console.log(topic + " : " + message)
+////          return self.mqtt_flowrate(message)
+//        case VOLUME_TOPIC:
+//          console.log(topic + " : " + message)
+////          return self.mqtt_volume(message)
         case CHART_DATA_TOPIC:
           console.log(topic + " : " + message)
           return self.mqtt_chartdata(message)
@@ -66,14 +65,9 @@ var self = module.exports = {
     flow_rate = Number((json_data.flow_rate).toFixed(2))
     volume = Number((json_data.volume).toFixed(2))
 
-    database.set_pressure_2d([time, pressure])
-//    database.set_flow_rate([time, flow_rate])
-//    database_set_volume([time, volume])
-//
-//    database.set_time(Number((json_data.time).toFixed(2)))
-//    database.set_pressure(Number((json_data.pressure).toFixed(2)))
-//    database.set_flow_rate(Number((json_data.flow_rate).toFixed(2)))
-//    database.set_volume(Number((json_data.volume).toFixed(2)))
+    database.set_pressure([time, pressure])
+    database.set_flow_rate([time, flow_rate])
+    database_set_volume([time, volume])
   }
 
 };
