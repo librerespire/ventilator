@@ -405,8 +405,13 @@
           enable: false
         },
         xAxis: {
-          allowDecimals: false,
-<!--          visible: false,-->
+          allowDecimals: true,
+          gridLineWidth: 1,
+          labels: {
+            formatter: function() {
+              return this.value + 'km';
+            }
+          },
         },
         yAxis: {
           title: {
