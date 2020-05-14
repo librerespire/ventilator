@@ -22,7 +22,7 @@ module.exports = {
     pressure_data.pop()
     pressure_data.unshift(data)
     return pressure_2d
-  }
+  },
 
   set_flow_rate: function(data){
     flow_rate.pop()
