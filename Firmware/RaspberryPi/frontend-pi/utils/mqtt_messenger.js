@@ -59,10 +59,20 @@ var self = module.exports = {
   mqtt_chart_data: function(message) {
     console.log("Chart data : " + message)
     json_data = JSON.parse(message)
-    database.set_time(Number((json_data.time).toFixed(2)))
-    database.set_pressure(Number((json_data.pressure).toFixed(2)))
-    database.set_flow_rate(Number((json_data.flow_rate).toFixed(2)))
-    database.set_volume(Number((json_data.volume).toFixed(2)))
+
+    time = Number((json_data.time).toFixed(2))
+    pressure = Number((json_data.pressure).toFixed(2))
+    flow_rate = Number((json_data.flow_rate).toFixed(2))
+    volume = Number((json_data.volume).toFixed(2))
+
+    database.set_pressure_2d([time, pressure])
+//    database.set_flow_rate([time, flow_rate])
+//    database_set_volume([time, volume])
+//
+//    database.set_time(Number((json_data.time).toFixed(2)))
+//    database.set_pressure(Number((json_data.pressure).toFixed(2)))
+//    database.set_flow_rate(Number((json_data.flow_rate).toFixed(2)))
+//    database.set_volume(Number((json_data.volume).toFixed(2)))
   }
 
 };

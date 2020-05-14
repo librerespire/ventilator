@@ -1,6 +1,3 @@
-# Controller v1.1
-# 2020-05-09 12.05 AM (Melb)
-
 import os
 import math
 import json
@@ -235,10 +232,8 @@ def insp_phase(demo_level):
     """ inspiratory phase tasks
         demo_level is a temporary hack to introduce two flow rate levels until pid controller is implemented """
 
-    # os.system('play -nq -t alsa synth {} sine {}'.format(1, 440))
-
     logger.info("Entering inspiratory phase...")
-    #beep sound added to inspiratory cycle
+    # beep sound added to inspiratory cycle
     os.system("echo -ne '\007'")
     start_time = datetime.now()
     t1, t2 = start_time, start_time
