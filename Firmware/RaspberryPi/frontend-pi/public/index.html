@@ -299,7 +299,12 @@
         },
         xAxis: {
           allowDecimals: false,
-          visible: false,
+          gridLineWidth: 1,
+          labels: {
+            formatter: function() {
+              return this.value;
+            }
+          },
         },
         yAxis: {
           title: {
@@ -352,7 +357,12 @@
         },
         xAxis: {
           allowDecimals: false,
-          visible: false,
+          gridLineWidth: 1,
+          labels: {
+            formatter: function() {
+              return this.value;
+            }
+          },
         },
         yAxis: {
           title: {
@@ -409,7 +419,7 @@
           gridLineWidth: 1,
           labels: {
             formatter: function() {
-              return this.value + 'km';
+              return this.value;
             }
           },
         },
