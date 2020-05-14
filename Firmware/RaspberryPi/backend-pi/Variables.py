@@ -14,3 +14,7 @@ class Variables:
     rr = 10     # respiratory rate (RR)
     vt = 5      # tidal volume
     peep = 1200 # PEEP
+    p1 = 0      # pressure sensor 1 on inspiratory phase
+    p2 = 0      # pressure sensor 2 on inspiratory phase
+    p3 = 0      # pressure sensor 3 on expiratory phase
+    p4 = 0      # pressure sensor 4 on expiratory phase

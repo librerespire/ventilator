@@ -11,8 +11,9 @@ import RPi.GPIO as GPIO
 import logging
 import logging.config
 from Variables import Variables
-from SensorReader import SensorReader
-from PWMController import PWMController
+# from SensorReader import SensorReader
+from SensorReaderService import SensorReaderService
+# from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
 
 # Internal parameters
@@ -31,70 +32,74 @@ INSP_FLOW = True
 EXP_FLOW = False
 DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
-NUMBER_OF_SENSORS = 4
-BUS_1 = Variables.BUS_1
-BUS_2 = Variables.BUS_2
-BUS_3 = Variables.BUS_3
-BUS_4 = Variables.BUS_4
-INSP_PHASE = "inspiratory"
-EXP_PHASE = "expiratory"
 DISPLAY_TIME_AXIS = 0  # time axis value in display
 DISPLAY_TIME_RANGE = 20  # the range of time axis in display
 
+# No longer need. Controller now uses SensorReaderService
+# NUMBER_OF_SENSORS = 4
+# BUS_1 = Variables.BUS_1
+# BUS_2 = Variables.BUS_2
+# BUS_3 = Variables.BUS_3
+# BUS_4 = Variables.BUS_4
+# INSP_PHASE = "inspiratory"
+# EXP_PHASE = "expiratory"
+# threads_map = {}
+
 pressure_data = [0] * 6
 PWM_I, PWM_E = None, None
-threads_map = {}
 
-mqtt = MQTTTransceiver()
+mqtt = None
+sensing_service = None
 Ki, Ke = 0, 0
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
+# No longer need. Controller now uses SensorReaderService
+# def thread_slice(pressure_data, index):
+#     sr = SensorReader(index)
+#     pressure = sr.read_pressure()
+#     pressure_data[index] = pressure
 
-def thread_slice(pressure_data, index):
-    sr = SensorReader(index)
-    pressure = sr.read_pressure()
-    pressure_data[index] = pressure
 
-
-def read_data(phase=""):
-    # read relevant pressure sensors from the smbus and return actual values
-    threads = list()
-    if phase == INSP_PHASE:
-        for index in [BUS_1, BUS_2, BUS_3]:
-            thread = threading.Thread(
-                target=thread_slice, args=(pressure_data, index,))
-            threads.append(thread)
-            thread.start()
-        for index, thread in enumerate(threads):
-            thread.join()
-        logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f]" %
-                     (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]))
-        return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]
-    elif phase == EXP_PHASE:
-        for index in [BUS_3, BUS_4]:
-            thread = threading.Thread(
-                target=thread_slice, args=(pressure_data, index,))
-            threads.append(thread)
-            thread.start()
-        for index, thread in enumerate(threads):
-            thread.join()
-        logger.debug("Pressure: P3[%.2f], P4[%.2f]" %
-                     (pressure_data[BUS_3], pressure_data[BUS_4]))
-        return pressure_data[BUS_3], pressure_data[BUS_4]
-    else:
-        for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
-            thread = threading.Thread(
-                target=thread_slice, args=(pressure_data, index,))
-            threads.append(thread)
-            thread.start()
-        for index, thread in enumerate(threads):
-            thread.join()
-        logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
-                     (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
-        return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
+# No longer need. Controller now uses SensorReaderService
+# def read_data(phase=""):
+#     # read relevant pressure sensors from the smbus and return actual values
+#     threads = list()
+#     if phase == INSP_PHASE:
+#         for index in [BUS_1, BUS_2, BUS_3]:
+#             thread = threading.Thread(
+#                 target=thread_slice, args=(pressure_data, index,))
+#             threads.append(thread)
+#             thread.start()
+#         for index, thread in enumerate(threads):
+#             thread.join()
+#         logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f]" %
+#                      (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]))
+#         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]
+#     elif phase == EXP_PHASE:
+#         for index in [BUS_3, BUS_4]:
+#             thread = threading.Thread(
+#                 target=thread_slice, args=(pressure_data, index,))
+#             threads.append(thread)
+#             thread.start()
+#         for index, thread in enumerate(threads):
+#             thread.join()
+#         logger.debug("Pressure: P3[%.2f], P4[%.2f]" %
+#                      (pressure_data[BUS_3], pressure_data[BUS_4]))
+#         return pressure_data[BUS_3], pressure_data[BUS_4]
+#     else:
+#         for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
+#             thread = threading.Thread(
+#                 target=thread_slice, args=(pressure_data, index,))
+#             threads.append(thread)
+#             thread.start()
+#         for index, thread in enumerate(threads):
+#             thread.join()
+#         logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
+#                      (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
+#         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
 
 
 def calculate_k(p1, p2, flow_rate):
@@ -119,9 +124,9 @@ def calibrate_flow_meter(flow_rate):
     ke = 0
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate k
     while n < nSamples:
-        p1, p2, p3, p4 = read_data()
-        ki += calculate_k(p1, p2, flow_rate)
-        ke += calculate_k(p3, p4, flow_rate)
+        # p1, p2, p3, p4 = read_data()
+        ki += calculate_k(Variables.p1, Variables.p2, flow_rate)
+        ke += calculate_k(Variables.p3, Variables.p4, flow_rate)
         n += 1
         time.sleep(delay)
 
@@ -141,7 +146,7 @@ def control_solenoid(pin, duty_ratio):
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
-
+# No longer in use. This is to emulate PWM on digital pins
 # def control_solenoid(pin, duty_ratio):
 #     """ emulate pwm on a digital out pin """
 #     logger.info("Entering control_solenoid()...")
@@ -172,13 +177,13 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate flow rate
     while n < nSamples:
         if is_insp_phase:
-            p1, p2, p3 = read_data(INSP_PHASE)  # pressures
-            q += Ki * math.sqrt(abs(p1 - p2))  # flow rate
+            # p1, p2, p3 = read_data(INSP_PHASE)  # pressures
+            q += Ki * math.sqrt(abs(Variables.p1 - Variables.p2))  # flow rate
         else:
-            p3, p4 = read_data(EXP_PHASE)  # pressures
-            q += Ke * math.sqrt(abs(p3 - p4))  # flow rate
+            # p3, p4 = read_data(EXP_PHASE)  # pressures
+            q += Ke * math.sqrt(abs(Variables.p3 - Variables.p4))  # flow rate
 
-        p += p3
+        p += Variables.p3
 
         n += 1
         time.sleep(delay)
@@ -337,9 +342,9 @@ def calc_respiratory_params():
 
 # Initialize the parameters
 def init_parameters():
-    global PWM_I, PWM_E
+    global PWM_I, PWM_E, sensing_service, mqtt
 
-    # Initialize digital output pins
+    # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
@@ -348,6 +353,12 @@ def init_parameters():
 
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
     PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
+
+    # Start the sensor reading service
+    sensing_service = SensorReaderService()
+
+    # Start the MQTT transceiver to communicate with GUI
+    mqtt = MQTTTransceiver()
 
     calc_respiratory_params()
 
