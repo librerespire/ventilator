@@ -118,15 +118,13 @@
   <dev>
     <div class="container-fluid">
       <div class="row align-items-center" width="100%">
-        <div class="col">
+        <div class="col-sm">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              Mode
+              Ventilator Mode
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">CMV</a>
-              <a class="dropdown-item" href="#">MODE1</a>
-              <a class="dropdown-item" href="#">MODE2</a>
+              <a class="dropdown-item" href="#">CMV-PC</a>
             </div>
           </div>
         </div>
@@ -135,8 +133,17 @@
             <p></p>
           </div>
         </div>
-        <div class="col">
-          <button type="button" class="btn btn-dark btn-lg btn-block" width="100%" id="ventilator-type">Adult</button>
+        <div class="col-sm">
+          <div class="dropdown">
+            <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+              Settings
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">Calibarate</a>
+              <a class="dropdown-item" href="#">Restart</a>
+              <a class="dropdown-item" href="#">Shutdown</a>
+            </div>
+          </div>
         </div>
       </div>
       <div class="row align-items-center" width="100%">
@@ -212,8 +219,8 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Test</div>
-                      <div id="" style="font-size:60px;font-style:initial;">123</div>
+                      <div>Pressure Support</div>
+                      <div id="pressure_support" style="font-size:60px;font-style:initial;">123</div>
                     </div>
                   </div>
                 </td>
@@ -268,6 +275,14 @@
             <div class="card-body">
               <div id="bottom_menu">PEEP</div>
               <input type="tel" class="keyboard form-control" id="peep_input" type="number" onclick="show_easy_numpad(this);">
+            </div>
+          </div>
+        </div>
+        <div class="col-sm">
+          <div class="card text-white bg-secondary text-center">
+            <div class="card-body">
+              <div id="bottom_menu">Pressure Support</div>
+              <input type="tel" class="keyboard form-control" id="pressure_support" type="number" onclick="show_easy_numpad(this);">
             </div>
           </div>
         </div>
@@ -450,7 +465,9 @@
 
       setInterval(function() {
         $.get("/api/table/values", function(data, status) {
-          $("#tidle_volume").html(data['vt']);          
+          $("#tidle_volume").html(data['vt']);
+          $("#peak_pressure").html(data['peak_pressure']);
+          $("#min_volume").html(data['minute_volume']);
         });
       }, 1000);
     });
