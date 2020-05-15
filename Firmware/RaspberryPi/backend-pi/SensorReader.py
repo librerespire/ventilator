@@ -65,7 +65,7 @@ class SensorReader:
 
     def read_pressure(self):
         if (self.bus_number == Variables.BUS_3):
-            return read_bme680()
+            return self.read_bme680()
 
         #Reading Data from i2c bus 3
         b1 = self.bus.read_i2c_block_data(0x76, 0x88, 24)
