@@ -53,6 +53,7 @@ var self = module.exports = {
 
   mqtt_vt: function(message) {
     database.set_vt((parseFloat(message)).toFixed(2))
+    console.log("MQTT VT: " + (parseFloat(message)).toFixed(2));
   },
 
   mqtt_chartdata: function(message) {
