@@ -9,11 +9,11 @@ router.get('/values', function(req, res) {
   volumeData = database.get_volume();
   pressure = database.get_pressure();
   min_volume = 0;
-  for(var i = 0; i <= volumeData.length; i++) {
+  for(var i = 0; i < volumeData.length; i++) {
           min_volume = min_volume + volumeData[i][1];
   }
   max_pressure = 0;
-  for(var i = 0; i <= pressure.length; i++) {
+  for(var i = 0; i < pressure.length; i++) {
           if (max_pressure < pressure[i][1]){
             max_pressure = pressure[i][1];
           }
