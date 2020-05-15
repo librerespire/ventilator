@@ -7,7 +7,7 @@ router.get('/values', function(req, res) {
 
   //get Minute Volume by getting sum of last minute delivered volume
   volumeData = database.get_volume();
-  var min_volume = volumeData.reduce(function(a, b) {
+  var min_volume = volumeData[1].reduce(function(a, b) {
     return a + b;
   }, 0);
 
