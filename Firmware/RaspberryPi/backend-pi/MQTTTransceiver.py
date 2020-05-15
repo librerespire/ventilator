@@ -15,6 +15,8 @@ class MQTTTransceiver:
     CHART_DATA_TOPIC = 'Ventilator/chart_data'
     MIN_VOL_TOPIC = 'Ventilator/min_volume'
     PEAK_PRESSURE_TOPIC = 'Ventilator/peak_pressure'
+    ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
+
     FIO2_CONFIG_TOPIC = 'Config/fio2'
     RR_CONFIG_TOPIC = 'Config/rr'
     PEEP_CONFIG_TOPIC = 'Config/peep'

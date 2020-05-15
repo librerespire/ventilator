@@ -6,6 +6,7 @@ const PRESSURE_TOPIC = 'Ventilator/pressure'
 const FLOWRATE_TOPIC = 'Ventilator/flow_rate'
 const VOLUME_TOPIC = 'Ventilator/volume'
 const CHART_DATA_TOPIC = 'Ventilator/chart_data'
+const ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
 
 var self = module.exports = {
   mqtt_sender: function(topic, message) {
@@ -16,9 +17,7 @@ var self = module.exports = {
   mqtt_receiver: function() {
     console.log("Receiver called");
     client.on('connect', () => {
-      client.subscribe(PRESSURE_TOPIC)
-      client.subscribe(FLOWRATE_TOPIC)
-      client.subscribe(VOLUME_TOPIC)
+      client.subscribe(ACTUAL_TIDAL_VOLUME_TOPIC)
       client.subscribe(CHART_DATA_TOPIC)
     });
 
@@ -30,11 +29,10 @@ var self = module.exports = {
 //        case FLOWRATE_TOPIC:
 //          console.log(topic + " : " + message)
 ////          return self.mqtt_flowrate(message)
-//        case VOLUME_TOPIC:
-//          console.log(topic + " : " + message)
-////          return self.mqtt_volume(message)
+       case ACTUAL_TIDAL_VOLUME_TOPIC:
+         console.log(topic + " : " + message)
+          return self.mqtt_vt(message)
         case CHART_DATA_TOPIC:
-          console.log(topic + " : " + message)
           return self.mqtt_chartdata(message)
       }
       console.log('No handler for topic %s', topic)
@@ -42,22 +40,22 @@ var self = module.exports = {
   },
 
   mqtt_pressure: function(message) {
-    console.log("Pressure : " + message)
     database.set_pressure(Number((parseFloat(message)).toFixed(2)))
   },
 
   mqtt_flowrate: function(message) {
-    console.log("Flowrate : " + message)
     database.set_flow_rate(Number((parseFloat(message)).toFixed(2)))
   },
 
   mqtt_volume: function(message) {
-    console.log("Volume : " + message)
     database.set_volume(Number((parseFloat(message)).toFixed(2)))
   },
 
+  mqtt_vt: function(message) {
+    database.set_vt(Number((parseFloat(message)).toFixed(2)))
+  },
+
   mqtt_chartdata: function(message) {
-    console.log("Chart data : " + message)
     json_data = JSON.parse(message)
 
     time = new Date(json_data.time)

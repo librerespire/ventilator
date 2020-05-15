@@ -424,7 +424,7 @@
             text: 'Volume'
           },
           type: 'linear',
-          minorTickInterval: 'auto'          
+          minorTickInterval: 'auto'
         },
         time: {
           useUTC: false
@@ -446,6 +446,14 @@
           volumeData = data['data'];
         });
         volumeChart.series[0].setData(volumeData);
+      }, 1000);
+
+      setInterval(function() {
+        vt = 0;
+        $.get("/api/table/values", function(data, status) {
+          vt = data['vt'];
+        });
+        $("#tidle_volume").html(vt);
       }, 1000);
     });
   </script>

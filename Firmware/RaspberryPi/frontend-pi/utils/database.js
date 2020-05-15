@@ -1,13 +1,12 @@
 var pressure = [];
 var flow_rate = [];
 var volume = [];
+var tidle_volume
 
 
 module.exports = {
-  set_time: function(data) {
-    time.pop()
-    time.unshift(data)
-    return time
+  set_vt: function(data) {
+    tidle_volume = data
   },
 
   set_pressure: function(data) {
@@ -36,6 +35,10 @@ module.exports = {
 
   get_volume: function() {
     return volume
+  },
+
+  get_vt: function() {
+    return tidle_volume
   },
 
   get_pressure: function() {
