@@ -40,19 +40,19 @@ var self = module.exports = {
   },
 
   mqtt_pressure: function(message) {
-    database.set_pressure(Number((parseFloat(message)).toFixed(2)))
+    database.set_pressure((parseFloat(message)).toFixed(2))
   },
 
   mqtt_flowrate: function(message) {
-    database.set_flow_rate(Number((parseFloat(message)).toFixed(2)))
+    database.set_flow_rate((parseFloat(message)).toFixed(2))
   },
 
   mqtt_volume: function(message) {
-    database.set_volume(Number((parseFloat(message)).toFixed(2)))
+    database.set_volume((parseFloat(message)).toFixed(2))
   },
 
   mqtt_vt: function(message) {
-    database.set_vt(Number((parseFloat(message)).toFixed(2)))
+    database.set_vt((parseFloat(message)).toFixed(2))
   },
 
   mqtt_chartdata: function(message) {
