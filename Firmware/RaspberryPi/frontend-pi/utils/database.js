@@ -11,25 +11,25 @@ module.exports = {
 
   set_pressure: function(data) {
     if (pressure.length >= 60) {
-      pressure.push()
+      pressure.shift()
     }
-    pressure.shift(data)
+    pressure.push(data)
     return pressure
   },
 
   set_flow_rate: function(data) {
     if (flow_rate.length >= 60) {
-      flow_rate.push()
+      flow_rate.shift()
     }
-    flow_rate.shift(data)
+    flow_rate.push(data)
     return flow_rate
   },
 
   set_volume: function(data) {
     if (volume.length >= 60) {
-      volume.push()
+      volume.shift()
     }
-    volume.shift(data)
+    volume.push(data)
     return volume
   },
 
