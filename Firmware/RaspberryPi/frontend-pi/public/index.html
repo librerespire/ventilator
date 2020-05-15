@@ -453,6 +453,7 @@
         $.get("/api/table/values", function(data, status) {
           vt = data['vt'];
         });
+        console.log(vt);
         $("#tidle_volume").html(vt);
       }, 1000);
     });
