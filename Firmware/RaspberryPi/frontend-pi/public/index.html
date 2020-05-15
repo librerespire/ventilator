@@ -334,7 +334,7 @@
         $.get("/api/graphs/pressure", function(data, status) {
           PressureData = data['data'];
         });
-        pressureChart.series[0].setData(PressureData);
+        pressureChart.series[0].setData(PressureData[1]);
       }, 1000);
     });
     $(function() {
@@ -392,7 +392,7 @@
         $.get("/api/graphs/flowrate", function(data, status) {
           flowData = data['data'];
         });
-        flowChart.series[0].setData(flowData);
+        flowChart.series[0].setData(flowData[1]);
       }, 1000);
     });
 
@@ -451,7 +451,7 @@
         $.get("/api/graphs/volume", function(data, status) {
           volumeData = data['data'];
         });
-        volumeChart.series[0].setData(volumeData);
+        volumeChart.series[0].setData(volumeData[1]);
       }, 1000);
     });
   </script>
