@@ -60,7 +60,7 @@ var self = module.exports = {
     console.log("Chart data : " + message)
     json_data = JSON.parse(message)
 
-    time = json_data.time
+    time = new Date(json_data.time)
     pressure = Number((json_data.pressure).toFixed(2))
     flow_rate = Number((json_data.flow_rate).toFixed(2))
     volume = Number((json_data.volume).toFixed(2))
