@@ -312,8 +312,8 @@
           title: {
             text: 'Pressure'
           },
-          min: 900,
-          max: 1100
+          type: 'linear',
+          minorTickInterval: 'auto'
         },
         legend: {
           enabled: false
@@ -368,7 +368,9 @@
         yAxis: {
           title: {
             text: 'Flow'
-          }
+          },
+          type: 'linear',
+          minorTickInterval: 'auto'
         },
         legend: {
           enabled: false
@@ -420,7 +422,9 @@
         yAxis: {
           title: {
             text: 'Volume'
-          }
+          },
+          type: 'linear',
+          minorTickInterval: 'auto'          
         },
         time: {
           useUTC: false
