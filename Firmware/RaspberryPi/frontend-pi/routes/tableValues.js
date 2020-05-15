@@ -14,8 +14,8 @@ router.get('/values', function(req, res) {
 
   res.json({
     "vt": database.get_vt(),
-    "peak_pressure": Math.max(database.get_pressure()),
-    "minute_volume": min_volume,
+    "peak_pressure": Math.max(database.get_pressure()[1]),
+    "minute_volume": min_volume.toFixed(2),
   });
 })
 
