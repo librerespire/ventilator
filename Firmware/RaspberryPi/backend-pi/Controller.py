@@ -200,7 +200,7 @@ def calculate_pid_duty_ratio(demo_level):
 
 def create_chart_payload(t, pressure, flow_rate, volume):
     payload = {
-        'time': round(t, 2),
+        'time': t,
         'pressure': round(pressure, 2),
         'flow_rate': round(flow_rate, 2),
         'volume': round(volume, 2)
@@ -208,24 +208,18 @@ def create_chart_payload(t, pressure, flow_rate, volume):
     return json.dumps(payload)
 
 
-def send_to_display(delta_t, pressure, flow_rate, volume):
+def send_to_display(timeT, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
-
-    global DISPLAY_TIME_AXIS
-
-    # Recalculate the time axis value to fit in the graph
-    DISPLAY_TIME_AXIS += delta_t
-    DISPLAY_TIME_AXIS %= DISPLAY_TIME_RANGE
 
     mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
     mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
     mqtt.sender(mqtt.VOLUME_TOPIC, volume)
 
-    payload = create_chart_payload(DISPLAY_TIME_AXIS, pressure, flow_rate, volume)
+    payload = create_chart_payload(timeT, pressure, flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
     # TODO: send also time with each topic so that it can be graphed based on time
-    logger.debug("[ %.1f sec ] : Pressure: %.2f L, Flow rate: %.2f L/min, Volume: %.2f L,  "
-                 % (round(DISPLAY_TIME_AXIS, 2), convert_pressure(pressure), flow_rate, volume))
+    logger.debug("Time: [ %s ] : Pressure: %.2f L, Flow rate: %.2f L/min, Volume: %.2f L,  "
+                 % (timeT, convert_pressure(pressure), flow_rate, volume))
 
 
 def insp_phase(demo_level):
@@ -262,7 +256,7 @@ def insp_phase(demo_level):
 
             ti = (t2 - start_time).total_seconds()
             delta_t = (t2 - t1).total_seconds()
-            send_to_display(delta_t, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
+            send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
 
         # Calculate volume
@@ -273,7 +267,7 @@ def insp_phase(demo_level):
 
         ti = (t2 - start_time).total_seconds()
         delta_t = (t2 - t1).total_seconds()
-        send_to_display(delta_t, p3, q2, vi)
+        send_to_display(t2, p3, q2, vi)
 
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
             Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
@@ -304,7 +298,7 @@ def exp_phase():
 
         ti = (t2 - start_time).total_seconds()
         delta_t = (t2 - t1).total_seconds()
-        send_to_display(delta_t, p3, (-1 * q2), vi)
+        send_to_display(t2, p3, (-1 * q2), vi)
         logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
 
     logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)

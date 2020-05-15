@@ -1,6 +1,6 @@
-var pressure = new Array(60).fill(0).map(() => new Array(2).fill(0))
-var flow_rate = new Array(60).fill(0).map(() => new Array(2).fill(0));
-var volume = new Array(60).fill(0).map(() => new Array(2).fill(0))
+var pressure = new Array(60).fill(0).map(() => new Array(2).fill(Date.parse('0000-00-00 00:00:00')))
+var flow_rate = new Array(60).fill(0).map(() => new Array(2).fill(Date.parse('0000-00-00 00:00:00')));
+var volume = new Array(60).fill(0).map(() => new Array(2).fill(Date.parse('0000-00-00 00:00:00')))
 
 
 module.exports = {
