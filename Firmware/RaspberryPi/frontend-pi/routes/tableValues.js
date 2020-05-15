@@ -17,6 +17,7 @@ router.get('/values', function(req, res) {
     "peak_pressure": Math.max(database.get_pressure()[1]),
     "minute_volume": min_volume.toFixed(2),
   });
+  console.log(Math.max(database.get_pressure()[1]);
 })
 
 module.exports = router;
