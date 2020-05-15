@@ -6,10 +6,11 @@ var router = express.Router();
 router.get('/values', function(req, res) {
 
   //get Minute Volume by getting sum of last minute delivered volume
-  volumeData = database.get_volume()[1];
-  var min_volume = volumeData.reduce(function(a, b) {
-    return a + b;
-  }, 0);
+  volumeData = database.get_volume();
+  min_volume = 0
+  for(var i = 0; i < volumeData.length; i++) {
+          min_volume = min_volume + volumeData[i][1];
+  }
 
   res.json({
     "vt": database.get_vt(),
