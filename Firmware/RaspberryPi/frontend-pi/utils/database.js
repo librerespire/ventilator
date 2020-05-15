@@ -23,6 +23,7 @@ module.exports = {
       flow_rate.pop()
     }
     flow_rate.unshift(data)
+    console.log(flow_rate);
     return flow_rate
   },
 
