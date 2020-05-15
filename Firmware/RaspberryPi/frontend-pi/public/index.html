@@ -428,6 +428,7 @@
       setInterval(function() {
         $.get("/api/graphs/volume", function(data, status) {
           volumeData = data['data'];
+          console.log(volumeData);          
         });
         volumeChart.series[0].setData(volumeData);
       }, 1000);
