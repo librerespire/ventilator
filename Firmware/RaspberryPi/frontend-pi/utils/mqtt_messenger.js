@@ -61,7 +61,6 @@ var self = module.exports = {
     json_data = JSON.parse(message)
 
     time = (new Date(json_data.time)).getTime()
-    console.log(time);
     pressure = Number((json_data.pressure).toFixed(2))
     flow_rate = Number((json_data.flow_rate).toFixed(2))
     volume = Number((json_data.volume).toFixed(2))
