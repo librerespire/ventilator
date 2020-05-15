@@ -1,8 +1,15 @@
-var pressure = new Array(60).fill(0);
-var flow_rate = new Array(60).fill(0);
-var volume = new Array(60).fill(0);
+var pressure = new Array(60).fill(0).map(() => new Array(2).fill(0))
+var flow_rate = new Array(60).fill(0).map(() => new Array(2).fill(0));
+var volume = new Array(60).fill(0).map(() => new Array(2).fill(0))
+
 
 module.exports = {
+  set_time: function(data){
+    time.pop()
+    time.unshift(data)
+    return time
+  },
+
   set_pressure: function(data){
     pressure.pop()
     pressure.unshift(data)

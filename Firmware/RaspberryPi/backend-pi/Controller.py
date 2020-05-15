@@ -1,8 +1,6 @@
-# Controller v1.1
-# 2020-05-09 12.05 AM (Melb)
-
 import os
 import math
+import json
 import time
 from datetime import datetime
 import threading
@@ -10,8 +8,9 @@ import RPi.GPIO as GPIO
 import logging
 import logging.config
 from Variables import Variables
-from SensorReader import SensorReader
-from PWMController import PWMController
+# from SensorReader import SensorReader
+from SensorReaderService import SensorReaderService
+# from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
 
 # Internal parameters
@@ -30,70 +29,74 @@ INSP_FLOW = True
 EXP_FLOW = False
 DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
-NUMBER_OF_SENSORS = 4
-BUS_1 = Variables.BUS_1
-BUS_2 = Variables.BUS_2
-BUS_3 = Variables.BUS_3
-BUS_4 = Variables.BUS_4
-INSP_PHASE = "inspiratory"
-EXP_PHASE = "expiratory"
-DISPLAY_TIME_AXIS = 0           # time axis value in display
-DISPLAY_TIME_RANGE = 20   # the range of time axis in display
+DISPLAY_TIME_AXIS = 0  # time axis value in display
+DISPLAY_TIME_RANGE = 20  # the range of time axis in display
+
+# No longer need. Controller now uses SensorReaderService
+# NUMBER_OF_SENSORS = 4
+# BUS_1 = Variables.BUS_1
+# BUS_2 = Variables.BUS_2
+# BUS_3 = Variables.BUS_3
+# BUS_4 = Variables.BUS_4
+# INSP_PHASE = "inspiratory"
+# EXP_PHASE = "expiratory"
+# threads_map = {}
 
 pressure_data = [0] * 6
 PWM_I, PWM_E = None, None
-threads_map = {}
 
-mqtt = MQTTTransceiver()
+mqtt = None
+sensing_service = None
 Ki, Ke = 0, 0
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
+# No longer need. Controller now uses SensorReaderService
+# def thread_slice(pressure_data, index):
+#     sr = SensorReader(index)
+#     pressure = sr.read_pressure()
+#     pressure_data[index] = pressure
 
-def thread_slice(pressure_data, index):
-    sr = SensorReader(index)
-    pressure = sr.read_pressure()
-    pressure_data[index] = pressure
 
-
-def read_data(phase=""):
-    # read relevant pressure sensors from the smbus and return actual values
-    threads = list()
-    if phase == INSP_PHASE:
-        for index in [BUS_1, BUS_2, BUS_3]:
-            thread = threading.Thread(
-                target=thread_slice, args=(pressure_data, index,))
-            threads.append(thread)
-            thread.start()
-        for index, thread in enumerate(threads):
-            thread.join()
-        logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f]" %
-                     (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]))
-        return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]
-    elif phase == EXP_PHASE:
-        for index in [BUS_3, BUS_4]:
-            thread = threading.Thread(
-                target=thread_slice, args=(pressure_data, index,))
-            threads.append(thread)
-            thread.start()
-        for index, thread in enumerate(threads):
-            thread.join()
-        logger.debug("Pressure: P3[%.2f], P4[%.2f]" %
-                     (pressure_data[BUS_3], pressure_data[BUS_4]))
-        return pressure_data[BUS_3], pressure_data[BUS_4]
-    else:
-        for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
-            thread = threading.Thread(
-                target=thread_slice, args=(pressure_data, index,))
-            threads.append(thread)
-            thread.start()
-        for index, thread in enumerate(threads):
-            thread.join()
-        logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
-                     (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
-        return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
+# No longer need. Controller now uses SensorReaderService
+# def read_data(phase=""):
+#     # read relevant pressure sensors from the smbus and return actual values
+#     threads = list()
+#     if phase == INSP_PHASE:
+#         for index in [BUS_1, BUS_2, BUS_3]:
+#             thread = threading.Thread(
+#                 target=thread_slice, args=(pressure_data, index,))
+#             threads.append(thread)
+#             thread.start()
+#         for index, thread in enumerate(threads):
+#             thread.join()
+#         logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f]" %
+#                      (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]))
+#         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]
+#     elif phase == EXP_PHASE:
+#         for index in [BUS_3, BUS_4]:
+#             thread = threading.Thread(
+#                 target=thread_slice, args=(pressure_data, index,))
+#             threads.append(thread)
+#             thread.start()
+#         for index, thread in enumerate(threads):
+#             thread.join()
+#         logger.debug("Pressure: P3[%.2f], P4[%.2f]" %
+#                      (pressure_data[BUS_3], pressure_data[BUS_4]))
+#         return pressure_data[BUS_3], pressure_data[BUS_4]
+#     else:
+#         for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
+#             thread = threading.Thread(
+#                 target=thread_slice, args=(pressure_data, index,))
+#             threads.append(thread)
+#             thread.start()
+#         for index, thread in enumerate(threads):
+#             thread.join()
+#         logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
+#                      (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
+#         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
 
 
 def calculate_k(p1, p2, flow_rate):
@@ -118,9 +121,9 @@ def calibrate_flow_meter(flow_rate):
     ke = 0
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate k
     while n < nSamples:
-        p1, p2, p3, p4 = read_data()
-        ki += calculate_k(p1, p2, flow_rate)
-        ke += calculate_k(p3, p4, flow_rate)
+        # p1, p2, p3, p4 = read_data()
+        ki += calculate_k(Variables.p1, Variables.p2, flow_rate)
+        ke += calculate_k(Variables.p3, Variables.p4, flow_rate)
         n += 1
         time.sleep(delay)
 
@@ -140,9 +143,7 @@ def control_solenoid(pin, duty_ratio):
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
-
-
-
+# No longer in use. This is to emulate PWM on digital pins
 # def control_solenoid(pin, duty_ratio):
 #     """ emulate pwm on a digital out pin """
 #     logger.info("Entering control_solenoid()...")
@@ -173,13 +174,13 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate flow rate
     while n < nSamples:
         if is_insp_phase:
-            p1, p2, p3 = read_data(INSP_PHASE)  # pressures
-            q += Ki * math.sqrt(abs(p1 - p2))  # flow rate
+            # p1, p2, p3 = read_data(INSP_PHASE)  # pressures
+            q += Ki * math.sqrt(abs(Variables.p1 - Variables.p2))  # flow rate
         else:
-            p3, p4 = read_data(EXP_PHASE)  # pressures
-            q += Ke * math.sqrt(abs(p3 - p4))  # flow rate
+            # p3, p4 = read_data(EXP_PHASE)  # pressures
+            q += Ke * math.sqrt(abs(Variables.p3 - Variables.p4))  # flow rate
 
-        p += p3
+        p += Variables.p3
 
         n += 1
         time.sleep(delay)
@@ -197,6 +198,16 @@ def calculate_pid_duty_ratio(demo_level):
     return duty_ratio
 
 
+def create_chart_payload(t, pressure, flow_rate, volume):
+    payload = {
+        'time': round(t, 2),
+        'pressure': round(pressure, 2),
+        'flow_rate': round(flow_rate, 2),
+        'volume': round(volume, 2)
+    }
+    return json.dumps(payload)
+
+
 def send_to_display(delta_t, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
 
@@ -209,6 +220,9 @@ def send_to_display(delta_t, pressure, flow_rate, volume):
     mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
     mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
     mqtt.sender(mqtt.VOLUME_TOPIC, volume)
+
+    payload = create_chart_payload(DISPLAY_TIME_AXIS, pressure, flow_rate, volume)
+    mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
     # TODO: send also time with each topic so that it can be graphed based on time
     logger.debug("[ %.1f sec ] : Pressure: %.2f L, Flow rate: %.2f L/min, Volume: %.2f L,  "
                  % (round(DISPLAY_TIME_AXIS, 2), convert_pressure(pressure), flow_rate, volume))
@@ -218,10 +232,8 @@ def insp_phase(demo_level):
     """ inspiratory phase tasks
         demo_level is a temporary hack to introduce two flow rate levels until pid controller is implemented """
 
-    # os.system('play -nq -t alsa synth {} sine {}'.format(1, 440))
-
     logger.info("Entering inspiratory phase...")
-    #beep sound added to inspiratory cycle
+    # beep sound added to inspiratory cycle
     os.system("echo -ne '\007'")
     start_time = datetime.now()
     t1, t2 = start_time, start_time
@@ -250,7 +262,7 @@ def insp_phase(demo_level):
 
             ti = (t2 - start_time).total_seconds()
             delta_t = (t2 - t1).total_seconds()
-            send_to_display(delta_t, p3, 0, vi)          # flow rate is 0 when insp. solenoid is closed
+            send_to_display(delta_t, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
 
         # Calculate volume
@@ -264,7 +276,7 @@ def insp_phase(demo_level):
         send_to_display(delta_t, p3, q2, vi)
 
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
-            Variables.fio2, Variables.vt, Variables.ie_e, Variables.rr, Variables.peep))
+            Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
 
     logger.info("Leaving inspiratory phase.")
 
@@ -319,15 +331,15 @@ def calc_respiratory_params():
     """ calculate inspiratory time and expiratory time using parameters set via UI """
     global T_IN, T_EX
     one_breath_time = 60 / Variables.rr
-    T_IN = one_breath_time * Variables.ie_i / (Variables.ie_i + Variables.ie_e)
-    T_EX = one_breath_time * Variables.ie_e / (Variables.ie_i + Variables.ie_e)
+    T_IN = one_breath_time * 1 / (1 + Variables.ie)
+    T_EX = one_breath_time * Variables.ie / (1 + Variables.ie)
 
 
 # Initialize the parameters
 def init_parameters():
-    global PWM_I, PWM_E
+    global PWM_I, PWM_E, sensing_service, mqtt
 
-    # Initialize digital output pins
+    # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
@@ -336,6 +348,12 @@ def init_parameters():
 
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
     PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
+
+    # Start the sensor reading service
+    sensing_service = SensorReaderService()
+
+    # Start the MQTT transceiver to communicate with GUI
+    mqtt = MQTTTransceiver()
 
     calc_respiratory_params()
 
@@ -360,7 +378,7 @@ try:
         logger.info("***** Faster flow rate cycle *****")
         insp_phase(2)
         exp_phase()
-        wait_phase()
+        # wait_phase()
         logger.info("***** Faster cycle end *****")
 
         # use the latest input parameters set via UI

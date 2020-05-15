@@ -280,7 +280,7 @@
   <script type="text/javascript">
     $(function() {
       // Pressure chart
-      var PressureData = new Array(60).fill(0);
+      var PressureData = new Array(60).fill(0).map(() => new Array(2).fill(0));
       var pressureChart = Highcharts.chart({
         chart: {
           renderTo: 'pressureChart',
@@ -299,12 +299,19 @@
         },
         xAxis: {
           allowDecimals: false,
-          visible: false,
+          gridLineWidth: 1,
+          labels: {
+            formatter: function() {
+              return this.value;
+            }
+          },
         },
         yAxis: {
           title: {
             text: 'Pressure'
-          }
+          },
+          min: 900,
+          max: 1100
         },
         plotOptions: {
           area: {
@@ -332,7 +339,7 @@
     });
     $(function() {
       // Flow chart
-      var flowData = new Array(60).fill(0);
+      var flowData = new Array(60).fill(0).map(() => new Array(2).fill(0));
 
       var flowChart = Highcharts.chart({
         chart: {
@@ -352,7 +359,12 @@
         },
         xAxis: {
           allowDecimals: false,
-          visible: false,
+          gridLineWidth: 1,
+          labels: {
+            formatter: function() {
+              return this.value;
+            }
+          },
         },
         yAxis: {
           title: {
@@ -386,7 +398,7 @@
 
     $(function() {
       // Flow chart
-      var volumeData = new Array(60).fill(0);
+      var volumeData = new Array(60).fill(0).map(() => new Array(2).fill(0));;
       // Volume chart
       var volumeChart = Highcharts.chart({
         chart: {
@@ -405,8 +417,13 @@
           enable: false
         },
         xAxis: {
-          allowDecimals: false,
-          visible: false,
+          allowDecimals: true,
+          gridLineWidth: 1,
+          labels: {
+            formatter: function() {
+              return this.value;
+            }
+          },
         },
         yAxis: {
           title: {

@@ -12,6 +12,7 @@ class MQTTTransceiver:
     PRESSURE_TOPIC = 'Ventilator/pressure'
     FLOWRATE_TOPIC = 'Ventilator/flow_rate'
     VOLUME_TOPIC = 'Ventilator/volume'
+    CHART_DATA_TOPIC = 'Ventilator/chart_data'
     MIN_VOL_TOPIC = 'Ventilator/min_volume'
     PEAK_PRESSURE_TOPIC = 'Ventilator/peak_pressure'
     FIO2_CONFIG_TOPIC = 'Config/fio2'
@@ -22,6 +23,7 @@ class MQTTTransceiver:
 
     MQTT_HOST = "127.0.0.1"
     MQTT_PORT = 1883
+    MQTT_KEEP_ALIVE = 60
 
     def __init__(self):
         # Setup an mqtt client
@@ -33,7 +35,7 @@ class MQTTTransceiver:
     def setup_client(self):
         global client
         client = mqtt.Client()
-        client.connect(self.MQTT_HOST, self.MQTT_PORT, 60)
+        client.connect(self.MQTT_HOST, self.MQTT_PORT, self.MQTT_KEEP_ALIVE)
 
     def mqtt_publish(self, topic, value):
         logger.debug("MQTT Send: [%s] - [%s]" % (topic, value))
