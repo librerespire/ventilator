@@ -449,12 +449,9 @@
       }, 1000);
 
       setInterval(function() {
-        vt = 0;
         $.get("/api/table/values", function(data, status) {
-          vt = data['vt'];
+          $("#tidle_volume").html(data['vt']);          
         });
-        console.log(vt);
-        $("#tidle_volume").html(vt);
       }, 1000);
     });
   </script>
