@@ -200,7 +200,7 @@ def calculate_pid_duty_ratio(demo_level):
 
 def create_chart_payload(t, pressure, flow_rate, volume):
     payload = {
-        'time': '%s'.format(t),
+        'time': "{0}".format(t),
         'pressure': round(pressure, 2),
         'flow_rate': round(flow_rate, 2),
         'volume': round(volume, 2)
@@ -218,8 +218,7 @@ def send_to_display(timeT, pressure, flow_rate, volume):
     payload = create_chart_payload(timeT, pressure, flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
     # TODO: send also time with each topic so that it can be graphed based on time
-    logger.debug("Time: [ %s ] : Pressure: %.2f L, Flow rate: %.2f L/min, Volume: %.2f L,  "
-                 % (timeT, convert_pressure(pressure), flow_rate, volume))
+    logger.debug(payload)
 
 
 def insp_phase(demo_level):
