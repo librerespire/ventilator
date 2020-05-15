@@ -280,7 +280,7 @@
   <script type="text/javascript">
     $(function() {
       // Pressure chart
-      var PressureData = new Array(60).fill(0).map(() => new Array(2).fill(0));
+      var PressureData = [];
       var pressureChart = Highcharts.chart({
         chart: {
           renderTo: 'pressureChart',
@@ -303,7 +303,7 @@
         },
         time: {
             useUTC: false
-        },        
+        },
         yAxis: {
           title: {
             text: 'Pressure'
@@ -327,12 +327,12 @@
         $.get("/api/graphs/pressure", function(data, status) {
           PressureData = data['data'];
         });
-        pressureChart.series[0].setData(PressureData[1]);
+        pressureChart.series[0].setData(PressureData);
       }, 1000);
     });
     $(function() {
       // Flow chart
-      var flowData = new Array(60).fill(0).map(() => new Array(2).fill(0));
+      var flowData = [];
 
       var flowChart = Highcharts.chart({
         chart: {
@@ -378,13 +378,12 @@
         $.get("/api/graphs/flowrate", function(data, status) {
           flowData = data['data'];
         });
-        flowChart.series[0].setData(flowData[1]);
+        flowChart.series[0].setData(flowData);
       }, 1000);
     });
 
     $(function() {
-      // Flow chart
-      var volumeData = new Array(60).fill(0).map(() => new Array(2).fill(0));;
+      var volumeData = [];
       // Volume chart
       var volumeChart = Highcharts.chart({
         chart: {
@@ -430,7 +429,7 @@
         $.get("/api/graphs/volume", function(data, status) {
           volumeData = data['data'];
         });
-        volumeChart.series[0].setData(volumeData[1]);
+        volumeChart.series[0].setData(volumeData);
       }, 1000);
     });
   </script>
