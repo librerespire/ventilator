@@ -22,6 +22,7 @@ class MQTTTransceiver:
     PEEP_CONFIG_TOPIC = 'Config/peep'
     VT_CONFIG_TOPIC = 'Config/vt'
     IE_CONFIG_TOPIC = 'Config/ie'
+    PS_CONFIG_TOPIC = 'Config/ps'
 
     MQTT_HOST = "127.0.0.1"
     MQTT_PORT = 1883
@@ -56,6 +57,7 @@ class MQTTTransceiver:
         client.subscribe(self.PEEP_CONFIG_TOPIC)
         client.subscribe(self.VT_CONFIG_TOPIC)
         client.subscribe(self.IE_CONFIG_TOPIC)
+        client.subscribe(self.PS_CONFIG_TOPIC)
         client.on_message = self.on_message
         client.loop_forever()
 
@@ -74,10 +76,10 @@ class MQTTTransceiver:
             logger.debug("VT receved: %.2f" % Variables.vt)
         elif (msg.topic == self.IE_CONFIG_TOPIC):
             Variables.ie = float(msg.payload.decode())
-            #TODO remove ie_i and ie_e
-            Variables.ie_i = Variables.ie
-            Variables.ie_e = 1
             logger.debug("IE receved: %.2f" % Variables.ie)
+        elif (msg.topic == self.PS_CONFIG_TOPIC):
+            Variables.ps = float(msg.payload.decode())
+            logger.debug("PS receved: %.2f" % Variables.ps)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 

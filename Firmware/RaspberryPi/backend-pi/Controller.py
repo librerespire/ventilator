@@ -360,6 +360,8 @@ def init_parameters():
 try:
     init_parameters()
 
+    # TODO: Calibration should start after a trigger from user
+
     # 12 here is the intended flow_rate for calibration in L/min
     Ki, Ke = calibrate_flow_meter(12)
 
