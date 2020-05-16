@@ -360,10 +360,12 @@ def init_parameters():
 try:
     init_parameters()
 
-    # TODO: Calibration should start after a trigger from user
+    # Calibration should start after a trigger from user with a valid flow rate
+    while Variables.calib_flow_rate < 0:
+        time.sleep(2)
 
-    # 12 here is the intended flow_rate for calibration in L/min
-    Ki, Ke = calibrate_flow_meter(12)
+    # Calibrate the flow meter
+    Ki, Ke = calibrate_flow_meter(Variables.calib_flow_rate)
 
     while True:
         # slow flow rate
