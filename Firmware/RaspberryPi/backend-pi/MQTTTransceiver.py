@@ -13,17 +13,17 @@ class MQTTTransceiver:
     FLOWRATE_TOPIC = 'Ventilator/flow_rate'
     VOLUME_TOPIC = 'Ventilator/volume'
     CHART_DATA_TOPIC = 'Ventilator/chart_data'
-    MIN_VOL_TOPIC = 'Ventilator/min_volume'
-    PEAK_PRESSURE_TOPIC = 'Ventilator/peak_pressure'
     ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
+    MINUTE_VOLUME_TOPIC = 'Ventilator/minute_volume'
+    PIP_TOPIC = 'Ventilator/pip'
 
+    CALIB_FLOW_RATE_CONFIG_TOPIC = 'Config/calib_flow_rate'
     FIO2_CONFIG_TOPIC = 'Config/fio2'
     RR_CONFIG_TOPIC = 'Config/rr'
     PEEP_CONFIG_TOPIC = 'Config/peep'
     VT_CONFIG_TOPIC = 'Config/vt'
     IE_CONFIG_TOPIC = 'Config/ie'
     PS_CONFIG_TOPIC = 'Config/ps'
-    CALIB_FLOW_RATE_CONFIG_TOPIC = 'Config/calib_flow_rate'
 
     MQTT_HOST = "127.0.0.1"
     MQTT_PORT = 1883

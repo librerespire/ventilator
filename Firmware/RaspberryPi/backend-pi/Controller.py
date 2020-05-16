@@ -48,6 +48,8 @@ PWM_I, PWM_E = None, None
 mqtt = None
 sensing_service = None
 Ki, Ke = 0, 0
+TIME_REF_MINUTE_VOL = -1
+MINUTE_VOLUME = 0
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
@@ -211,9 +213,9 @@ def create_chart_payload(t, pressure, flow_rate, volume):
 def send_to_display(timeT, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
 
-    mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
-    mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
-    mqtt.sender(mqtt.VOLUME_TOPIC, volume)
+    # mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
+    # mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
+    # mqtt.sender(mqtt.VOLUME_TOPIC, volume)
 
     payload = create_chart_payload(timeT, convert_pressure(pressure), flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
@@ -233,6 +235,7 @@ def insp_phase(demo_level):
     ti = 0  # instantaneous time
     q1, q2 = 0, 0  # flow rates
     vi = 0  # volume
+    pip = 0 # peak inspiratory pressure
     solenoids_closed = False
 
     # Control solenoids
@@ -245,6 +248,10 @@ def insp_phase(demo_level):
         q1 = q2
         q2, p3 = get_average_flow_rate_and_pressure(INSP_FLOW)
         t2 = datetime.now()
+
+        # Record peak inspiratory pressure (pip)
+        if p3 > pip:
+            pip = p3
 
         if vi > Variables.vt:
             if not solenoids_closed:
@@ -271,8 +278,13 @@ def insp_phase(demo_level):
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
             Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
 
-    # store tidal volume for expiratory phase net volume calculation
+    # Store tidal volume for expiratory phase net volume calculation
     INSP_TOTAL_VOLUME = vi
+
+    # Send pip to GUI
+    mqtt.sender(mqtt.PIP_TOPIC, pip)
+    logger.info("[%.4f] Pip is : %.3f mL " % (ti, pip))
+
     logger.info("Leaving inspiratory phase.")
 
 
@@ -280,7 +292,7 @@ def exp_phase():
     """ expiratory phase tasks """
     logger.info("Entering expiratory phase...")
 
-    global INSP_TOTAL_VOLUME
+    global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL, MINUTE_VOLUME
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
@@ -290,6 +302,10 @@ def exp_phase():
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
+    # Start calculating minute volume
+    if TIME_REF_MINUTE_VOL < 0:
+        TIME_REF_MINUTE_VOL = start_time
+
     while ti < T_EX:
         t1 = t2
         q1 = q2
@@ -298,8 +314,19 @@ def exp_phase():
 
         # Calculate volume
         vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
-
         ti = (t2 - start_time).total_seconds()
+
+        if (t2 - TIME_REF_MINUTE_VOL).total_seconds() < 60:
+            MINUTE_VOLUME += vi
+        else:
+            # Send minute volume to GUI
+            mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME, 2))
+            logger.info("[%.4f] Minute volume is : %.2f mL " % (ti, MINUTE_VOLUME))
+
+            # Reset minute volume calculation
+            TIME_REF_MINUTE_VOL = t2
+            MINUTE_VOLUME = 0
+
         delta_t = (t2 - t1).total_seconds()
         send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
         logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
