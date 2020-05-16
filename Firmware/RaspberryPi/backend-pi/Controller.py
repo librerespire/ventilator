@@ -19,7 +19,6 @@ T_EX = 3  # expiratory time
 T_WT = 1  # waiting time
 
 Pi = 2000  # peak inspiratory pressure in cmH2O
-PEEP = 900  # PEEP
 PWM_FREQ = 2  # frequency for PWM
 
 # Constants
@@ -218,7 +217,6 @@ def send_to_display(timeT, pressure, flow_rate, volume):
 
     payload = create_chart_payload(timeT, pressure, flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
-    # TODO: send also time with each topic so that it can be graphed based on time
     logger.debug(payload)
 
 
@@ -260,8 +258,8 @@ def insp_phase(demo_level):
             send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
 
-        # Calculate volume
-        vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
+        # Calculate volume in milli-litres
+        vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
         di = calculate_pid_duty_ratio(demo_level)
         control_solenoid(SI_PIN, di)
@@ -299,14 +297,14 @@ def exp_phase():
         t2 = datetime.now()
 
         # Calculate volume
-        vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
+        vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
         ti = (t2 - start_time).total_seconds()
         delta_t = (t2 - t1).total_seconds()
         send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
         logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
 
-    logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)
+    logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % vi)
     mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, vi)
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")

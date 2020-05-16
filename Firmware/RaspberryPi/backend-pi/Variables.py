@@ -12,7 +12,7 @@ class Variables:
     fio2 = 0    # fio2 value
     ie = 1      # I:E ratio
     rr = 10     # respiratory rate (RR)
-    vt = 5      # tidal volume
+    vt = 500    # tidal volume (mL)
     peep = 1200 # PEEP
     p1 = 0      # pressure sensor 1 on inspiratory phase
     p2 = 0      # pressure sensor 2 on inspiratory phase
