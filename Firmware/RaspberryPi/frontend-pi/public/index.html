@@ -468,8 +468,8 @@
       setInterval(function() {
         $.get("/api/table/values", function(data, status) {
           $("#tidle_volume").html(data['vt']);
-          $("#peak_pressure").html(data['peak_pressure']);
           $("#min_volume").html(data['minute_volume']);
+          $("#peak_pressure").html(data['peak_pressure']);
         });
       }, 1000);
     });
