@@ -110,6 +110,10 @@
         $("#tidle_volume").html($(this).val())
         $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
       });
+      $("#pressure_support_input").bind("change paste keyup", function() {
+        $("#pressure_support").html($(this).val())
+        $.get("/api/configs/ps?ps=" + $(this).val(), function(data, status) {})
+      });
     });
   </script>
 </head>
@@ -219,7 +223,7 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Pressure Support</div>
+                      <div>Pressure Support (Ps)</div>
                       <div id="pressure_support" style="font-size:60px;font-style:initial;">20</div>
                     </div>
                   </div>
@@ -228,7 +232,7 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>IE Ratio</div>
-                      <div id="ie_ratio" style="font-size:60px;font-style:initial;">1:10</div>
+                      <div id="ie_ratio" style="font-size:60px;font-style:initial;">1:2</div>
                     </div>
                   </div>
                 </td>
@@ -281,8 +285,8 @@
         <div class="col-sm">
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
-              <div id="bottom_menu">PS</div>
-              <input type="tel" class="keyboard form-control" id="pressure_support" type="number" onclick="show_easy_numpad(this);">
+              <div id="bottom_menu">Ps</div>
+              <input type="tel" class="keyboard form-control" id="pressure_support_input" type="number" onclick="show_easy_numpad(this);">
             </div>
           </div>
         </div>

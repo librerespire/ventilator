@@ -8,6 +8,7 @@ const RR_CONFIG_TOPIC = 'Config/rr';
 const PEEP_CONFIG_TOPIC = 'Config/peep';
 const VT_CONFIG_TOPIC = 'Config/vt';
 const IE_CONFIG_TOPIC = 'Config/ie';
+const PS_CONFIG_TOPIC = 'Config/ps';
 
 router.get('/fio2', function (req, res) {
   mqtt_messenger.mqtt_sender(FIO2_CONFIG_TOPIC, req.query.fio2);
@@ -31,6 +32,11 @@ router.get('/peep', function (req, res) {
 
 router.get('/ie', function (req, res) {
   mqtt_messenger.mqtt_sender(IE_CONFIG_TOPIC, req.query.ie);
+  res.sendStatus(200);
+})
+
+router.get('/ps', function (req, res) {
+  mqtt_messenger.mqtt_sender(PS_CONFIG_TOPIC, req.query.ps);
   res.sendStatus(200);
 })
 
