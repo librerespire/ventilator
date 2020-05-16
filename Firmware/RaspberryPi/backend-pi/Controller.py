@@ -215,7 +215,7 @@ def send_to_display(timeT, pressure, flow_rate, volume):
     mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
     mqtt.sender(mqtt.VOLUME_TOPIC, volume)
 
-    payload = create_chart_payload(timeT, pressure, flow_rate, volume)
+    payload = create_chart_payload(timeT, convert_pressure(pressure), flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
     logger.debug(payload)
 
@@ -320,8 +320,8 @@ def wait_phase():
 
 
 def convert_pressure(p_hpa):
-    """ returns inspiratory pressure in cmH2O"""
-    return p_hpa * 1.0197442
+    """ returns inspiratory pressure relative to atm in cmH2O"""
+    return (p_hpa * 1.0197442) - 1033.23
 
 
 def calc_respiratory_params():
