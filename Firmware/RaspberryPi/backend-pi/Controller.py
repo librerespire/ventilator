@@ -48,7 +48,7 @@ PWM_I, PWM_E = None, None
 mqtt = None
 sensing_service = None
 Ki, Ke = 0, 0
-TIME_REF_MINUTE_VOL = -1
+TIME_REF_MINUTE_VOL = None
 MINUTE_VOLUME = 0
 
 # declare logger parameters
@@ -303,7 +303,7 @@ def exp_phase():
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Start calculating minute volume
-    if TIME_REF_MINUTE_VOL < 0:
+    if TIME_REF_MINUTE_VOL is None:
         TIME_REF_MINUTE_VOL = start_time
 
     while ti < T_EX:
