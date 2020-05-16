@@ -31,6 +31,7 @@ DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
 DISPLAY_TIME_AXIS = 0  # time axis value in display
 DISPLAY_TIME_RANGE = 20  # the range of time axis in display
+INSP_TOTAL_VOLUME = 0   # total inspiratory volume delivered
 
 # No longer need. Controller now uses SensorReaderService
 # NUMBER_OF_SENSORS = 4
@@ -225,6 +226,7 @@ def insp_phase(demo_level):
     """ inspiratory phase tasks
         demo_level is a temporary hack to introduce two flow rate levels until pid controller is implemented """
 
+    global INSP_TOTAL_VOLUME
     logger.info("Entering inspiratory phase...")
     # beep sound added to inspiratory cycle
     os.system("echo -ne '\007'")
@@ -271,12 +273,16 @@ def insp_phase(demo_level):
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
             Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
 
+    # store tidal volume for expiratory phase net volume calculation
+    INSP_TOTAL_VOLUME = vi
     logger.info("Leaving inspiratory phase.")
 
 
 def exp_phase():
     """ expiratory phase tasks """
     logger.info("Entering expiratory phase...")
+
+    global INSP_TOTAL_VOLUME
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
@@ -297,12 +303,12 @@ def exp_phase():
 
         ti = (t2 - start_time).total_seconds()
         delta_t = (t2 - t1).total_seconds()
-        send_to_display(t2, p3, (-1 * q2), vi)
+        send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
         logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
 
     logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)
     mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, vi)
-
+    INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
 
 
