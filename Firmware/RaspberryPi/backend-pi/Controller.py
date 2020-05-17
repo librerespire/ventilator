@@ -187,6 +187,7 @@ def insp_phase(demo_level):
 
         # If a minute has elapsed, submit the MINUTE_VOLUME to display
         if TIME_REF_MINUTE_VOL is not None and (t2 - TIME_REF_MINUTE_VOL).total_seconds() > 60:
+            logger.debug("<<< INS >> vi=%.1f min_vol=%.1f", (vi, MINUTE_VOLUME))
             submit_minute_vol(t2)
 
         di = calculate_pid_duty_ratio(demo_level)
@@ -238,8 +239,10 @@ def exp_phase():
 
         # Handle minute volume calculations
         if (t2 - TIME_REF_MINUTE_VOL).total_seconds() < 60:
+            logger.debug("<<< INS >> vi=%.1f min_vol=%.1f", (vi, MINUTE_VOLUME))
             MINUTE_VOLUME += vi
         else:
+            logger.debug("<<< INS - RESET >> vi=%.1f min_vol=%.1f", (vi, MINUTE_VOLUME))
             submit_minute_vol(t2)
 
         send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
@@ -256,6 +259,7 @@ def submit_minute_vol(reset_time):
 
     # Send minute volume to GUI
     mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME, 2))
+    logger.debug("<<< SUBMIT >> min_vol=%.1f", MINUTE_VOLUME)
 
     # Reset minute volume calculation
     TIME_REF_MINUTE_VOL = reset_time
