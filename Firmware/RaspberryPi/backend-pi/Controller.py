@@ -218,7 +218,7 @@ def exp_phase():
     t1, t2 = start_time, start_time
     ti = 0
     q1, q2 = 0, 0
-    vi = 0
+    vi, v_tot = 0, 0
 
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
@@ -234,7 +234,8 @@ def exp_phase():
         t2 = datetime.now()
 
         # Calculate volume
-        vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
+        vi = 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
+        v_tot += vi
         ti = (t2 - start_time).total_seconds()
 
         # Handle minute volume calculations
@@ -245,11 +246,11 @@ def exp_phase():
             logger.debug("<<< EXP - RESET >> vi=%.1f min_vol=%.1f", (vi, MINUTE_VOLUME))
             submit_minute_vol(t2)
 
-        send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
+        send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - v_tot))
         logger.debug("ti = %.4f,     vi = %.1f" % (ti, vi))
 
-    logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % vi)
-    mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, vi)
+    logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % v_tot)
+    mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, v_tot)
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
 
