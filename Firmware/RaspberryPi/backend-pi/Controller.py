@@ -202,8 +202,8 @@ def insp_phase(demo_level):
     INSP_TOTAL_VOLUME = vi
 
     # Send pip to GUI
-    mqtt.sender(mqtt.PIP_TOPIC, pip)
-    logger.info("[%.4f] Pip is : %.3f mL " % (ti, pip))
+    mqtt.sender(mqtt.PIP_TOPIC, convert_pressure(pip))
+    logger.info("[%.4f] Pip is : %.3f mL " % (ti, convert_pressure(pip)))
 
     logger.info("Leaving inspiratory phase.")
 
