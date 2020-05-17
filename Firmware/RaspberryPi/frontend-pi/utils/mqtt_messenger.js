@@ -58,11 +58,11 @@ var self = module.exports = {
 
   mqtt_minute_volume: function(message) {
     database.set_minute_volume(parseInt(message))
-    console.log("MQTT Minute Volume: " + (parseInt(message)));
+    console.log("MQTT Minute Volume: " + parseInt(message));
   },
 
   mqtt_pip: function(message) {
-    database.set_pip(parseInt(message))
+    database.set_pip((parseFloat(message)).toFixed(1))
     console.log("MQTT Pip: " + (parseInt(message)));
   }
 
