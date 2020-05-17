@@ -28,19 +28,7 @@ INSP_FLOW = True
 EXP_FLOW = False
 DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
-DISPLAY_TIME_AXIS = 0  # time axis value in display
-DISPLAY_TIME_RANGE = 20  # the range of time axis in display
 INSP_TOTAL_VOLUME = 0   # total inspiratory volume delivered
-
-# No longer need. Controller now uses SensorReaderService
-# NUMBER_OF_SENSORS = 4
-# BUS_1 = Variables.BUS_1
-# BUS_2 = Variables.BUS_2
-# BUS_3 = Variables.BUS_3
-# BUS_4 = Variables.BUS_4
-# INSP_PHASE = "inspiratory"
-# EXP_PHASE = "expiratory"
-# threads_map = {}
 
 pressure_data = [0] * 6
 PWM_I, PWM_E = None, None
@@ -54,51 +42,6 @@ MINUTE_VOLUME = 0
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
-
-# No longer need. Controller now uses SensorReaderService
-# def thread_slice(pressure_data, index):
-#     sr = SensorReader(index)
-#     pressure = sr.read_pressure()
-#     pressure_data[index] = pressure
-
-
-# No longer need. Controller now uses SensorReaderService
-# def read_data(phase=""):
-#     # read relevant pressure sensors from the smbus and return actual values
-#     threads = list()
-#     if phase == INSP_PHASE:
-#         for index in [BUS_1, BUS_2, BUS_3]:
-#             thread = threading.Thread(
-#                 target=thread_slice, args=(pressure_data, index,))
-#             threads.append(thread)
-#             thread.start()
-#         for index, thread in enumerate(threads):
-#             thread.join()
-#         logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f]" %
-#                      (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]))
-#         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3]
-#     elif phase == EXP_PHASE:
-#         for index in [BUS_3, BUS_4]:
-#             thread = threading.Thread(
-#                 target=thread_slice, args=(pressure_data, index,))
-#             threads.append(thread)
-#             thread.start()
-#         for index, thread in enumerate(threads):
-#             thread.join()
-#         logger.debug("Pressure: P3[%.2f], P4[%.2f]" %
-#                      (pressure_data[BUS_3], pressure_data[BUS_4]))
-#         return pressure_data[BUS_3], pressure_data[BUS_4]
-#     else:
-#         for index in [BUS_1, BUS_2, BUS_3, BUS_4]:
-#             thread = threading.Thread(
-#                 target=thread_slice, args=(pressure_data, index,))
-#             threads.append(thread)
-#             thread.start()
-#         for index, thread in enumerate(threads):
-#             thread.join()
-#         logger.debug("Pressure: P1[%.2f], P2[%.2f], P3[%.2f], P4[%.2f]" %
-#                      (pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]))
-#         return pressure_data[BUS_1], pressure_data[BUS_2], pressure_data[BUS_3], pressure_data[BUS_4]
 
 
 def calculate_k(p1, p2, flow_rate):
@@ -123,7 +66,6 @@ def calibrate_flow_meter(flow_rate):
     ke = 0
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate k
     while n < nSamples:
-        # p1, p2, p3, p4 = read_data()
         ki += calculate_k(Variables.p1, Variables.p2, flow_rate)
         ke += calculate_k(Variables.p3, Variables.p4, flow_rate)
         n += 1
@@ -145,26 +87,6 @@ def control_solenoid(pin, duty_ratio):
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
 
-# No longer in use. This is to emulate PWM on digital pins
-# def control_solenoid(pin, duty_ratio):
-#     """ emulate pwm on a digital out pin """
-#     logger.info("Entering control_solenoid()...")
-#     on_time = PWM_PERIOD * duty_ratio
-#     off_time = PWM_PERIOD * (1 - duty_ratio)
-#
-#     if pin in threads_map:
-#         threads_map[pin].stop()
-#         threads_map[pin].join()
-#
-#     t = PWMController(datetime.now().strftime('%Y%m%d%H%M%S%f'), pin, on_time, off_time)
-#     threads_map[pin] = t
-#
-#     # Don't want these threads to run when the main program is terminated
-#     t.daemon = True
-#     t.start()
-#
-#     logger.info("Leaving control_solenoid().")
-
 
 def get_average_flow_rate_and_pressure(is_insp_phase):
     """ read p1 and p2 over 200 milliseconds and return average volume rate """
@@ -176,10 +98,8 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
     # Take the average over 'nSamples' pressure readings, 'delay' seconds apart to calculate flow rate
     while n < nSamples:
         if is_insp_phase:
-            # p1, p2, p3 = read_data(INSP_PHASE)  # pressures
             q += Ki * math.sqrt(abs(Variables.p1 - Variables.p2))  # flow rate
         else:
-            # p3, p4 = read_data(EXP_PHASE)  # pressures
             q += Ke * math.sqrt(abs(Variables.p3 - Variables.p4))  # flow rate
 
         p += Variables.p3
@@ -212,10 +132,6 @@ def create_chart_payload(t, pressure, flow_rate, volume):
 
 def send_to_display(timeT, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
-
-    # mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
-    # mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
-    # mqtt.sender(mqtt.VOLUME_TOPIC, volume)
 
     payload = create_chart_payload(timeT, convert_pressure(pressure), flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
@@ -261,7 +177,6 @@ def insp_phase(demo_level):
                 solenoids_closed = True
 
             ti = (t2 - start_time).total_seconds()
-            delta_t = (t2 - t1).total_seconds()
             send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
 
@@ -272,7 +187,6 @@ def insp_phase(demo_level):
         control_solenoid(SI_PIN, di)
 
         ti = (t2 - start_time).total_seconds()
-        delta_t = (t2 - t1).total_seconds()
         send_to_display(t2, p3, q2, vi)
 
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
@@ -327,7 +241,6 @@ def exp_phase():
             TIME_REF_MINUTE_VOL = t2
             MINUTE_VOLUME = 0
 
-        delta_t = (t2 - t1).total_seconds()
         send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
         logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
 

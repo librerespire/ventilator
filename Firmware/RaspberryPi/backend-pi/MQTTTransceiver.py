@@ -9,9 +9,6 @@ client = None
 
 
 class MQTTTransceiver:
-    PRESSURE_TOPIC = 'Ventilator/pressure'
-    FLOWRATE_TOPIC = 'Ventilator/flow_rate'
-    VOLUME_TOPIC = 'Ventilator/volume'
     CHART_DATA_TOPIC = 'Ventilator/chart_data'
     ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
     MINUTE_VOLUME_TOPIC = 'Ventilator/minute_volume'
