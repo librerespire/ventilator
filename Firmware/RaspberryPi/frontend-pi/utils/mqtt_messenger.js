@@ -52,18 +52,18 @@ var self = module.exports = {
   },
 
   mqtt_vt: function(message) {
-    database.set_vt((parseFloat(message)).toFixed(2))
-    console.log("MQTT VT: " + (parseFloat(message)).toFixed(2));
+    database.set_vt(parseInt(message))
+    console.log("MQTT VT: " + parseInt(message));
   },
 
   mqtt_minute_volume: function(message) {
-    database.set_minute_volume((parseFloat(message)).toFixed(2))
-    console.log("MQTT Minute Volume: " + (parseFloat(message)).toFixed(2));
+    database.set_minute_volume(parseInt(message))
+    console.log("MQTT Minute Volume: " + (parseInt(message)));
   },
 
   mqtt_pip: function(message) {
-    database.set_pip((parseFloat(message)).toFixed(2))
-    console.log("MQTT Pip: " + (parseFloat(message)).toFixed(2));
+    database.set_pip(parseInt(message))
+    console.log("MQTT Pip: " + (parseInt(message)));
   }
 
 };
