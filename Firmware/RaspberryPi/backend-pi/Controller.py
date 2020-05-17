@@ -203,7 +203,7 @@ def insp_phase(demo_level):
     INSP_TOTAL_VOLUME = vi
 
     # Send pip to GUI
-    mqtt.sender(mqtt.PIP_TOPIC, convert_pressure(pip))
+    mqtt.sender(mqtt.PIP_TOPIC, round(convert_pressure(pip)))
     logger.info("[%.4f] Pip is : %.3f mL " % (ti, convert_pressure(pip)))
 
     logger.info("Leaving inspiratory phase.")
@@ -250,7 +250,7 @@ def exp_phase():
         logger.debug("ti = %.4f,     vi = %.1f" % (ti, vi))
 
     logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % v_tot)
-    mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, v_tot)
+    mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, round(v_tot))
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
 
@@ -259,7 +259,7 @@ def submit_minute_vol(reset_time):
     global TIME_REF_MINUTE_VOL, MINUTE_VOLUME
 
     # Send minute volume to GUI
-    mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME, 2))
+    mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME))
     logger.debug("<<< SUBMIT >> min_vol=%.1f", MINUTE_VOLUME)
 
     # Reset minute volume calculation
