@@ -16,8 +16,10 @@ var self = module.exports = {
   mqtt_receiver: function() {
     console.log("Receiver called");
     client.on('connect', () => {
-      client.subscribe(ACTUAL_TIDAL_VOLUME_TOPIC)
       client.subscribe(CHART_DATA_TOPIC)
+      client.subscribe(ACTUAL_TIDAL_VOLUME_TOPIC)
+      client.subscribe(MINUTE_VOLUME_TOPIC)
+      client.subscribe(PIP_TOPIC)
     });
 
     client.on('message', (topic, message) => {

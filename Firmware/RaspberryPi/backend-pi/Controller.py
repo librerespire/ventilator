@@ -142,10 +142,12 @@ def insp_phase(demo_level):
     """ inspiratory phase tasks
         demo_level is a temporary hack to introduce two flow rate levels until pid controller is implemented """
 
-    global INSP_TOTAL_VOLUME
+    global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL
     logger.info("Entering inspiratory phase...")
+
     # beep sound added to inspiratory cycle
     os.system("echo -ne '\007'")
+
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
@@ -182,6 +184,10 @@ def insp_phase(demo_level):
 
         # Calculate volume in milli-litres
         vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
+
+        # If a minute has elapsed, submit the MINUTE_VOLUME to display
+        if TIME_REF_MINUTE_VOL is not None and (t2 - TIME_REF_MINUTE_VOL).total_seconds() > 60:
+            submit_minute_vol(t2)
 
         di = calculate_pid_duty_ratio(demo_level)
         control_solenoid(SI_PIN, di)
@@ -230,16 +236,11 @@ def exp_phase():
         vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
         ti = (t2 - start_time).total_seconds()
 
+        # Handle minute volume calculations
         if (t2 - TIME_REF_MINUTE_VOL).total_seconds() < 60:
             MINUTE_VOLUME += vi
         else:
-            # Send minute volume to GUI
-            mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME, 2))
-            logger.info("[%.4f] Minute volume is : %.2f mL " % (ti, MINUTE_VOLUME))
-
-            # Reset minute volume calculation
-            TIME_REF_MINUTE_VOL = t2
-            MINUTE_VOLUME = 0
+            submit_minute_vol(t2)
 
         send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
         logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
@@ -248,6 +249,17 @@ def exp_phase():
     mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, vi)
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
+
+
+def submit_minute_vol(reset_time):
+    global TIME_REF_MINUTE_VOL, MINUTE_VOLUME
+
+    # Send minute volume to GUI
+    mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME, 2))
+
+    # Reset minute volume calculation
+    TIME_REF_MINUTE_VOL = reset_time
+    MINUTE_VOLUME = 0
 
 
 def wait_phase():
