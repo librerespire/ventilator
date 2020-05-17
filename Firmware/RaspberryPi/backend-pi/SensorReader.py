@@ -1,6 +1,6 @@
 import smbus
 import time
-# import bme680
+import bme680
 from Variables import Variables
 
 
@@ -17,14 +17,14 @@ class SensorReader:
         self.bus_number = bus_number
         self.bus = smbus.SMBus(self.bus_number)
 
-    # def read_bme680(self):
-    #     try:
-    #         sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY, self.bus)
-    #     except IOError:
-    #         sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY, self.bus)
-    #     sensor.set_pressure_oversample(bme680.OS_4X)
-    #     if sensor.get_sensor_data():
-    #         return sensor.data.pressure
+    def read_bme680(self):
+        try:
+            sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY, self.bus)
+        except IOError:
+            sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY, self.bus)
+        sensor.set_pressure_oversample(bme680.OS_4X)
+        if sensor.get_sensor_data():
+            return sensor.data.pressure
 
     def read_temp(self):
         #Reading Data from i2c bus 3
@@ -63,8 +63,10 @@ class SensorReader:
         self.fTemp = self.cTemp * 1.8 + 32
 
     def read_pressure(self):
-        # if (self.bus_number == Variables.BUS_3):
-        #     return self.read_bme680()
+
+        # For demo p3 is read from a bme680 sensor
+        if Variables.demo and self.bus_number == Variables.BUS_3:
+            return self.read_bme680()
 
         #Reading Data from i2c bus 3
         b1 = self.bus.read_i2c_block_data(0x76, 0x88, 24)

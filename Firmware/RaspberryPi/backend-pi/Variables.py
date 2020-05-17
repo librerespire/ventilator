@@ -20,3 +20,5 @@ class Variables:
     p2 = 0      # pressure sensor 2 on inspiratory phase
     p3 = 0      # pressure sensor 3 on expiratory phase
     p4 = 0      # pressure sensor 4 on expiratory phase
+
+    demo = False
