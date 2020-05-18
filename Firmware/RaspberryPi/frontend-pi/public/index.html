@@ -118,6 +118,7 @@
 
     function calib_flow() {
       $.get("/api/configs/calib_flow_rate?calib_flow_rate=" + $("#calibarate_flow_input").val(), function(data, status) {});
+      $('#calibarate').modal('hide')
     }
   </script>
 </head>
