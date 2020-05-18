@@ -118,6 +118,7 @@
 
     function calib_flow() {
       $.get("/api/configs/calib_flow_rate?calib_flow_rate=" + $("#calibarate_flow_input").val(), function(data, status) {});
+      $('#calibarate').modal('hide')
     }
   </script>
 </head>
@@ -135,7 +136,7 @@
               </button>
             </div>
             <div class="modal-body">
-              Please enter flow control value to calibarate the air flow.
+              <p>Please enter flow control value to calibarate the air flow.</p>
               <input type="tel" class="keyboard form-control" id="calibarate_flow_input" type="number" onclick="show_easy_numpad(this);">
             </div>
             <div class="modal-footer">
