@@ -5,45 +5,54 @@ from PID import PID
 from SensorReaderService import SensorReaderService
 from Variables import Variables
 import time
+from os import path
 import RPi.GPIO as GPIO
 
 # Constants
 PWM_FREQ = 2  # frequency for PWM
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
+SE_PIN = 14  # PIN (PWM) for expiratory solenoid
 PWM_I = None
-
-Psupport = 10
-P = 10
-I = 1
-D = 1
-sampling_time = 0.5
-
-pid = PID(P, I, D)
-pid.SetPoint = Psupport
-pid.setSampleTime(sampling_time)
+PWM_E = None
+pid = None
 
 
-# count = 0
-# pressureArray = [0, 1, 4, 7, 9, 7, 6, 5, 7, 8, 10, 10]
-#
-#
-# def readPressure():
-#     return pressureArray[count]
+def load_pid_config():
+    global pid
+    with open('./pid.conf', 'r') as f:
+        config = f.readline().split(',')
+        pid.SetPoint = float(Variables.ps)
+        pid.setKp(float(config[0]))
+        pid.setKi(float(config[1]))
+        pid.setKd(float(config[2]))
+
+
+def create_pid_config():
+    if not path.isfile('./pid.conf'):
+        with open('./pid.conf', 'w') as f:
+            f.write('%s,%s,%s' % (Variables.Kp, Variables.Ki, Variables.Kd))
 
 
 def init_parameters():
-    global PWM_I
+    global PWM_I, PWM_E, pid
 
     # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-
     GPIO.setup(SI_PIN, GPIO.OUT)
-
+    GPIO.setup(SE_PIN, GPIO.OUT)
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
+    PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
 
     # Start the sensor reading service
     sensing_service = SensorReaderService()
+
+    # Initialize PID controller
+    create_pid_config()
+    pid = PID(Variables.Kp, Variables.Ki, Variables.Kd)
+    pid.SetPoint = Variables.ps
+    pid.setSampleTime(Variables.pid_sampling_period)
+
 
 ###################################################################
 
@@ -51,6 +60,9 @@ def init_parameters():
 init_parameters()
 
 while True:
+    # load the latest PID related config. [Kp, Ki, Kd]
+    load_pid_config()
+
     # read pressure data
     pressure = Variables.p3
 
@@ -58,9 +70,9 @@ while True:
     target_duty_ratio = pid.output
     target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
-    print("Target: %.1f | Current: %.1f | Duty Ratio: %s %%" % (Psupport, pressure, target_duty_ratio))
+    print("Target: %.1f | Current: %.1f | Duty Ratio: %s %%" % (pid.setPoint, pressure, target_duty_ratio))
 
     # Set PWM to target duty
     PWM_I.ChangeDutyCycle(target_duty_ratio)
 
-    time.sleep(sampling_time - 0.005)
+    time.sleep(Variables.pid_sampling_period - 0.005)

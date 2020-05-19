@@ -1,8 +1,9 @@
-import os
+from os import path, system
 import math
 import json
 import time
 from datetime import datetime
+
 import threading
 import RPi.GPIO as GPIO
 import logging
@@ -12,14 +13,15 @@ from Variables import Variables
 from SensorReaderService import SensorReaderService
 # from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
+from PID import PID
 
 # Internal parameters
 T_IN = 2  # inspiratory time
 T_EX = 3  # expiratory time
 T_WT = 1  # waiting time
 
-Pi = 2000  # peak inspiratory pressure in cmH2O
 PWM_FREQ = 2  # frequency for PWM
+pid = None
 
 # Constants
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
@@ -28,9 +30,8 @@ INSP_FLOW = True
 EXP_FLOW = False
 DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
-INSP_TOTAL_VOLUME = 0   # total inspiratory volume delivered
+INSP_TOTAL_VOLUME = 0  # total inspiratory volume delivered
 
-pressure_data = [0] * 6
 PWM_I, PWM_E = None, None
 
 mqtt = None
@@ -110,15 +111,16 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
     return q / nSamples, p / nSamples
 
 
-def calculate_pid_duty_ratio(demo_level):
-    """ TODO: implement the PID controller to determine the required duty ratio to achieve the desired pressure curve
-        Currently a temporary hack is implemented with demo_level """
-    duty_ratio = 100
-    if demo_level == 1:
-        duty_ratio = 20
+def calculate_pid_duty_ratio(pressure):
+    """ PID controller determines the required duty ratio to achieve the desired pressure curve """
+
+    pid.update(pressure)
+    duty_ratio = pid.output
+
+    # Duty ratio is adjusted between 0 and 100
+    duty_ratio = max(min(int(duty_ratio), 100), 0)
 
     return duty_ratio
-
 
 def create_chart_payload(t, pressure, flow_rate, volume):
     payload = {
@@ -146,14 +148,14 @@ def insp_phase(demo_level):
     logger.info("Entering inspiratory phase...")
 
     # beep sound added to inspiratory cycle
-    os.system("echo -ne '\007'")
+    system("echo -ne '\007'")
 
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
     q1, q2 = 0, 0  # flow rates
     vi = 0  # volume
-    pip = 0 # peak inspiratory pressure
+    pip = 0  # peak inspiratory pressure
     solenoids_closed = False
 
     # Control solenoids
@@ -190,14 +192,13 @@ def insp_phase(demo_level):
             logger.debug("<<< INS - RESET >> vi=%.1f min_vol=%.1f", (vi, MINUTE_VOLUME))
             submit_minute_vol(t2)
 
-        di = calculate_pid_duty_ratio(demo_level)
+        di = calculate_pid_duty_ratio(p3)
         control_solenoid(SI_PIN, di)
 
         ti = (t2 - start_time).total_seconds()
         send_to_display(t2, p3, q2, vi)
 
-        logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
-            Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
+        logger.debug("Psupport: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.ps, p3, di))
 
     # Store tidal volume for expiratory phase net volume calculation
     INSP_TOTAL_VOLUME = vi
@@ -309,7 +310,13 @@ def init_parameters():
     # Start the MQTT transceiver to communicate with GUI
     mqtt = MQTTTransceiver()
 
+    # Initialize PID Controller
+    pid = PID(Variables.Kp, Variables.Ki, Variables.Kd)
+    pid.SetPoint = Variables.ps
+    pid.setSampleTime(Variables.pid_sampling_period)
+
     calc_respiratory_params()
+
 
 
 #######################################################################################################
