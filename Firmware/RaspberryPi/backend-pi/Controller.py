@@ -113,7 +113,7 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
 
 def calculate_pid_duty_ratio(pressure):
     """ PID controller determines the required duty ratio to achieve the desired pressure curve """
-    logger.debug("<<<< HIT PID Controller >>>> : pressure = " + str(pressure))
+    logger.debug("<<<< HIT PID Controller >>>> : pressure = " + str(convert_pressure(pressure)))
     pid.update(convert_pressure(pressure))
     duty_ratio = pid.output
 
@@ -293,7 +293,7 @@ def calc_respiratory_params():
 
 # Initialize the parameters
 def init_parameters():
-    global PWM_I, PWM_E, sensing_service, mqtt
+    global PWM_I, PWM_E, sensing_service, mqtt, pid
 
     # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
