@@ -1,6 +1,6 @@
 from PID import PID
-from SensorReaderService import SensorReaderService
-from Variables import Variables
+from ..SensorReaderService import SensorReaderService
+from ..Variables import Variables
 import time
 import RPi.GPIO as GPIO
 
