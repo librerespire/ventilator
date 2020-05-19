@@ -113,13 +113,14 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
 
 def calculate_pid_duty_ratio(pressure):
     """ PID controller determines the required duty ratio to achieve the desired pressure curve """
-
+    logger.debug("<<<< HIT PID Controller >>>> : pressure = " + str(pressure))
     pid.update(convert_pressure(pressure))
     duty_ratio = pid.output
 
     # Duty ratio is adjusted between 0 and 100
     duty_ratio = max(min(int(duty_ratio), 100), 0)
 
+    logger.debug("<<<< LEAVE PID Controller >>>> : duty_ratio = " + str(duty_ratio))
     return duty_ratio
 
 def create_chart_payload(t, pressure, flow_rate, volume):
