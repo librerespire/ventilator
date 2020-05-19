@@ -163,6 +163,9 @@ def insp_phase(demo_level):
     control_solenoid(SI_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
 
+    # Reset inspiratory cycle volume
+    INSP_TOTAL_VOLUME = 0
+
     while ti < T_IN:
 
         t1 = t2
