@@ -115,12 +115,37 @@
         $.get("/api/configs/ps?ps=" + $(this).val(), function(data, status) {})
       });
     });
+
+    function calib_flow() {
+      $.get("/api/configs/calib_flow_rate?calib_flow_rate=" + $("#calibarate_flow_input").val(), function(data, status) {});
+      $('#calibarate').modal('hide')
+    }
   </script>
 </head>
 
 <body>
   <dev>
     <div class="container-fluid">
+      <div class="modal fade" id="calibarate" tabindex="-1" role="dialog" aria-labelledby="calibarateModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="calibarateModalLabel">Flow control calibaration</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Please enter flow control value to calibarate the air flow.</p>
+              <input type="tel" class="keyboard form-control" id="calibarate_flow_input" type="number" onclick="show_easy_numpad(this);">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="calibarate_flow" onclick="calib_flow(this);">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row align-items-center" width="100%">
         <div class="col-sm">
           <div class="dropdown">
@@ -143,9 +168,9 @@
               Settings
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Calibarate</a>
-              <a class="dropdown-item" href="#">Restart</a>
-              <a class="dropdown-item" href="#">Shutdown</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#calibarate">Calibarate</a>
+              <a class="dropdown-item" href="#" id="restart">Restart</a>
+              <a class="dropdown-item" href="#" id="shutdown">Shutdown</a>
             </div>
           </div>
         </div>
