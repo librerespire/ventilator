@@ -141,9 +141,8 @@ def send_to_display(timeT, pressure, flow_rate, volume):
     logger.debug(payload)
 
 
-def insp_phase(demo_level):
-    """ inspiratory phase tasks
-        demo_level is a temporary hack to introduce two flow rate levels until pid controller is implemented """
+def insp_phase():
+    """ inspiratory phase tasks """
 
     global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL
     logger.info("Entering inspiratory phase...")
@@ -336,19 +335,9 @@ try:
     Ki, Ke = calibrate_flow_meter(Variables.calib_flow_rate)
 
     while True:
-        # slow flow rate
-        # logger.info("***** Slower flow rate cycle *****")
-        # insp_phase(1)
-        # exp_phase()
-        # wait_phase()
-        # logger.info("***** Slower cycle end *****")
-
-        # faster flow rate
-        logger.info("***** Faster flow rate cycle *****")
-        insp_phase(2)
+        insp_phase()
         exp_phase()
         # wait_phase()
-        logger.info("***** Faster cycle end *****")
 
         # use the latest input parameters set via UI
         calc_respiratory_params()
