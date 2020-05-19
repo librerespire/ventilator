@@ -114,7 +114,7 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
 def calculate_pid_duty_ratio(pressure):
     """ PID controller determines the required duty ratio to achieve the desired pressure curve """
 
-    pid.update(pressure)
+    pid.update(convert_pressure(pressure))
     duty_ratio = pid.output
 
     # Duty ratio is adjusted between 0 and 100

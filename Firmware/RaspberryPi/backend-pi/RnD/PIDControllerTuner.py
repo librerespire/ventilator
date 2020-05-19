@@ -33,6 +33,11 @@ def create_pid_config():
             f.write('%s,%s,%s' % (Variables.Kp, Variables.Ki, Variables.Kd))
 
 
+def convert_pressure(p_hpa):
+    """ returns inspiratory pressure relative to atm in cmH2O"""
+    return (p_hpa * 1.0197442) - 1033.23
+
+
 def init_parameters():
     global PWM_I, PWM_E, pid
 
@@ -66,7 +71,7 @@ while True:
     # read pressure data
     pressure = Variables.p3
 
-    pid.update(pressure)
+    pid.update(convert_pressure(pressure))
     target_duty_ratio = pid.output
     target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
