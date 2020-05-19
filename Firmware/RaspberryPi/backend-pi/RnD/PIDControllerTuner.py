@@ -70,7 +70,7 @@ while True:
     target_duty_ratio = pid.output
     target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
-    print("Target: %.1f | Current: %.1f | Duty Ratio: %s %%" % (pid.setPoint, pressure, target_duty_ratio))
+    print("Target: %.1f | Current: %.1f | Duty Ratio: %.1f" % (pid.setPoint, pressure, target_duty_ratio))
 
     # Set PWM to target duty
     PWM_I.ChangeDutyCycle(target_duty_ratio)
