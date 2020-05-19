@@ -1,6 +1,9 @@
+import sys
+sys.path.append('..')
+
 from PID import PID
-from ..SensorReaderService import SensorReaderService
-from ..Variables import Variables
+from SensorReaderService import SensorReaderService
+from Variables import Variables
 import time
 import RPi.GPIO as GPIO
 
@@ -18,6 +21,7 @@ sampling_time = 0.5
 pid = PID(P, I, D)
 pid.SetPoint = Psupport
 pid.setSampleTime(sampling_time)
+
 
 # count = 0
 # pressureArray = [0, 1, 4, 7, 9, 7, 6, 5, 7, 8, 10, 10]
@@ -41,6 +45,10 @@ def init_parameters():
     # Start the sensor reading service
     sensing_service = SensorReaderService()
 
+###################################################################
+
+
+init_parameters()
 
 while True:
     # read pressure data
