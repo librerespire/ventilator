@@ -71,6 +71,9 @@ while True:
     # read pressure data
     pressure = Variables.p3
 
+    if pressure is None:
+        continue
+
     pid.update(convert_pressure(pressure))
     target_duty_ratio = pid.output
     target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
