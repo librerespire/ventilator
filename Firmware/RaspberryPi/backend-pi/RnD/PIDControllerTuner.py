@@ -10,8 +10,10 @@ import RPi.GPIO as GPIO
 
 # Constants
 PWM_FREQ = 2  # frequency for PWM
+SO_PIN = 6   # PIN (PWM) for O2 intake solenoid
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
 SE_PIN = 14  # PIN (PWM) for expiratory solenoid
+PWM_O = None
 PWM_I = None
 PWM_E = None
 pid = None
@@ -39,13 +41,16 @@ def convert_pressure(p_hpa):
 
 
 def init_parameters():
-    global PWM_I, PWM_E, pid
+    global PWM_O, PWM_I, PWM_E, pid
 
     # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
+    GPIO.setup(SO_PIN, GPIO.OUT)
     GPIO.setup(SI_PIN, GPIO.OUT)
     GPIO.setup(SE_PIN, GPIO.OUT)
+
+    PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
     PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
 
@@ -58,6 +63,10 @@ def init_parameters():
     pid.SetPoint = Variables.ps
     pid.setSampleTime(Variables.pid_sampling_period)
 
+    # Open all values
+    PWM_O.ChangeDutyCycle(100)
+    PWM_I.ChangeDutyCycle(100)
+    PWM_E.ChangeDutyCycle(0)    # Normally open, hence duty_ratio=0
 
 ###################################################################
 
