@@ -141,12 +141,13 @@ def control_solenoid(pin, duty_ratio):
     if pin == SI_PIN:
         PWM_I.ChangeDutyCycle(duty_ratio)
         logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
-    elif pin == SE_PIN:
-        logger.debug("Changed duty cycle to " + str(DUTY_RATIO_100 - duty_ratio) + " on pin " + str(pin))
-        # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
-        PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
     elif pin == SO_PIN:
-        GPIO.output(SO_PIN, duty_ratio)
+        PWM_E.ChangeDutyCycle(duty_ratio)
+        logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
+    elif pin == SE_PIN:
+        # Oxygen solenoid is normally OPEN. Hence flipping the duty ratio
+        logger.debug("Changed duty cycle to " + str(DUTY_RATIO_100 - duty_ratio) + " on pin " + str(pin))
+        GPIO.output(SE_PIN, DUTY_RATIO_100 - duty_ratio)
 
 
 # No longer in use. This is to emulate PWM on digital pins
