@@ -23,8 +23,8 @@ PWM_FREQ = 2  # frequency for PWM
 
 # Constants
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
-SO_PIN = 6 #PIN 6 used for medical air valve
-SE_PIN = 13  # PIN (PWM) for expiratory solenoid
+SO_PIN = 13 #PIN 6 used for medical air valve
+SE_PIN = 6  # PIN (PWM) for expiratory solenoid
 INSP_FLOW = True
 EXP_FLOW = False
 DUTY_RATIO_100 = 100
