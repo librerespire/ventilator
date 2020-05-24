@@ -23,6 +23,7 @@ PWM_FREQ = 2  # frequency for PWM
 
 # Constants
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
+SO_PIN = 6 #PIN 6 used for medical air valve
 SE_PIN = 13  # PIN (PWM) for expiratory solenoid
 INSP_FLOW = True
 EXP_FLOW = False
@@ -144,6 +145,9 @@ def control_solenoid(pin, duty_ratio):
         logger.debug("Changed duty cycle to " + str(DUTY_RATIO_100 - duty_ratio) + " on pin " + str(pin))
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
+    elif pin == SO_PIN:
+        GPIO.output(SO_PIN, GPIO.HIGH)
+
 
 # No longer in use. This is to emulate PWM on digital pins
 # def control_solenoid(pin, duty_ratio):
@@ -240,6 +244,7 @@ def insp_phase(demo_level):
 
     # Control solenoids
     control_solenoid(SI_PIN, DUTY_RATIO_100)
+    control_solenoid(SO_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
 
     while ti < T_IN:
@@ -257,6 +262,7 @@ def insp_phase(demo_level):
             if not solenoids_closed:
                 # Tidal volume has reached, CLOSE all solonoids
                 control_solenoid(SI_PIN, DUTY_RATIO_0)
+                control_solenoid(SO_PIN, DUTY_RATIO_0)
                 control_solenoid(SE_PIN, DUTY_RATIO_0)
                 solenoids_closed = True
 
@@ -300,6 +306,7 @@ def exp_phase():
     vi = 0
 
     control_solenoid(SI_PIN, DUTY_RATIO_0)
+    control_solenoid(SO_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Start calculating minute volume
@@ -368,6 +375,7 @@ def init_parameters():
     GPIO.setwarnings(False)
 
     GPIO.setup(SI_PIN, GPIO.OUT)
+    GPIO.setup(SO_PIN, GPIO.OUT)
     GPIO.setup(SE_PIN, GPIO.OUT)
 
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
