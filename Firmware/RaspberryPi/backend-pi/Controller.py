@@ -34,6 +34,12 @@ DUTY_RATIO_0 = 0
 INSP_TOTAL_VOLUME = 0  # total inspiratory volume delivered
 PWM_I, PWM_O = None, None
 
+# Last pressure data
+last_p1 = 0;
+last_p2 = 0;
+last_p3 = 0;
+last_p4 = 0;
+
 mqtt = None
 sensing_service = None
 Ki, Ke = 0, 0
@@ -176,6 +182,8 @@ def insp_phase():
 
     while ti < T_IN:
 
+        send_pressure_data()
+
         t1 = t2
         q1 = q2
         q2, p3 = get_average_flow_rate_and_pressure(INSP_FLOW)
@@ -240,6 +248,9 @@ def exp_phase():
         TIME_REF_MINUTE_VOL = start_time
 
     while ti < T_EX:
+
+        send_pressure_data()
+
         t1 = t2
         q1 = q2
         q2, p3 = get_average_flow_rate_and_pressure(EXP_FLOW)
@@ -265,6 +276,32 @@ def exp_phase():
     mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, round(v_tot))
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
+
+
+def send_pressure_data():
+    """ send the pressure parameters to display unit via mqtt """
+
+    global last_p1, last_p2, last_p3, last_p4
+
+    p1 = convert_pressure(Variables.p1)
+    p2 = convert_pressure(Variables.p2)
+    p3 = convert_pressure(Variables.p3)
+    p4 = convert_pressure(Variables.p4)
+
+    payload = {
+        'delta_p1': p1-last_p1,
+        'delta_p2': p2-last_p2,
+        'delta_p3': p3-last_p3,
+        'delta_p4': p4-last_p4
+    }
+    mqtt.sender(mqtt.PRESSURE_DATA_TOPIC, payload)
+
+    last_p1 = p1
+    last_p2 = p2
+    last_p3 = p3
+    last_p4 = p4
+
+    logger.debug(payload)
 
 
 def submit_minute_vol(reset_time):
