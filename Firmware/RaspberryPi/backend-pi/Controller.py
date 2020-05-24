@@ -23,7 +23,7 @@ PWM_FREQ = 2  # frequency for PWM
 
 # Constants
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
-SO_PIN = 13 #PIN 6 used for medical air valve
+SO_PIN = 13 # PIN 6 used for medical air valve
 SE_PIN = 6  # PIN (PWM) for expiratory solenoid
 INSP_FLOW = True
 EXP_FLOW = False
@@ -44,7 +44,7 @@ INSP_TOTAL_VOLUME = 0   # total inspiratory volume delivered
 # threads_map = {}
 
 pressure_data = [0] * 6
-PWM_I, PWM_E = None, None
+PWM_I, PWM_O = None, None
 
 mqtt = None
 sensing_service = None
@@ -110,9 +110,10 @@ def calculate_k(p1, p2, flow_rate):
 def calibrate_flow_meter(flow_rate):
     """ returns the calibrated k for both insp and exp flow meters, calculated based on multiple pressure readings """
 
-    # Turn ON both the solenoids fully for calibration
+    # Turn ON all three solenoids fully for calibration
     PWM_I.start(DUTY_RATIO_100)
-    PWM_E.start(DUTY_RATIO_100)
+    PWM_O.start(DUTY_RATIO_100)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Introduce a delay to achieve a stable flow across the flow meters
     time.sleep(2)
@@ -142,12 +143,15 @@ def control_solenoid(pin, duty_ratio):
         PWM_I.ChangeDutyCycle(duty_ratio)
         logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
     elif pin == SO_PIN:
-        PWM_E.ChangeDutyCycle(duty_ratio)
+        PWM_O.ChangeDutyCycle(duty_ratio)
         logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
     elif pin == SE_PIN:
         # Oxygen solenoid is normally OPEN. Hence flipping the duty ratio
-        logger.debug("Changed duty cycle to " + str(DUTY_RATIO_100 - duty_ratio) + " on pin " + str(pin))
-        GPIO.output(SE_PIN, DUTY_RATIO_100 - duty_ratio)
+        level = GPIO.HIGH
+        if duty_ratio == DUTY_RATIO_100:
+            level = GPIO.LOW
+        logger.debug("Changed duty cycle to " + str(level) + " on pin " + str(pin))
+        GPIO.output(SE_PIN, level)
 
 
 # No longer in use. This is to emulate PWM on digital pins
@@ -275,8 +279,10 @@ def insp_phase(demo_level):
         # Calculate volume in milli-litres
         vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
+        # TODO: separately calculate di for inp and oxy solenoids.
         di = calculate_pid_duty_ratio(demo_level)
         control_solenoid(SI_PIN, di)
+        control_solenoid(SO_PIN, di)
 
         ti = (t2 - start_time).total_seconds()
         delta_t = (t2 - t1).total_seconds()
@@ -349,6 +355,7 @@ def wait_phase():
     """ waiting phase tasks """
     logger.info("Entering wait phase...")
     control_solenoid(SI_PIN, DUTY_RATIO_0)
+    control_solenoid(SO_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
     time.sleep(T_WT)
     logger.info("Leaving wait phase.")
@@ -369,7 +376,7 @@ def calc_respiratory_params():
 
 # Initialize the parameters
 def init_parameters():
-    global PWM_I, PWM_E, sensing_service, mqtt
+    global PWM_I, PWM_O, sensing_service, mqtt
 
     # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
@@ -380,7 +387,8 @@ def init_parameters():
     GPIO.setup(SE_PIN, GPIO.OUT)
 
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
-    PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
+    PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Start the sensor reading service
     sensing_service = SensorReaderService()
@@ -424,6 +432,7 @@ try:
 finally:
     mqtt.clean_up()
     # Set the solenoids to desired states before exiting
-    PWM_I.start(DUTY_RATIO_100)
-    PWM_E.start(DUTY_RATIO_100)
+    control_solenoid(SI_PIN, DUTY_RATIO_100)
+    control_solenoid(SO_PIN, DUTY_RATIO_100)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
     print("\nInspiratory and expiratory solenoids were reset before exiting. Good bye...\n")
