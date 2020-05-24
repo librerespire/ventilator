@@ -146,7 +146,7 @@ def control_solenoid(pin, duty_ratio):
         # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
         PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
     elif pin == SO_PIN:
-        GPIO.output(SO_PIN, GPIO.HIGH)
+        GPIO.output(SO_PIN, duty_ratio)
 
 
 # No longer in use. This is to emulate PWM on digital pins
