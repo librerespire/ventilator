@@ -289,10 +289,10 @@ def send_pressure_data():
     p4 = convert_pressure(Variables.p4)
 
     payload = {
-        'delta_p1': p1-last_p1,
-        'delta_p2': p2-last_p2,
-        'delta_p3': p3-last_p3,
-        'delta_p4': p4-last_p4
+        'delta_p1': p1 - last_p1,
+        'delta_p2': p2 - last_p2,
+        'delta_p3': p3 - last_p3,
+        'delta_p4': p4 - last_p4
     }
     mqtt.sender(mqtt.PRESSURE_DATA_TOPIC, payload)
 
@@ -352,11 +352,13 @@ def calc_pressure_offsests():
         p2_offset += Variables.p2
         p3_offset += Variables.p3
         p4_offset += Variables.p4
+        time.sleep(1)
 
     Variables.p1_offset = p1_offset / no_samples
     Variables.p2_offset = p2_offset / no_samples
     Variables.p3_offset = p3_offset / no_samples
     Variables.p4_offset = p4_offset / no_samples
+
 
 # Initialize the parameters
 def init_parameters():
