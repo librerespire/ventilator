@@ -64,9 +64,12 @@ class SensorReader:
 
     def read_pressure(self):
 
+        # TODO: move the conversion logic here
+
         # For demo p3 is read from a bme680 sensor
         if Variables.demo and self.bus_number == Variables.BUS_3:
-            return self.read_bme680()
+            self.pressure = self.read_bme680() - self.get_offset()
+            return self.pressure
 
         #Reading Data from i2c bus 3
         b1 = self.bus.read_i2c_block_data(0x76, 0x88, 24)
@@ -138,7 +141,7 @@ class SensorReader:
         p = (p - (var2 / 4096.0)) * 6250.0 / var1
         var1 = (dig_P9) * p * p / 2147483648.0
         var2 = p * (dig_P8) / 32768.0
-        self.pressure = (p + (var1 + var2 + (dig_P7)) / 16.0) / 100
+        self.pressure = ((p + (var1 + var2 + dig_P7) / 16.0) / 100) - self.get_offset()
         return self.pressure
         # Output data to screen ** uncomment this part to see values form sensors
         # print("""\t======== bus %d ==========
@@ -150,6 +153,17 @@ class SensorReader:
         #             self.fTemp,
         #             self.pressure,
         #             datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")))
+
+    def get_offset(self):
+        if self.bus_number is Variables.BUS_1:
+            offset = Variables.p1_offset
+        elif self.bus_number is Variables.BUS_2:
+            offset = Variables.p2_offset
+        elif self.bus_number is Variables.BUS_3:
+            offset = Variables.p3_offset
+        elif self.bus_number is Variables.BUS_4:
+            offset = Variables.p4_offset
+        return offset
 
     def get_pressure(self):
         self.read_pressure()
