@@ -356,6 +356,9 @@ def calc_pressure_offsests():
     Variables.p3_offset = p3_offset / no_samples
     Variables.p4_offset = p4_offset / no_samples
 
+    logger.debug("Pressure offsets : p1 = %.1f, p2 = %.1f, p3 = %.1f, p4 = %.1f "
+                 % (Variables.p1_offset, Variables.p2_offset, Variables.p3_offset, Variables.p4_offset))
+
 
 # Initialize the parameters
 def init_parameters():
