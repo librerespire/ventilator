@@ -126,8 +126,8 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
 
 def calculate_pid_duty_ratio(pressure):
     """ PID controller determines the required duty ratio to achieve the desired pressure curve """
-    logger.debug("<<<< HIT PID Controller >>>> : pressure = " + str(convert_pressure(pressure)))
-    pid.update(convert_pressure(pressure))
+    logger.debug("<<<< HIT PID Controller >>>> : pressure = " + str(pressure))
+    pid.update(pressure)
     duty_ratio = pid.output
 
     # Duty ratio is adjusted between 0 and 100
@@ -150,7 +150,7 @@ def create_chart_payload(t, pressure, flow_rate, volume):
 def send_to_display(timeT, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
 
-    payload = create_chart_payload(timeT, convert_pressure(pressure), flow_rate, volume)
+    payload = create_chart_payload(timeT, pressure, flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
     logger.debug(payload)
 
@@ -216,14 +216,14 @@ def insp_phase():
         ti = (t2 - start_time).total_seconds()
         send_to_display(t2, p3, q2, vi)
 
-        logger.debug("Psupport: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.ps, convert_pressure(p3), di))
+        logger.debug("Psupport: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.ps, p3, di))
 
     # Store tidal volume for expiratory phase net volume calculation
     INSP_TOTAL_VOLUME = vi
 
     # Send pip to GUI
-    mqtt.sender(mqtt.PIP_TOPIC, round(convert_pressure(pip), 1))
-    logger.info("[%.4f] Pip is : %.3f mL " % (ti, convert_pressure(pip)))
+    mqtt.sender(mqtt.PIP_TOPIC, round(pip, 1))
+    logger.info("[%.4f] Pip is : %.3f mL " % (ti, pip))
 
     logger.info("Leaving inspiratory phase.")
 
@@ -283,10 +283,7 @@ def send_pressure_data():
 
     global last_p1, last_p2, last_p3, last_p4
 
-    p1 = convert_pressure(Variables.p1)
-    p2 = convert_pressure(Variables.p2)
-    p3 = convert_pressure(Variables.p3)
-    p4 = convert_pressure(Variables.p4)
+    p1, p2, p3, p4 = Variables.p1, Variables.p2, Variables.p3, Variables.p4
 
     payload = {
         'delta_p1': p1 - last_p1,

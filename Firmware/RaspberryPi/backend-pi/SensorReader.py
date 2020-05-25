@@ -24,7 +24,7 @@ class SensorReader:
             sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY, self.bus)
         sensor.set_pressure_oversample(bme680.OS_4X)
         if sensor.get_sensor_data():
-            return sensor.data.pressure
+            return self.convert_pressure(sensor.data.pressure)
 
     def read_temp(self):
         #Reading Data from i2c bus 3
@@ -63,8 +63,6 @@ class SensorReader:
         self.fTemp = self.cTemp * 1.8 + 32
 
     def read_pressure(self):
-
-        # TODO: move the conversion logic here
 
         # For demo p3 is read from a bme680 sensor
         if Variables.demo and self.bus_number == Variables.BUS_3:
@@ -153,6 +151,10 @@ class SensorReader:
         #             self.fTemp,
         #             self.pressure,
         #             datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")))
+
+    def convert_pressure(self, p_hpa):
+        """ returns inspiratory pressure relative to atm in cmH2O"""
+        return (p_hpa * 1.0197442) - 1033.23
 
     def get_offset(self):
         if self.bus_number is Variables.BUS_1:
