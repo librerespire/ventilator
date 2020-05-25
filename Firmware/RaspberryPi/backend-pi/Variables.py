@@ -17,6 +17,12 @@ class Variables:
     p3 = 0      # pressure sensor 3 on expiratory phase
     p4 = 0      # pressure sensor 4 on expiratory phase
 
+    # Pressure offset values. Offset will be calculated and used for future readings
+    p1_offset = 0
+    p2_offset = 0
+    p3_offset = 0
+    p4_offset = 0
+
     # From GUI
     calib_flow_rate = -1    # flow rate used for calibration. Set by GUI
     fio2 = 0    # fio2 value
@@ -32,5 +38,5 @@ class Variables:
     Kd = 1
     pid_sampling_period = 0.2
 
-    # Flag to indicate demo setup, where P3 is from a BME680 sensor
+    # Flag to indicate demo setup, where P3 is read from a BME680 sensor
     demo = False

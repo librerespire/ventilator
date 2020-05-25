@@ -339,6 +339,25 @@ def calc_respiratory_params():
     T_EX = one_breath_time * Variables.ie / (1 + Variables.ie)
 
 
+def calc_pressure_offsests():
+    """ Sensor readings for atmospheric pressure results in more than 0 cmH20.
+        This offset is calculated and stored so that the future readings can be compensated. """
+    time.sleep(2)
+
+    p1_offset, p2_offset, p3_offset, p4_offset = 0, 0, 0, 0
+    no_samples = 5
+
+    for i in range(no_samples):
+        p1_offset += Variables.p1
+        p2_offset += Variables.p2
+        p3_offset += Variables.p3
+        p4_offset += Variables.p4
+
+    Variables.p1_offset = p1_offset / no_samples
+    Variables.p2_offset = p2_offset / no_samples
+    Variables.p3_offset = p3_offset / no_samples
+    Variables.p4_offset = p4_offset / no_samples
+
 # Initialize the parameters
 def init_parameters():
     global PWM_I, PWM_O, sensing_service, mqtt, pid
@@ -358,11 +377,16 @@ def init_parameters():
     # Start the sensor reading service
     sensing_service = SensorReaderService()
 
+    # Calculate any pressure offsets
+    calc_pressure_offsests()
+
     # Start the MQTT transceiver to communicate with GUI
     mqtt = MQTTTransceiver()
 
     # Initialize PID Controller
     pid = PID(Variables.Kp, Variables.Ki, Variables.Kd)
+
+    # TODO: dynamically adjust pid.setPoint via GUI
     pid.SetPoint = Variables.ps
     pid.setSampleTime(Variables.pid_sampling_period)
 
