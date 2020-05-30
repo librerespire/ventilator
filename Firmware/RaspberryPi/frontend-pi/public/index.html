@@ -380,136 +380,127 @@
           pressureChart.series[0].setData(PressureData);
         }, 1000);
       });
+
       $(function() {
-            // Flow chart
-            var flowData = [];
+        // Flow chart
+        var flowData = [];
 
-            var flowChart = Highcharts.chart({
-                chart: {
-                  renderTo: 'flowChart',
-                  type: 'area',
-                  backgroundColor: '#000000'
-                },
-                credits: {
-                  enabled: false
-                },
-                exporting: {
-                  enabled: false
-                },
-                time: {
-                  useUTC: false
-                },
-                title: {
-                  text: null,
-                  enable: false
-                },
-                xAxis: {
-                  type: 'datetime',
-                  dateTimeLabelFormats: {
-                    second: '%S'
-                  },
-                  title: {
-                    text: null,
-                    enable: false
-                  },
-                  xAxis: {
-                    type: 'datetime',
-                    tickPixelInterval: 150,
-                    dateTimeLabelFormats: {
-                      millisecond: '%S.%L',
-                      second: '%S'
-                    },
-                  },
-                  yAxis: {
-                    title: {
-                      text: 'Flow'
-                    },
-                    type: 'linear',
-                    minorTickInterval: 'auto'
-                  },
-                  legend: {
-                    enabled: false
-                  },
-                  series: [{
-                    name: 'Flow',
-                    marker: {
-                      enabled: false
-                    },
-                    color: '#ebeb34',
-                    data: flowData
-                  }],
-                }); setInterval(function() {
-                $.get("/api/graphs/flowrate", function(data, status) {
-                  flowData = data['data'];
-                });
-                flowChart.series[0].setData(flowData);
-              }, 1000);
-            });
-
-          $(function() {
-            var volumeData = [];
-            // Volume chart
-            var volumeChart = Highcharts.chart({
-              chart: {
-                renderTo: 'volumeChart',
-                type: 'area',
-                backgroundColor: '#000000'
-              },
-              credits: {
-                enabled: false
-              },
-              exporting: {
-                enabled: false
-              },
-              title: {
-                text: null,
-                enable: false
-              },
-              xAxis: {
-                type: 'datetime',
-                tickPixelInterval: 150,
-                dateTimeLabelFormats: {
-                  millisecond: '%S.%L',
-                  second: '%S'
-                },
-              },
-              yAxis: {
-                title: {
-                  text: 'Volume'
-                },
-                type: 'linear',
-                minorTickInterval: 'auto'
-              },
-              time: {
-                useUTC: false
-              },
-              legend: {
-                enabled: false
-              },
-              series: [{
-                name: 'Volume',
-                marker: {
-                  enabled: false
-                },
-                color: '#c5d4d3',
-                data: volumeData
-              }],
-            });
-            setInterval(function() {
-              $.get("/api/graphs/volume", function(data, status) {
-                volumeData = data['data'];
-              });
-              volumeChart.series[0].setData(volumeData);
-            }, 1000);
-
-            setInterval(function() {
-              $.get("/api/table/values", function(data, status) {
-                $("#tidle_volume").html(data['vt']);
-                $("#min_volume").html(data['minute_volume']);
-                $("#peak_pressure").html(data['peak_pressure']);
-              });
-            }, 1000);
+        var flowChart = Highcharts.chart({
+          chart: {
+            renderTo: 'flowChart',
+            type: 'area',
+            backgroundColor: '#000000'
+          },
+          credits: {
+            enabled: false
+          },
+          exporting: {
+            enabled: false
+          },
+          time: {
+            useUTC: false
+          },
+          title: {
+            text: null,
+            enable: false
+          },
+          xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: {
+              second: '%S'
+            },
+          },
+          yAxis: {
+            title: {
+              text: 'Flow'
+            },
+            type: 'linear',
+            minorTickInterval: 'auto'
+          },
+          legend: {
+            enabled: false
+          },
+          series: [{
+            name: 'Flow',
+            marker: {
+              enabled: false
+            },
+            color: '#ebeb34',
+            data: flowData
+          }],
+        });
+        setInterval(function() {
+          $.get("/api/graphs/flowrate", function(data, status) {
+            flowData = data['data'];
           });
+          flowChart.series[0].setData(flowData);
+        }, 1000);
+      });
+
+      $(function() {
+        var volumeData = [];
+        // Volume chart
+        var volumeChart = Highcharts.chart({
+          chart: {
+            renderTo: 'volumeChart',
+            type: 'area',
+            backgroundColor: '#000000'
+          },
+          credits: {
+            enabled: false
+          },
+          exporting: {
+            enabled: false
+          },
+          title: {
+            text: null,
+            enable: false
+          },
+          xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            dateTimeLabelFormats: {
+              millisecond: '%S.%L',
+              second: '%S'
+            },
+          },
+          yAxis: {
+            title: {
+              text: 'Volume'
+            },
+            type: 'linear',
+            minorTickInterval: 'auto'
+          },
+          time: {
+            useUTC: false
+          },
+          legend: {
+            enabled: false
+          },
+          series: [{
+            name: 'Volume',
+            marker: {
+              enabled: false
+            },
+            color: '#c5d4d3',
+            data: volumeData
+          }],
+        });
+        setInterval(function() {
+          $.get("/api/graphs/volume", function(data, status) {
+            volumeData = data['data'];
+          });
+          volumeChart.series[0].setData(volumeData);
+        }, 1000);
+      });
+
+      setInterval(function() {
+        $.get("/api/table/values", function(data, status) {
+          $("#tidle_volume").html(data['vt']);
+          $("#min_volume").html(data['minute_volume']);
+          $("#peak_pressure").html(data['peak_pressure']);
+        });
+      }, 1000);
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
