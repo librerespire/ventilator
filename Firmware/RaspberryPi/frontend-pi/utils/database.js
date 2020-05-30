@@ -2,6 +2,8 @@ var pressure = [];
 var flow_rate = [];
 var volume = [];
 var tidle_volume
+var minute_volume
+var pip
 
 
 module.exports = {
@@ -9,36 +11,52 @@ module.exports = {
     tidle_volume = data
   },
 
+  set_minute_volume: function(data) {
+    minute_volume = data
+  },
+
+  set_pip: function(data) {
+    pip = data
+  },
+
   set_pressure: function(data) {
     if (pressure.length >= 60) {
-      pressure.pop()
+      pressure.shift()
     }
-    pressure.unshift(data)
+    pressure.push(data)
     return pressure
   },
 
   set_flow_rate: function(data) {
     if (flow_rate.length >= 60) {
-      flow_rate.pop()
+      flow_rate.shift()
     }
-    flow_rate.unshift(data)
+    flow_rate.push(data)
     return flow_rate
   },
 
   set_volume: function(data) {
     if (volume.length >= 60) {
-      volume.pop()
+      volume.shift()
     }
-    volume.unshift(data)
-    return volume
-  },
-
-  get_volume: function() {
+    volume.push(data)
     return volume
   },
 
   get_vt: function() {
     return tidle_volume
+  },
+
+  get_minute_volume: function() {
+    return minute_volume
+  },
+
+  get_pip: function() {
+    return pip
+  },
+
+  get_volume: function() {
+    return volume
   },
 
   get_pressure: function() {

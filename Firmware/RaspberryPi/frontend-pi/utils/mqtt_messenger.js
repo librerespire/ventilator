@@ -2,11 +2,10 @@ const mqtt = require('mqtt')
 var database = require("./database.js")
 const client = mqtt.connect('mqtt://localhost')
 
-const PRESSURE_TOPIC = 'Ventilator/pressure'
-const FLOWRATE_TOPIC = 'Ventilator/flow_rate'
-const VOLUME_TOPIC = 'Ventilator/volume'
 const CHART_DATA_TOPIC = 'Ventilator/chart_data'
 const ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
+const MINUTE_VOLUME_TOPIC = 'Ventilator/minute_volume'
+const PIP_TOPIC = 'Ventilator/pip'
 
 var self = module.exports = {
   mqtt_sender: function(topic, message) {
@@ -22,38 +21,19 @@ var self = module.exports = {
     });
 
     client.on('message', (topic, message) => {
+      console.log(topic + " : " + message)
       switch (topic) {
-//        case PRESSURE_TOPIC:
-//          console.log(topic + " : " + message)
-////          return self.mqtt_pressure(message)
-//        case FLOWRATE_TOPIC:
-//          console.log(topic + " : " + message)
-////          return self.mqtt_flowrate(message)
-       case ACTUAL_TIDAL_VOLUME_TOPIC:
-         console.log(topic + " : " + message)
-          return self.mqtt_vt(message)
         case CHART_DATA_TOPIC:
           return self.mqtt_chartdata(message)
+        case ACTUAL_TIDAL_VOLUME_TOPIC:
+          return self.mqtt_vt(message)
+        case MINUTE_VOLUME_TOPIC:
+          return self.mqtt_minute_volume(message)
+        case PIP_TOPIC:
+          return self.mqtt_pip(message)
       }
       console.log('No handler for topic %s', topic)
     });
-  },
-
-  mqtt_pressure: function(message) {
-    database.set_pressure((parseFloat(message)).toFixed(2))
-  },
-
-  mqtt_flowrate: function(message) {
-    database.set_flow_rate((parseFloat(message)).toFixed(2))
-  },
-
-  mqtt_volume: function(message) {
-    database.set_volume((parseFloat(message)).toFixed(2))
-  },
-
-  mqtt_vt: function(message) {
-    database.set_vt((parseFloat(message)).toFixed(2))
-    console.log("MQTT VT: " + (parseFloat(message)).toFixed(2));
   },
 
   mqtt_chartdata: function(message) {
@@ -67,6 +47,21 @@ var self = module.exports = {
     database.set_pressure([time, pressure])
     database.set_flow_rate([time, flow_rate])
     database.set_volume([time, volume])
+  },
+
+  mqtt_vt: function(message) {
+    database.set_vt((parseFloat(message)).toFixed(2))
+    console.log("MQTT VT: " + (parseFloat(message)).toFixed(2));
+  },
+
+  mqtt_minute_volume: function(message) {
+    database.set_minute_volume((parseFloat(message)).toFixed(2))
+    console.log("MQTT Minute Volume: " + (parseFloat(message)).toFixed(2));
+  },
+
+  mqtt_pip: function(message) {
+    database.set_pip((parseFloat(message)).toFixed(2))
+    console.log("MQTT Pip: " + (parseFloat(message)).toFixed(2));
   }
 
 };
