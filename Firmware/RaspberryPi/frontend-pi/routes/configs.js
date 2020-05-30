@@ -3,11 +3,18 @@ var mqtt_messenger = require("../utils/mqtt_messenger.js")
 
 var router = express.Router();
 
+const CALIB_FLOW_RATE_CONFIG_TOPIC = 'Config/calib_flow_rate'
 const FIO2_CONFIG_TOPIC = 'Config/fio2';
 const RR_CONFIG_TOPIC = 'Config/rr';
 const PEEP_CONFIG_TOPIC = 'Config/peep';
 const VT_CONFIG_TOPIC = 'Config/vt';
 const IE_CONFIG_TOPIC = 'Config/ie';
+const PS_CONFIG_TOPIC = 'Config/ps';
+
+router.get('/calib_flow_rate', function (req, res) {
+  mqtt_messenger.mqtt_sender(CALIB_FLOW_RATE_CONFIG_TOPIC, req.query.calib_flow_rate);
+  res.sendStatus(200);
+})
 
 router.get('/fio2', function (req, res) {
   mqtt_messenger.mqtt_sender(FIO2_CONFIG_TOPIC, req.query.fio2);
@@ -31,6 +38,11 @@ router.get('/peep', function (req, res) {
 
 router.get('/ie', function (req, res) {
   mqtt_messenger.mqtt_sender(IE_CONFIG_TOPIC, req.query.ie);
+  res.sendStatus(200);
+})
+
+router.get('/ps', function (req, res) {
+  mqtt_messenger.mqtt_sender(PS_CONFIG_TOPIC, req.query.ps);
   res.sendStatus(200);
 })
 

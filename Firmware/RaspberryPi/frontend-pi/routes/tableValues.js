@@ -20,8 +20,8 @@ router.get('/values', function(req, res) {
   }
   res.json({
     "vt": database.get_vt(),
-    "peak_pressure": max_pressure,
-    "minute_volume": min_volume.toFixed(2),
+    "minute_volume": database.get_minute_volume(),
+    "peak_pressure": database.get_pip(),
   });
 })
 

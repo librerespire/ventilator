@@ -19,18 +19,19 @@ T_EX = 3  # expiratory time
 T_WT = 1  # waiting time
 
 Pi = 2000  # peak inspiratory pressure in cmH2O
-PEEP = 900  # PEEP
 PWM_FREQ = 2  # frequency for PWM
 
 # Constants
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
-SE_PIN = 13  # PIN (PWM) for expiratory solenoid
+SO_PIN = 13 # PIN 6 used for medical air valve
+SE_PIN = 6  # PIN (PWM) for expiratory solenoid
 INSP_FLOW = True
 EXP_FLOW = False
 DUTY_RATIO_100 = 100
 DUTY_RATIO_0 = 0
 DISPLAY_TIME_AXIS = 0  # time axis value in display
 DISPLAY_TIME_RANGE = 20  # the range of time axis in display
+INSP_TOTAL_VOLUME = 0   # total inspiratory volume delivered
 
 # No longer need. Controller now uses SensorReaderService
 # NUMBER_OF_SENSORS = 4
@@ -43,11 +44,13 @@ DISPLAY_TIME_RANGE = 20  # the range of time axis in display
 # threads_map = {}
 
 pressure_data = [0] * 6
-PWM_I, PWM_E = None, None
+PWM_I, PWM_O = None, None
 
 mqtt = None
 sensing_service = None
 Ki, Ke = 0, 0
+TIME_REF_MINUTE_VOL = None
+MINUTE_VOLUME = 0
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
@@ -107,9 +110,10 @@ def calculate_k(p1, p2, flow_rate):
 def calibrate_flow_meter(flow_rate):
     """ returns the calibrated k for both insp and exp flow meters, calculated based on multiple pressure readings """
 
-    # Turn ON both the solenoids fully for calibration
+    # Turn ON all three solenoids fully for calibration
     PWM_I.start(DUTY_RATIO_100)
-    PWM_E.start(DUTY_RATIO_100)
+    PWM_O.start(DUTY_RATIO_100)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Introduce a delay to achieve a stable flow across the flow meters
     time.sleep(2)
@@ -138,10 +142,17 @@ def control_solenoid(pin, duty_ratio):
     if pin == SI_PIN:
         PWM_I.ChangeDutyCycle(duty_ratio)
         logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
+    elif pin == SO_PIN:
+        PWM_O.ChangeDutyCycle(duty_ratio)
+        logger.debug("Changed duty cycle to " + str(duty_ratio) + " on pin " + str(pin))
     elif pin == SE_PIN:
-        logger.debug("Changed duty cycle to " + str(DUTY_RATIO_100 - duty_ratio) + " on pin " + str(pin))
-        # Expiratory solenoid is normally OPEN. Hence flipping the duty ratio
-        PWM_E.ChangeDutyCycle(DUTY_RATIO_100 - duty_ratio)
+        # Oxygen solenoid is normally OPEN. Hence flipping the duty ratio
+        level = GPIO.HIGH
+        if duty_ratio == DUTY_RATIO_100:
+            level = GPIO.LOW
+        logger.debug("Changed duty cycle to " + str(level) + " on pin " + str(pin))
+        GPIO.output(SE_PIN, level)
+
 
 # No longer in use. This is to emulate PWM on digital pins
 # def control_solenoid(pin, duty_ratio):
@@ -211,13 +222,12 @@ def create_chart_payload(t, pressure, flow_rate, volume):
 def send_to_display(timeT, pressure, flow_rate, volume):
     """ send the given parameters to display unit via mqtt """
 
-    mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
-    mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
-    mqtt.sender(mqtt.VOLUME_TOPIC, volume)
+    # mqtt.sender(mqtt.PRESSURE_TOPIC, convert_pressure(pressure))
+    # mqtt.sender(mqtt.FLOWRATE_TOPIC, flow_rate)
+    # mqtt.sender(mqtt.VOLUME_TOPIC, volume)
 
-    payload = create_chart_payload(timeT, pressure, flow_rate, volume)
+    payload = create_chart_payload(timeT, convert_pressure(pressure), flow_rate, volume)
     mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
-    # TODO: send also time with each topic so that it can be graphed based on time
     logger.debug(payload)
 
 
@@ -225,6 +235,7 @@ def insp_phase(demo_level):
     """ inspiratory phase tasks
         demo_level is a temporary hack to introduce two flow rate levels until pid controller is implemented """
 
+    global INSP_TOTAL_VOLUME
     logger.info("Entering inspiratory phase...")
     # beep sound added to inspiratory cycle
     os.system("echo -ne '\007'")
@@ -233,10 +244,12 @@ def insp_phase(demo_level):
     ti = 0  # instantaneous time
     q1, q2 = 0, 0  # flow rates
     vi = 0  # volume
+    pip = 0 # peak inspiratory pressure
     solenoids_closed = False
 
     # Control solenoids
     control_solenoid(SI_PIN, DUTY_RATIO_100)
+    control_solenoid(SO_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
 
     while ti < T_IN:
@@ -246,10 +259,15 @@ def insp_phase(demo_level):
         q2, p3 = get_average_flow_rate_and_pressure(INSP_FLOW)
         t2 = datetime.now()
 
+        # Record peak inspiratory pressure (pip)
+        if p3 > pip:
+            pip = p3
+
         if vi > Variables.vt:
             if not solenoids_closed:
                 # Tidal volume has reached, CLOSE all solonoids
                 control_solenoid(SI_PIN, DUTY_RATIO_0)
+                control_solenoid(SO_PIN, DUTY_RATIO_0)
                 control_solenoid(SE_PIN, DUTY_RATIO_0)
                 solenoids_closed = True
 
@@ -258,11 +276,13 @@ def insp_phase(demo_level):
             send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
 
-        # Calculate volume
-        vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
+        # Calculate volume in milli-litres
+        vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
+        # TODO: separately calculate di for inp and oxy solenoids.
         di = calculate_pid_duty_ratio(demo_level)
         control_solenoid(SI_PIN, di)
+        control_solenoid(SO_PIN, di)
 
         ti = (t2 - start_time).total_seconds()
         delta_t = (t2 - t1).total_seconds()
@@ -271,12 +291,21 @@ def insp_phase(demo_level):
         logger.debug("fio2: %.2f, vt: %.2f, ie: %.2f, rr: %.2f, peep: %.2f" % (
             Variables.fio2, Variables.vt, Variables.ie, Variables.rr, Variables.peep))
 
+    # Store tidal volume for expiratory phase net volume calculation
+    INSP_TOTAL_VOLUME = vi
+
+    # Send pip to GUI
+    mqtt.sender(mqtt.PIP_TOPIC, pip)
+    logger.info("[%.4f] Pip is : %.3f mL " % (ti, pip))
+
     logger.info("Leaving inspiratory phase.")
 
 
 def exp_phase():
     """ expiratory phase tasks """
     logger.info("Entering expiratory phase...")
+
+    global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL, MINUTE_VOLUME
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
@@ -284,7 +313,12 @@ def exp_phase():
     vi = 0
 
     control_solenoid(SI_PIN, DUTY_RATIO_0)
+    control_solenoid(SO_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
+
+    # Start calculating minute volume
+    if TIME_REF_MINUTE_VOL is None:
+        TIME_REF_MINUTE_VOL = start_time
 
     while ti < T_EX:
         t1 = t2
@@ -293,16 +327,27 @@ def exp_phase():
         t2 = datetime.now()
 
         # Calculate volume
-        vi += (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
-
+        vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
         ti = (t2 - start_time).total_seconds()
+
+        if (t2 - TIME_REF_MINUTE_VOL).total_seconds() < 60:
+            MINUTE_VOLUME += vi
+        else:
+            # Send minute volume to GUI
+            mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME, 2))
+            logger.info("[%.4f] Minute volume is : %.2f mL " % (ti, MINUTE_VOLUME))
+
+            # Reset minute volume calculation
+            TIME_REF_MINUTE_VOL = t2
+            MINUTE_VOLUME = 0
+
         delta_t = (t2 - t1).total_seconds()
-        send_to_display(t2, p3, (-1 * q2), vi)
+        send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - vi))
         logger.debug("ti = %.4f,     T_EX = %.4f" % (ti, T_EX))
 
-    logger.info("<< CHART >> Actual tidal volume delivered : %.3f L " % vi)
+    logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % vi)
     mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, vi)
-
+    INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
 
 
@@ -310,14 +355,15 @@ def wait_phase():
     """ waiting phase tasks """
     logger.info("Entering wait phase...")
     control_solenoid(SI_PIN, DUTY_RATIO_0)
+    control_solenoid(SO_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
     time.sleep(T_WT)
     logger.info("Leaving wait phase.")
 
 
 def convert_pressure(p_hpa):
-    """ returns inspiratory pressure in cmH2O"""
-    return p_hpa * 1.0197442
+    """ returns inspiratory pressure relative to atm in cmH2O"""
+    return (p_hpa * 1.0197442) - 1033.23
 
 
 def calc_respiratory_params():
@@ -330,17 +376,19 @@ def calc_respiratory_params():
 
 # Initialize the parameters
 def init_parameters():
-    global PWM_I, PWM_E, sensing_service, mqtt
+    global PWM_I, PWM_O, sensing_service, mqtt
 
     # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
     GPIO.setup(SI_PIN, GPIO.OUT)
+    GPIO.setup(SO_PIN, GPIO.OUT)
     GPIO.setup(SE_PIN, GPIO.OUT)
 
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
-    PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
+    PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Start the sensor reading service
     sensing_service = SensorReaderService()
@@ -356,8 +404,12 @@ def init_parameters():
 try:
     init_parameters()
 
-    # 12 here is the intended flow_rate for calibration in L/min
-    Ki, Ke = calibrate_flow_meter(12)
+    # Calibration should start after a trigger from user with a valid flow rate
+    while Variables.calib_flow_rate < 0:
+        time.sleep(2)
+
+    # Calibrate the flow meter
+    Ki, Ke = calibrate_flow_meter(Variables.calib_flow_rate)
 
     while True:
         # slow flow rate
@@ -380,6 +432,7 @@ try:
 finally:
     mqtt.clean_up()
     # Set the solenoids to desired states before exiting
-    PWM_I.start(DUTY_RATIO_100)
-    PWM_E.start(DUTY_RATIO_100)
+    control_solenoid(SI_PIN, DUTY_RATIO_100)
+    control_solenoid(SO_PIN, DUTY_RATIO_100)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
     print("\nInspiratory and expiratory solenoids were reset before exiting. Good bye...\n")

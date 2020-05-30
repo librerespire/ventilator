@@ -7,6 +7,7 @@ import logging.config
 
 logger = logging.getLogger(__name__)
 
+
 class SensorReaderService:
     """
     This class can use for probe sensors periodically with the delay 0.01
@@ -23,7 +24,7 @@ class SensorReaderService:
 
     def set_loop_flag(self, flag):
         logger.debug("SensorReaderService flag set: %d" % flag)
-        if (flag != 0 ):
+        if (flag != 0):
             self.loop_flag = 1
         else:
             self.loop_flag = 0
