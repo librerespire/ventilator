@@ -16,6 +16,8 @@ class Variables:
     vt = 500    # tidal volume (mL)
     peep = 10   # PEEP
     ps = 20     # pressure support (Ps)
+    pip = 0     # Peak presssure (Pip)
+    mv = 0      # Minute Volume
     p1 = 0      # pressure sensor 1 on inspiratory phase
     p2 = 0      # pressure sensor 2 on inspiratory phase
     p3 = 0      # pressure sensor 3 on expiratory phase

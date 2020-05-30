@@ -21,6 +21,15 @@
       background-color: #000000;
     }
 
+    input[type=number] {
+      border: none;
+      text-align: center;
+      border-bottom: 2px solid blue;
+      background-color: #737373;
+      color: yellow;
+      box-shadow: 3px 4px #262626;
+    }
+
     #bottom_menu {
       font-color: #ffffff;
     }
@@ -105,13 +114,21 @@
         $("#peep").html($(this).val())
         $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
       });
-      $("#vt_input").bind("change paste keyup", function() {
+      $("#tidle_volume_input").bind("change paste keyup", function() {
         $("#tidle_volume").html($(this).val())
         $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
       });
       $("#pressure_support_input").bind("change paste keyup", function() {
         $("#pressure_support").html($(this).val())
         $.get("/api/configs/ps?ps=" + $(this).val(), function(data, status) {})
+      });
+      $("#min_volume_input").bind("change paste keyup", function() {
+        $("#min_volume").html($(this).val())
+        $.get("/api/configs/mv?mv=" + $(this).val(), function(data, status) {})
+      });
+      $("#peak_pressure_input").bind("change paste keyup", function() {
+        $("#peak_pressure").html($(this).val())
+        $.get("/api/configs/pip?pip=" + $(this).val(), function(data, status) {})
       });
     });
 
@@ -152,7 +169,7 @@
               Ventilator Mode
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#"  style="font-size:30px;font-style:initial;">CMV-PC</a>
+              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;">CMV-PC</a>
             </div>
           </div>
         </div>
@@ -194,11 +211,11 @@
             <tbody>
               <tr>
                 <td style="width: 50%">
-                  <div class="card bg-dark text-center" onclick="this.value = show_easy_numpad(this);">
+                  <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>Tidal Volume</div>
                       <div id="tidle_volume" style="font-size:40px;font-style:initial;">500</div>
-                      <div id="tidle_volume_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <input class="keyboard form-control" id="tidle_volume_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -207,7 +224,7 @@
                     <div class="card-body">
                       <div>Minute Volume</div>
                       <div id="min_volume" style="font-size:40px;font-style:initial;">5</div>
-                      <div id="min_volume_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <input class="keyboard form-control" id="min_volume_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -218,7 +235,7 @@
                     <div class="card-body">
                       <div>Pip</div>
                       <div id="peak_pressure" style="font-size:40px;font-style:initial;">20</div>
-                      <div id="peak_pressure_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <input class="keyboard form-control" id="peak_pressure_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -227,7 +244,7 @@
                     <div class="card-body">
                       <div>PEEP</div>
                       <div id="peep" style="font-size:40px;font-style:initial;">5</div>
-                      <div id="peep_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <input class="keyboard form-control" id="peep_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -238,7 +255,7 @@
                     <div class="card-body">
                       <div>FiO<sub>2</sub></div>
                       <div id="fio2" style="font-size:40px;font-style:initial;">40</div>
-                      <div id="fio2_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <input class="keyboard form-control" id="fio2_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -247,7 +264,7 @@
                     <div class="card-body">
                       <div>R.R.</div>
                       <div id="rr" style="font-size:40px;font-style:initial;">10</div>
-                      <div id="rr_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <input class="keyboard form-control" id="rr_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -256,9 +273,9 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Pressure Support (Ps)</div>
+                      <div>Pressure Support</div>
                       <div id="pressure_support" style="font-size:40px;font-style:initial;">20</div>
-                      <div id="pressure_support_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <input class="keyboard form-control" id="pressure_support_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -266,8 +283,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>IE Ratio</div>
-                      <div id="ie_ratio" style="font-size:40px;font-style:initial;">1:2</div>
-                      <div id="ie_ratio_set" style="font-size:20px;font-style:initial;color:yellow;">500</div>
+                      <div id="ie_ratio" style="font-size:40px;font-style:initial;">1 : 2</div>
+                      <input class="keyboard form-control" id="ie_ratio_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
