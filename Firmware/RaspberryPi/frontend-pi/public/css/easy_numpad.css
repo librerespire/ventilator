@@ -25,7 +25,7 @@ a {
 .easy-numpad-container {
     position: relative;
     width: 100%;
-    max-width: 310px; /*max-width: 300px; per far rietrare i 10 caratteri più i segni . e - utilizzando il font Helvetica*/
+    max-width: 500px; /*max-width: 300px; per far rietrare i 10 caratteri più i segni . e - utilizzando il font Helvetica*/
     -webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
     -moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
     box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
