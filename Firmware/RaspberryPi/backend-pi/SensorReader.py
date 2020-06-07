@@ -24,7 +24,7 @@ class SensorReader:
             sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY, self.bus)
         sensor.set_pressure_oversample(bme680.OS_4X)
         if sensor.get_sensor_data():
-            return self.convert_pressure(sensor.data.pressure)
+            return sensor.data.pressure
 
     def read_temp(self):
         #Reading Data from i2c bus 3
@@ -139,7 +139,7 @@ class SensorReader:
         p = (p - (var2 / 4096.0)) * 6250.0 / var1
         var1 = (dig_P9) * p * p / 2147483648.0
         var2 = p * (dig_P8) / 32768.0
-        self.pressure = self.convert_pressure((p + (var1 + var2 + dig_P7) / 16.0) / 100) - self.get_offset()
+        self.pressure = ((p + (var1 + var2 + dig_P7) / 16.0) / 100) - self.get_offset()
         return self.pressure
         # Output data to screen ** uncomment this part to see values form sensors
         # print("""\t======== bus %d ==========
