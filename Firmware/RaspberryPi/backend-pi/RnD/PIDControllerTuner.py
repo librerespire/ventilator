@@ -48,11 +48,11 @@ def init_parameters():
     GPIO.setwarnings(False)
     GPIO.setup(SO_PIN, GPIO.OUT)
     GPIO.setup(SI_PIN, GPIO.OUT)
-    GPIO.setup(SE_PIN, GPIO.OUT)
+    # GPIO.setup(SE_PIN, GPIO.OUT)
 
     PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
-    PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
+    # PWM_E = GPIO.PWM(SE_PIN, PWM_FREQ)
 
     # Start the sensor reading service
     sensing_service = SensorReaderService()
@@ -66,7 +66,7 @@ def init_parameters():
     # Open all values
     PWM_O.ChangeDutyCycle(0)
     PWM_I.ChangeDutyCycle(100)
-    PWM_E.ChangeDutyCycle(0)    # Normally open, hence duty_ratio=0
+    # PWM_E.ChangeDutyCycle(0)    # Normally open, hence duty_ratio=0
 
 ###################################################################
 
