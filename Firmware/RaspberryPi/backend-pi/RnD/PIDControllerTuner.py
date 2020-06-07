@@ -83,14 +83,13 @@ while True:
     if pressure is None:
         continue
 
-    pid.update(convert_pressure(pressure))
+    pid.update(pressure)
     target_duty_ratio = pid.output
     target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
-    logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
-                 % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
-    # print("Target: %.1f | Current: %.1f | Duty Ratio: %d"
-    #              % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+    # logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
+    #              % (Variables.ps, pressure, target_duty_ratio))
+    print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, pressure, target_duty_ratio))
 
     # Set PWM to target duty
     PWM_I.ChangeDutyCycle(target_duty_ratio)
