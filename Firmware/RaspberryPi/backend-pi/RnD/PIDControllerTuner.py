@@ -10,9 +10,9 @@ import RPi.GPIO as GPIO
 
 # Constants
 PWM_FREQ = 2  # frequency for PWM
-SO_PIN = 6   # PIN (PWM) for O2 intake solenoid
-SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
-SE_PIN = 14  # PIN (PWM) for expiratory solenoid
+SO_PIN = 13   # PIN (PWM) for O2 intake solenoid
+SI_PIN = 12   # PIN (PWM) for inspiratory solenoid
+SE_PIN = 6    # PIN (PWM) for expiratory solenoid
 PWM_O = None
 PWM_I = None
 PWM_E = None
@@ -64,7 +64,7 @@ def init_parameters():
     pid.setSampleTime(Variables.pid_sampling_period)
 
     # Open all values
-    PWM_O.ChangeDutyCycle(100)
+    PWM_O.ChangeDutyCycle(0)
     PWM_I.ChangeDutyCycle(100)
     PWM_E.ChangeDutyCycle(0)    # Normally open, hence duty_ratio=0
 
@@ -87,7 +87,10 @@ while True:
     target_duty_ratio = pid.output
     target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
-    print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+    logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
+                 % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+    # print("Target: %.1f | Current: %.1f | Duty Ratio: %d"
+    #              % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
 
     # Set PWM to target duty
     PWM_I.ChangeDutyCycle(target_duty_ratio)
