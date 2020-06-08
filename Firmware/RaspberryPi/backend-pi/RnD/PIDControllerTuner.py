@@ -73,6 +73,9 @@ def init_parameters():
 
 init_parameters()
 
+time.sleep(2)
+print("P1 = %.1f,\tP2 = %.1f,\tP3 = %.1f,\tP4 = %.1f" % (Variables.p1, Variables.p2, Variables.p3, Variables.p4))
+
 while True:
     # load the latest PID related config. [Kp, Ki, Kd]
     load_pid_config()
