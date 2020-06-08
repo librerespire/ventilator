@@ -36,7 +36,7 @@ class Variables:
     Kp = 10
     Ki = 1
     Kd = 1
-    pid_sampling_period = 0.5
+    pid_sampling_period = 0.3
 
     # Flag to indicate demo setup, where P3 is read from a BME680 sensor
     demo = True

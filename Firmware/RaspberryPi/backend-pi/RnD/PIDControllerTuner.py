@@ -105,6 +105,9 @@ def insp_phase():
 
     print("\n=== INSP ===")
 
+    # set solenoids
+    GPIO.output(SE_PIN, GPIO.LOW)
+
     # load the latest PID related config. [Kp, Ki, Kd]
     load_pid_config()
     start_time = datetime.now()
@@ -140,11 +143,15 @@ def insp_phase():
         t1 = datetime.now()
         t = (t1 - start_time).total_seconds()
 
-    print("Max P = " + str(convert_pressure(peak_pressure)))
+    print("Max P = %.1f" % convert_pressure(peak_pressure))
 
 
 def exp_phase():
     print("\n=== EXP ===")
+
+    # set solenoids
+    PWM_I.ChangeDutyCycle(0)
+    GPIO.output(SE_PIN, GPIO.HIGH)
 
     start_time = datetime.now()
     t1 = start_time
