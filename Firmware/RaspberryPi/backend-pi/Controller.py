@@ -422,7 +422,7 @@ try:
 finally:
     mqtt.clean_up()
     # Set the solenoids to desired states before exiting
-    control_solenoid(SI_PIN, DUTY_RATIO_100)
-    control_solenoid(SO_PIN, DUTY_RATIO_100)
-    control_solenoid(SE_PIN, DUTY_RATIO_100)
+    control_solenoid(SI_PIN, DUTY_RATIO_0)
+    control_solenoid(SO_PIN, DUTY_RATIO_0)
+    control_solenoid(SE_PIN, DUTY_RATIO_0)
     print("\nInspiratory and expiratory solenoids were reset before exiting. Good bye...\n")

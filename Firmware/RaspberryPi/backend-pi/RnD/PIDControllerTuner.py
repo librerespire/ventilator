@@ -62,38 +62,45 @@ def init_parameters():
     pid.SetPoint = Variables.ps
     pid.setSampleTime(Variables.pid_sampling_period)
 
-    # Open all values
+    # Open all solenoids
     PWM_O.ChangeDutyCycle(0)
     PWM_I.ChangeDutyCycle(100)
     GPIO.output(SE_PIN, GPIO.LOW)   # Normally open, hence GPIO.LOW
 
 ###################################################################
 
+try:
 
-init_parameters()
+    init_parameters()
 
-time.sleep(2)
-print("P1 = %.1f,\tP2 = %.1f,\tP3 = %.1f,\tP4 = %.1f" % (Variables.p1, Variables.p2, Variables.p3, Variables.p4))
+    time.sleep(2)
+    print("P1 = %.1f,\tP2 = %.1f,\tP3 = %.1f,\tP4 = %.1f" % (Variables.p1, Variables.p2, Variables.p3, Variables.p4))
 
-while True:
-    # load the latest PID related config. [Kp, Ki, Kd]
-    load_pid_config()
+    while True:
+        # load the latest PID related config. [Kp, Ki, Kd]
+        load_pid_config()
 
-    # read pressure data
-    pressure = Variables.p3
+        # read pressure data
+        pressure = Variables.p3
 
-    if pressure is None:
-        continue
+        if pressure is None:
+            continue
 
-    pid.update(convert_pressure(pressure))
-    target_duty_ratio = pid.output
-    target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
+        pid.update(convert_pressure(pressure))
+        target_duty_ratio = pid.output
+        target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
-    # logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
-    #              % (Variables.ps, pressure, target_duty_ratio))
-    print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+        # logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
+        #              % (Variables.ps, pressure, target_duty_ratio))
+        print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
 
-    # Set PWM to target duty
-    PWM_I.ChangeDutyCycle(target_duty_ratio)
+        # Set PWM to target duty
+        PWM_I.ChangeDutyCycle(target_duty_ratio)
 
-    time.sleep(Variables.pid_sampling_period)
+        time.sleep(Variables.pid_sampling_period)
+
+finally:
+    # Set the solenoids to desired states before exiting
+    PWM_O.ChangeDutyCycle(0)
+    PWM_I.ChangeDutyCycle(0)
+    GPIO.output(SE_PIN, GPIO.LOW)  # Normally open, hence GPIO.LOW
