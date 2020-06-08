@@ -13,7 +13,7 @@ from os import path
 import RPi.GPIO as GPIO
 
 # Constants
-PWM_FREQ = 2  # frequency for PWM
+PWM_FREQ = 10  # frequency for PWM
 SO_PIN = 13  # PIN (PWM) for O2 intake solenoid
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
 SE_PIN = 6  # PIN (PWM) for expiratory solenoid
