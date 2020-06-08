@@ -22,7 +22,7 @@ PWM_I = None
 PWM_E = None
 pid = None
 
-Ti = 10
+Ti = 4
 Te = 10
 
 mqtt = None
