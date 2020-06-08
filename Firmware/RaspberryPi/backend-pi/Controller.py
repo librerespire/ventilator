@@ -374,6 +374,10 @@ def init_parameters():
 
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
     PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
+
+    # Initially solenoids are all open
+    control_solenoid(SI_PIN, DUTY_RATIO_100)
+    control_solenoid(SO_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Start the sensor reading service
