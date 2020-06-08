@@ -11,6 +11,7 @@ class SensorReader:
     cTemp = 999
     fTemp = 999
     bus_number = 0
+    bus_address = 0x77
 
     def __init__(self, bus_number):
         # Get I2C
@@ -28,7 +29,7 @@ class SensorReader:
 
     def read_temp(self):
         #Reading Data from i2c bus 3
-        b1 = self.bus.read_i2c_block_data(0x76, 0x88, 24)
+        b1 = self.bus.read_i2c_block_data(self.bus_address, 0x88, 24)
         # Convert the data
         # Temp coefficents
         dig_T1 = b1[1] * 256 + b1[0]
@@ -38,21 +39,21 @@ class SensorReader:
         dig_T3 = b1[5] * 256 + b1[4]
         if dig_T3 > 32767 :
             dig_T3 -= 65536
-        # BMP280 address, 0x76(118)
+        # BMP280 address, self.bus_address(118)
         # Select Control measurement register, 0xF4(244)
         #		0x27(39)	Pressure and Temperature Oversampling rate = 1
         #					Normal mode
-        self.bus.write_byte_data(0x76, 0xF4, 0x27)
-        # BMP280 address, 0x76(118)
+        self.bus.write_byte_data(self.bus_address, 0xF4, 0x27)
+        # BMP280 address, self.bus_address(118)
         # Select Configuration register, 0xF5(245)
         #		0xA0(00)	Stand_by time = 1000 ms
-        self.bus.write_byte_data(0x76, 0xF5, 0xA0)
+        self.bus.write_byte_data(self.bus_address, 0xF5, 0xA0)
         time.sleep(self.delay)
-        # BMP280 address, 0x76(118)
+        # BMP280 address, self.bus_address(118)
         # Read data back from 0xF7(247), 8 bytes
         # Pressure MSB, Pressure LSB, Pressure xLSB, Temperature MSB, Temperature LSB
         # Temperature xLSB, Humidity MSB, Humidity LSB
-        data = self.bus.read_i2c_block_data(0x76, 0xF7, 8)
+        data = self.bus.read_i2c_block_data(self.bus_address, 0xF7, 8)
         # Convert temperature data to 19-bits
         adc_t = ((data[3] * 65536) + (data[4] * 256) + (data[5] & 0xF0)) / 16
         # Temperature offset calculations
@@ -70,7 +71,7 @@ class SensorReader:
             return self.pressure
 
         #Reading Data from i2c bus 3
-        b1 = self.bus.read_i2c_block_data(0x76, 0x88, 24)
+        b1 = self.bus.read_i2c_block_data(self.bus_address, 0x88, 24)
         # Convert the data
         # Temp coefficents
         dig_T1 = b1[1] * 256 + b1[0]
@@ -106,21 +107,21 @@ class SensorReader:
         dig_P9 = b1[23] * 256 + b1[22]
         if dig_P9 > 32767 :
             dig_P9 -= 65536
-        # BMP280 address, 0x76(118)
+        # BMP280 address, self.bus_address(118)
         # Select Control measurement register, 0xF4(244)
         #		0x27(39)	Pressure and Temperature Oversampling rate = 1
         #					Normal mode
-        self.bus.write_byte_data(0x76, 0xF4, 0x27)
-        # BMP280 address, 0x76(118)
+        self.bus.write_byte_data(self.bus_address, 0xF4, 0x27)
+        # BMP280 address, self.bus_address(118)
         # Select Configuration register, 0xF5(245)
         #		0xA0(00)	Stand_by time = 1000 ms
-        self.bus.write_byte_data(0x76, 0xF5, 0xA0)
+        self.bus.write_byte_data(self.bus_address, 0xF5, 0xA0)
         time.sleep(self.delay)
-        # BMP280 address, 0x76(118)
+        # BMP280 address, self.bus_address(118)
         # Read data back from 0xF7(247), 8 bytes
         # Pressure MSB, Pressure LSB, Pressure xLSB, Temperature MSB, Temperature LSB
         # Temperature xLSB, Humidity MSB, Humidity LSB
-        data = self.bus.read_i2c_block_data(0x76, 0xF7, 8)
+        data = self.bus.read_i2c_block_data(self.bus_address, 0xF7, 8)
         # Convert pressure data to 19-bits
         adc_p = ((data[0] * 65536) + (data[1] * 256) + (data[2] & 0xF0)) / 16
         adc_t = ((data[3] * 65536) + (data[4] * 256) + (data[5] & 0xF0)) / 16
