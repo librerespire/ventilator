@@ -104,3 +104,4 @@ finally:
     PWM_O.ChangeDutyCycle(0)
     PWM_I.ChangeDutyCycle(0)
     GPIO.output(SE_PIN, GPIO.LOW)  # Normally open, hence GPIO.LOW
+    time.sleep(2)
