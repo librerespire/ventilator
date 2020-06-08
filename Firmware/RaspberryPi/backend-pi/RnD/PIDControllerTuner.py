@@ -119,7 +119,7 @@ def insp_phase():
         if pressure is None:
             continue
 
-        send_to_display(t1, pressure, 0, 0)
+        send_to_display(t1, convert_pressure(pressure), 0, 0)
 
         if pressure > peak_pressure:
             peak_pressure = pressure
@@ -157,7 +157,7 @@ def exp_phase():
         if pressure is None:
             continue
 
-        send_to_display(t1, pressure, 0, 0)
+        send_to_display(t1, convert_pressure(pressure), 0, 0)
         time.sleep(Variables.pid_sampling_period)
         t1 = datetime.now()
         t = (t1 - start_time).total_seconds()
