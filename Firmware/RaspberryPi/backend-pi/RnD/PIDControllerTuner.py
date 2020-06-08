@@ -1,22 +1,31 @@
 import sys
+
 sys.path.append('..')
 
 from PID import PID
 from SensorReaderService import SensorReaderService
+from MQTTTransceiver import MQTTTransceiver
 from Variables import Variables
+from datetime import datetime
 import time
+import json
 from os import path
 import RPi.GPIO as GPIO
 
 # Constants
 PWM_FREQ = 2  # frequency for PWM
-SO_PIN = 13   # PIN (PWM) for O2 intake solenoid
-SI_PIN = 12   # PIN (PWM) for inspiratory solenoid
-SE_PIN = 6    # PIN (PWM) for expiratory solenoid
+SO_PIN = 13  # PIN (PWM) for O2 intake solenoid
+SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
+SE_PIN = 6  # PIN (PWM) for expiratory solenoid
 PWM_O = None
 PWM_I = None
 PWM_E = None
 pid = None
+
+Ti = 2
+Te = 3
+
+mqtt = None
 
 
 def load_pid_config():
@@ -41,7 +50,7 @@ def convert_pressure(p_hpa):
 
 
 def init_parameters():
-    global PWM_O, PWM_I, PWM_E, pid
+    global PWM_O, PWM_I, pid, mqtt
 
     # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
@@ -69,7 +78,90 @@ def init_parameters():
     # PWM_O.ChangeDutyCycle(0)
     # PWM_I.ChangeDutyCycle(100)
 
+    # Start the MQTT transceiver to communicate with GUI
+    mqtt = MQTTTransceiver()
+
+
+
+def create_chart_payload(t, pressure, flow_rate, volume):
+    payload = {
+        'time': t.isoformat(),
+        'pressure': round(pressure, 2),
+        'flow_rate': round(flow_rate, 2),
+        'volume': round(volume, 2)
+    }
+    return json.dumps(payload)
+
+
+def send_to_display(timeT, pressure, flow_rate, volume):
+    """ send the given parameters to display unit via mqtt """
+
+    payload = create_chart_payload(timeT, pressure, flow_rate, volume)
+    mqtt.sender(mqtt.CHART_DATA_TOPIC, payload)
+
 ###################################################################
+
+def insp_phase():
+
+    print("\n=== INSP ===")
+
+    # load the latest PID related config. [Kp, Ki, Kd]
+    load_pid_config()
+    start_time = datetime.now()
+    t1 = start_time
+    t = 0
+    peak_pressure = 0
+
+    while t < Ti:
+        # read pressure data
+        pressure = Variables.p3
+
+        if pressure is None:
+            continue
+
+        send_to_display(t1, pressure, 0, 0)
+
+        if pressure > peak_pressure:
+            peak_pressure = pressure
+
+        pid.update(convert_pressure(pressure))
+        target_duty_ratio = pid.output
+        target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
+
+        # logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
+        #              % (Variables.ps, pressure, target_duty_ratio))
+        print(
+            "Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+
+        # Set PWM to target duty
+        PWM_I.ChangeDutyCycle(target_duty_ratio)
+
+        time.sleep(Variables.pid_sampling_period)
+        t1 = datetime.now()
+        t = (t1 - start_time).total_seconds()
+
+    print("Max P = " + peak_pressure)
+
+
+def exp_phase():
+    print("\n=== EXP ===")
+
+    start_time = datetime.now()
+    t1 = start_time
+    t = 0
+
+    while t < Te:
+        # read pressure data
+        pressure = Variables.p3
+
+        if pressure is None:
+            continue
+
+        send_to_display(t1, pressure, 0, 0)
+        time.sleep(Variables.pid_sampling_period)
+        t1 = datetime.now()
+        t = (t1 - start_time).total_seconds()
+
 
 try:
 
@@ -79,27 +171,8 @@ try:
     print("P1 = %.1f,\tP2 = %.1f,\tP3 = %.1f,\tP4 = %.1f" % (Variables.p1, Variables.p2, Variables.p3, Variables.p4))
 
     while True:
-        # load the latest PID related config. [Kp, Ki, Kd]
-        load_pid_config()
-
-        # read pressure data
-        pressure = Variables.p3
-
-        if pressure is None:
-            continue
-
-        pid.update(convert_pressure(pressure))
-        target_duty_ratio = pid.output
-        target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
-
-        # logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
-        #              % (Variables.ps, pressure, target_duty_ratio))
-        print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
-
-        # Set PWM to target duty
-        PWM_I.ChangeDutyCycle(target_duty_ratio)
-
-        time.sleep(Variables.pid_sampling_period)
+        insp_phase()
+        exp_phase()
 
 finally:
     # Set the solenoids to desired states before exiting
