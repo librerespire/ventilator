@@ -83,6 +83,7 @@ class MQTTTransceiver:
         elif (msg.topic == self.PS_CONFIG_TOPIC):
             Variables.ps = float(msg.payload.decode())
             logger.debug("PS received: %.2f" % Variables.ps)
+        # TODO: use Pip to control pip - not 100% sure
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 
