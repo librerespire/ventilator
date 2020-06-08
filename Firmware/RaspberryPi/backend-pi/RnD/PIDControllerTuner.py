@@ -130,11 +130,12 @@ def insp_phase():
         if pressure > peak_pressure:
             peak_pressure = pressure
 
-        if pressure > (Variables.ps - 1):
+        if pressure > (Variables.ps - 1) or skip_pid:
             PWM_I.ChangeDutyCycle(0)
             t1 = datetime.now()
             t = (t1 - start_time).total_seconds()
             print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), 0))
+            skip_pid = True
             time.sleep(Variables.pid_sampling_period)
             continue
 
