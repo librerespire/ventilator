@@ -13,7 +13,7 @@ from os import path
 import RPi.GPIO as GPIO
 
 # Constants
-PWM_FREQ = 10  # frequency for PWM
+PWM_FREQ = 20  # frequency for PWM
 SO_PIN = 13  # PIN (PWM) for O2 intake solenoid
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
 SE_PIN = 6  # PIN (PWM) for expiratory solenoid
@@ -116,6 +116,7 @@ def insp_phase():
     t1 = start_time
     t = 0
     peak_pressure = 0
+    skip_pid = False
 
     while t < Ti:
         # read pressure data
@@ -128,6 +129,13 @@ def insp_phase():
 
         if pressure > peak_pressure:
             peak_pressure = pressure
+
+        if pressure > (Variables.ps - 1):
+            PWM_I.ChangeDutyCycle(0)
+            t1 = datetime.now()
+            t = (t1 - start_time).total_seconds()
+            print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+            continue
 
         pid.update(convert_pressure(pressure))
         target_duty_ratio = pid.output
