@@ -140,7 +140,7 @@ def insp_phase():
         t1 = datetime.now()
         t = (t1 - start_time).total_seconds()
 
-    print("Max P = " + str(peak_pressure))
+    print("Max P = " + str(convert_pressure(peak_pressure)))
 
 
 def exp_phase():
