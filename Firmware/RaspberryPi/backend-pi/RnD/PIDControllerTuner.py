@@ -63,9 +63,11 @@ def init_parameters():
     pid.setSampleTime(Variables.pid_sampling_period)
 
     # Open all solenoids
-    PWM_O.ChangeDutyCycle(0)
-    PWM_I.ChangeDutyCycle(100)
-    GPIO.output(SE_PIN, GPIO.LOW)   # Normally open, hence GPIO.LOW
+    PWM_O.start(0)
+    PWM_I.start(100)
+    GPIO.output(SE_PIN, GPIO.LOW)  # Normally open, hence GPIO.LOW
+    # PWM_O.ChangeDutyCycle(0)
+    # PWM_I.ChangeDutyCycle(100)
 
 ###################################################################
 
