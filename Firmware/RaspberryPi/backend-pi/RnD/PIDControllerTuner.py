@@ -134,7 +134,7 @@ def insp_phase():
             PWM_I.ChangeDutyCycle(0)
             t1 = datetime.now()
             t = (t1 - start_time).total_seconds()
-            print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+            print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), 0))
             continue
 
         pid.update(convert_pressure(pressure))
