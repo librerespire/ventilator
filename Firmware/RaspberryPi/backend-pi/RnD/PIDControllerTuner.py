@@ -101,12 +101,14 @@ def send_to_display(timeT, pressure, flow_rate, volume):
 
 ###################################################################
 
+
 def insp_phase():
 
-    print("\n=== INSP ===")
-
     # set solenoids
-    GPIO.output(SE_PIN, GPIO.LOW)
+    GPIO.output(SE_PIN, GPIO.HIGH)
+    time.sleep(0.1)
+
+    print("\n=== INSP ===")
 
     # load the latest PID related config. [Kp, Ki, Kd]
     load_pid_config()
@@ -147,11 +149,13 @@ def insp_phase():
 
 
 def exp_phase():
-    print("\n=== EXP ===")
 
     # set solenoids
     PWM_I.ChangeDutyCycle(0)
-    GPIO.output(SE_PIN, GPIO.HIGH)
+    GPIO.output(SE_PIN, GPIO.LOW)
+    time.sleep(0.1)
+
+    print("\n=== EXP ===")
 
     start_time = datetime.now()
     t1 = start_time
@@ -165,7 +169,7 @@ def exp_phase():
             continue
 
         send_to_display(t1, convert_pressure(pressure), 0, 0)
-        print("Pressure = " + str(convert_pressure(pressure)))
+        print("Pressure = %.1f" % convert_pressure(pressure))
         time.sleep(Variables.pid_sampling_period)
         t1 = datetime.now()
         t = (t1 - start_time).total_seconds()
