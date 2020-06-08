@@ -135,6 +135,7 @@ def insp_phase():
             t1 = datetime.now()
             t = (t1 - start_time).total_seconds()
             print("Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), 0))
+            time.sleep(Variables.pid_sampling_period)
             continue
 
         pid.update(convert_pressure(pressure))
