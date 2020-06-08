@@ -158,6 +158,7 @@ def exp_phase():
             continue
 
         send_to_display(t1, convert_pressure(pressure), 0, 0)
+        print("Pressure = " + str(convert_pressure(pressure)))
         time.sleep(Variables.pid_sampling_period)
         t1 = datetime.now()
         t = (t1 - start_time).total_seconds()
