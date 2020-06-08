@@ -24,6 +24,7 @@ pid = None
 
 Ti = 4
 Te = 10
+leak_duty = 20
 
 mqtt = None
 
@@ -131,10 +132,10 @@ def insp_phase():
             peak_pressure = pressure
 
         if (convert_pressure(pressure) > (Variables.ps - 1)) or skip_pid:
-            PWM_I.ChangeDutyCycle(0)
+            PWM_I.ChangeDutyCycle(leak_duty)
             t1 = datetime.now()
             t = (t1 - start_time).total_seconds()
-            print(">>> Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), 0))
+            print(">>> Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), leak_duty))
             skip_pid = True
             time.sleep(Variables.pid_sampling_period)
             continue
