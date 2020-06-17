@@ -31,6 +31,8 @@ class Variables:
     vt = 500    # tidal volume (mL)
     peep = 10   # PEEP
     ps = 15     # pressure support (Ps)
+    pip = 0     # Peak presssure (Pip)  CURRENTLY NOT USED
+    mv = 0      # Minute Volume         CURRENTLY NOT USED
 
     # PID controller parameters
     Kp = 10
