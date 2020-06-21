@@ -33,7 +33,7 @@ def load_pid_config():
     global pid
     with open('./pid.conf', 'r') as f:
         config = f.readline().split(',')
-        pid.SetPoint = float(Variables.ps)
+        pid.SetPoint = float(Variables.pip_target)
         pid.setKp(float(config[0]))
         pid.setKi(float(config[1]))
         pid.setKd(float(config[2]))
@@ -69,7 +69,7 @@ def init_parameters():
     # Initialize PID controller
     create_pid_config()
     pid = PID(Variables.Kp, Variables.Ki, Variables.Kd)
-    pid.SetPoint = Variables.ps
+    pid.SetPoint = Variables.pip_target
     pid.setSampleTime(Variables.pid_sampling_period)
 
     # Open all solenoids
@@ -131,11 +131,11 @@ def insp_phase():
         if pressure > peak_pressure:
             peak_pressure = pressure
 
-        if (convert_pressure(pressure) > (Variables.ps - 1)) or skip_pid:
+        if (convert_pressure(pressure) > (Variables.pip_target - 1)) or skip_pid:
             PWM_I.ChangeDutyCycle(leak_duty)
             t1 = datetime.now()
             t = (t1 - start_time).total_seconds()
-            print(">>> Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), leak_duty))
+            print(">>> Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.pip_target, convert_pressure(pressure), leak_duty))
             skip_pid = True
             time.sleep(Variables.pid_sampling_period)
             continue
@@ -145,9 +145,9 @@ def insp_phase():
         target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
         # logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
-        #              % (Variables.ps, pressure, target_duty_ratio))
+        #              % (Variables.pip_target, pressure, target_duty_ratio))
         print(
-            "Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.ps, convert_pressure(pressure), target_duty_ratio))
+            "Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.pip_target, convert_pressure(pressure), target_duty_ratio))
 
         # Set PWM to target duty
         PWM_I.ChangeDutyCycle(target_duty_ratio)

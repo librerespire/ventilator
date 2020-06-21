@@ -81,8 +81,9 @@ def calibrate_flow_meter(flow_rate):
 
     ki /= nSamples
     ke /= nSamples
-    logger.debug(
-        "Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f" % (ki, ke))
+    logger.debug("Flow meter was calibrated. k_ins = %.4f, k_exp = %.4f\n Latest pressure readings are,"
+                 "\nP1=%.2f,\nP2=%.2f,\nP3=%.2f,\nP4=%.2f,\n" % (
+                     ki, ke, Variables.p1, Variables.p2, Variables.p3, Variables.p4))
     return ki, ke
 
 
@@ -216,7 +217,7 @@ def insp_phase():
         ti = (t2 - start_time).total_seconds()
         send_to_display(t2, p3, q2, vi)
 
-        logger.debug("Psupport: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.ps, p3, di))
+        logger.debug("Ptarget: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.pip_target, p3, di))
 
     # Store tidal volume for expiratory phase net volume calculation
     INSP_TOTAL_VOLUME = vi
@@ -360,8 +361,8 @@ def calc_pressure_offsests():
                  % (Variables.p1_offset, Variables.p2_offset, Variables.p3_offset, Variables.p4_offset))
 
 
-# Initialize the parameters
 def init_parameters():
+    """ Initialize the parameters """
     global PWM_I, PWM_O, sensing_service, mqtt, pid
 
     # Initialize PWM pins
@@ -378,8 +379,6 @@ def init_parameters():
     # Initially solenoids are all open
     PWM_I.start(DUTY_RATIO_100)
     PWM_O.start(DUTY_RATIO_100)
-    # control_solenoid(SI_PIN, DUTY_RATIO_100)
-    # control_solenoid(SO_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Start the sensor reading service
@@ -393,12 +392,28 @@ def init_parameters():
 
     # Initialize PID Controller
     pid = PID(Variables.Kp, Variables.Ki, Variables.Kd)
-
-    # TODO: dynamically adjust pid.setPoint via GUI
-    pid.SetPoint = Variables.ps
+    pid.SetPoint = Variables.pip_target
     pid.setSampleTime(Variables.pid_sampling_period)
 
     calc_respiratory_params()
+
+
+def update_user_settings():
+    """ User can change certain settings via GUI. Utilize the latest user settings for calculations """
+
+    # update the target pressure in pid controller
+    pid.SetPoint = Variables.pip_target
+
+    # use the latest input parameters set via UI
+    calc_respiratory_params()
+
+
+def close_all_solenoids():
+    # Set the solenoids to OFF state
+    control_solenoid(SI_PIN, DUTY_RATIO_0)
+    control_solenoid(SO_PIN, DUTY_RATIO_0)
+    control_solenoid(SE_PIN, DUTY_RATIO_0)
+    time.sleep(2)
 
 
 #######################################################################################################
@@ -418,14 +433,10 @@ try:
         exp_phase()
         # wait_phase()
 
-        # use the latest input parameters set via UI
-        calc_respiratory_params()
+        # Update user settings set via GUI for next cycle
+        update_user_settings()
 
 finally:
-    mqtt.clean_up()
-    # Set the solenoids to desired states before exiting
-    control_solenoid(SI_PIN, DUTY_RATIO_0)
-    control_solenoid(SO_PIN, DUTY_RATIO_0)
-    control_solenoid(SE_PIN, DUTY_RATIO_0)
-    time.sleep(2)
-    print("\nInspiratory and expiratory solenoids were reset before exiting. Good bye...\n")
+    mqtt.clean_up()  # clean up mqtt service
+    close_all_solenoids()  # Set all solenoids to desired states before exiting
+    print("\nExiting. Good bye...\n")

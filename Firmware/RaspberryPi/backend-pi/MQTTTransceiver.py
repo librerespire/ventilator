@@ -21,9 +21,9 @@ class MQTTTransceiver:
     PEEP_CONFIG_TOPIC = 'Config/peep'
     VT_CONFIG_TOPIC = 'Config/vt'
     IE_CONFIG_TOPIC = 'Config/ie'
-    PS_CONFIG_TOPIC = 'Config/ps'
-    MV_CONFIG_TOPIC = 'Config/mv'
+    PMAX_CONFIG_TOPIC = 'Config/pmax'
     PIP_CONFIG_TOPIC = 'Config/pip'
+    MV_CONFIG_TOPIC = 'Config/mv'
 
     MQTT_HOST = "127.0.0.1"
     MQTT_PORT = 1883
@@ -59,40 +59,40 @@ class MQTTTransceiver:
         client.subscribe(self.PEEP_CONFIG_TOPIC)
         client.subscribe(self.VT_CONFIG_TOPIC)
         client.subscribe(self.IE_CONFIG_TOPIC)
-        client.subscribe(self.PS_CONFIG_TOPIC)
-        client.subscribe(self.MV_CONFIG_TOPIC)
         client.subscribe(self.PIP_CONFIG_TOPIC)
+        client.subscribe(self.PMAX_CONFIG_TOPIC)
+        client.subscribe(self.MV_CONFIG_TOPIC)
         client.on_message = self.on_message
         client.loop_forever()
 
     def on_message(self, client, obj, msg):
-        if (msg.topic == self.CALIB_FLOW_RATE_CONFIG_TOPIC):
+        if msg.topic == self.CALIB_FLOW_RATE_CONFIG_TOPIC:
             Variables.calib_flow_rate = float(msg.payload.decode())
             logger.debug("Calibration flow rate received: %.2f" % Variables.calib_flow_rate)
-        elif (msg.topic == self.FIO2_CONFIG_TOPIC):
+        elif msg.topic == self.FIO2_CONFIG_TOPIC:
             Variables.fio2 = float(msg.payload.decode())
             logger.debug("FIO2 received: %.2f" % Variables.fio2)
-        elif (msg.topic == self.RR_CONFIG_TOPIC):
+        elif msg.topic == self.RR_CONFIG_TOPIC:
             Variables.rr = float(msg.payload.decode())
             logger.debug("RR received: %.2f" % Variables.rr)
-        elif (msg.topic == self.PEEP_CONFIG_TOPIC):
+        elif msg.topic == self.PEEP_CONFIG_TOPIC:
             Variables.peep = float(msg.payload.decode())
             logger.debug("PEEP received: %.2f" % Variables.peep)
-        elif (msg.topic == self.VT_CONFIG_TOPIC):
+        elif msg.topic == self.VT_CONFIG_TOPIC:
             Variables.vt = float(msg.payload.decode())
             logger.debug("VT received: %.2f" % Variables.vt)
-        elif (msg.topic == self.IE_CONFIG_TOPIC):
+        elif msg.topic == self.IE_CONFIG_TOPIC:
             Variables.ie = float(msg.payload.decode())
             logger.debug("IE received: %.2f" % Variables.ie)
-        elif (msg.topic == self.PS_CONFIG_TOPIC):
-            Variables.ps = float(msg.payload.decode())
-            logger.debug("PS received: %.2f" % Variables.ps)
-        elif (msg.topic == self.MV_CONFIG_TOPIC):
+        elif msg.topic == self.PIP_CONFIG_TOPIC:
+            Variables.pip_target = float(msg.payload.decode())
+            logger.debug("Pip_target received: %.2f" % Variables.pip_target)
+        elif msg.topic == self.PMAX_CONFIG_TOPIC:
+            Variables.pmax = float(msg.payload.decode())
+            logger.debug("Pmax received: %.2f" % Variables.pmax)
+        elif msg.topic == self.MV_CONFIG_TOPIC:
             Variables.mv = float(msg.payload.decode())
             logger.debug("MV received: %.2f" % Variables.mv)
-        elif (msg.topic == self.PIP_CONFIG_TOPIC):
-            Variables.pip = float(msg.payload.decode())
-            logger.debug("Pip received: %.2f" % Variables.pip)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 
