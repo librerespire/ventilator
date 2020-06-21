@@ -30,11 +30,11 @@ class Variables:
     # From GUI
     mode = P_CONTROL  # ventilator mode selected
     calib_flow_rate = -1  # flow rate used for calibration. Set by GUI
-    fio2 = 0  # fio2 value
-    ie = 1  # I:E ratio
+    fio2 = 40  # fio2 value
+    ie = 2  # I:E ratio
     rr = 10  # respiratory rate (RR)
     vt = 500  # tidal volume (mL)
-    peep = 10  # PEEP
+    peep = 5  # PEEP
     pip_target = 15  # Target Peak presssure (Pip)
     pmax = 60  # Safety pressure (max value)
     mv = 0  # Minute Volume  ---  CURRENTLY NOT USED
