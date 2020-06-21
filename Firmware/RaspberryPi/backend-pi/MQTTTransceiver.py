@@ -24,6 +24,7 @@ class MQTTTransceiver:
     PMAX_CONFIG_TOPIC = 'Config/pmax'
     PIP_CONFIG_TOPIC = 'Config/pip'
     MV_CONFIG_TOPIC = 'Config/mv'
+    MODE_CONFIG_TOPIC = 'Config/mode'
 
     MQTT_HOST = "127.0.0.1"
     MQTT_PORT = 1883
@@ -62,6 +63,7 @@ class MQTTTransceiver:
         client.subscribe(self.PIP_CONFIG_TOPIC)
         client.subscribe(self.PMAX_CONFIG_TOPIC)
         client.subscribe(self.MV_CONFIG_TOPIC)
+        client.subscribe(self.MODE_CONFIG_TOPIC)
         client.on_message = self.on_message
         client.loop_forever()
 
@@ -93,6 +95,9 @@ class MQTTTransceiver:
         elif msg.topic == self.MV_CONFIG_TOPIC:
             Variables.mv = float(msg.payload.decode())
             logger.debug("MV received: %.2f" % Variables.mv)
+        elif msg.topic == self.MODE_CONFIG_TOPIC:
+            Variables.mode = float(msg.payload.decode())
+            logger.debug("VentMode received: %.2f" % Variables.mode)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 

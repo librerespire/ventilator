@@ -12,6 +12,7 @@ const IE_CONFIG_TOPIC = 'Config/ie';
 const PMAX_CONFIG_TOPIC = 'Config/pmax';
 const PIP_CONFIG_TOPIC = 'Config/pip';
 const MINUTE_VOL_CONFIG_TOPIC = 'Config/mv';
+const MODE_CONFIG_TOPIC = 'Config/mode';
 
 router.get('/calib_flow_rate', function (req, res) {
   mqtt_messenger.mqtt_sender(CALIB_FLOW_RATE_CONFIG_TOPIC, req.query.calib_flow_rate);
@@ -52,8 +53,15 @@ router.get('/pip', function (req, res) {
   mqtt_messenger.mqtt_sender(PIP_CONFIG_TOPIC, req.query.pip);
   res.sendStatus(200);
 })
+
 router.get('/mv', function (req, res) {
   mqtt_messenger.mqtt_sender(MINUTE_VOL_CONFIG_TOPIC, req.query.mv);
   res.sendStatus(200);
 })
+
+router.get('/mode', function (req, res) {
+    mqtt_messenger.mqtt_sender(MODE_CONFIG_TOPIC, req.query.mode);
+    res.sendStatus(200);
+})
+
 module.exports = router;
