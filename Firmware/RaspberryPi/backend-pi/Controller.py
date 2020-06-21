@@ -127,6 +127,8 @@ def get_average_flow_rate_and_pressure(is_insp_phase):
 
 def calculate_pid_duty_ratio(pressure):
     """ PID controller determines the required duty ratio to achieve the desired pressure curve """
+
+    # TODO: Calculate duty ratio for medical air and oxygen separately
     logger.debug("<<<< HIT PID Controller >>>> : pressure = " + str(pressure))
     pid.update(pressure)
     duty_ratio = pid.output
@@ -135,7 +137,9 @@ def calculate_pid_duty_ratio(pressure):
     duty_ratio = max(min(int(duty_ratio), 100), 0)
 
     logger.debug("<<<< LEAVE PID Controller >>>> : duty_ratio = " + str(duty_ratio))
-    return duty_ratio
+
+    # Currently both the medical air and oxygen are using the same duty ratio
+    return duty_ratio, duty_ratio
 
 
 def create_chart_payload(t, pressure, flow_rate, volume):
@@ -165,6 +169,11 @@ def insp_phase():
     # beep sound added to inspiratory cycle
     system("echo -ne '\007'")
 
+    # Control solenoids
+    control_solenoid(SI_PIN, DUTY_RATIO_100)
+    control_solenoid(SO_PIN, DUTY_RATIO_100)
+    control_solenoid(SE_PIN, DUTY_RATIO_0)
+
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
@@ -172,11 +181,8 @@ def insp_phase():
     vi = 0  # volume
     pip = 0  # peak inspiratory pressure
     solenoids_closed = False
-
-    # Control solenoids
-    control_solenoid(SI_PIN, DUTY_RATIO_100)
-    control_solenoid(SO_PIN, DUTY_RATIO_100)
-    control_solenoid(SE_PIN, DUTY_RATIO_0)
+    only_exp_sol_open = False
+    p_control_mode = Variables.mode is Variables.P_CONTROL    # ventilator in pressure control mode
 
     # Reset inspiratory cycle volume
     INSP_TOTAL_VOLUME = 0
@@ -194,12 +200,36 @@ def insp_phase():
         if p3 > pip:
             pip = p3
 
-        if vi > Variables.vt:
-            if not solenoids_closed:
-                # Tidal volume has reached, CLOSE all solonoids
+        # if safety pressure limit has reached, close all solenoids except exp to release pressure quickly
+        if p_control_mode and (p3 > Variables.pmax):
+            if not only_exp_sol_open:
                 control_solenoid(SI_PIN, DUTY_RATIO_0)
                 control_solenoid(SO_PIN, DUTY_RATIO_0)
-                control_solenoid(SE_PIN, DUTY_RATIO_0)
+                control_solenoid(SE_PIN, DUTY_RATIO_100)
+                time.sleep(0.1)
+                only_exp_sol_open = True
+
+            # TODO: set alarm - pressure has gone beyond safety limits
+            ti = (t2 - start_time).total_seconds()
+            send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
+            continue
+        elif p_control_mode and (p3 < Variables.pmax):
+            # TODO: clear alarm - pressure is below safety limits
+            pass
+
+        # if pressure is beyond the target threshold (15% above target), rely on PID controller to bring it down
+        # However, need to raise an alarm
+        if p_control_mode and (p3 > Variables.pip_target * 1.15):
+            # TODO: set alarm - 15% above target pip has reached
+            pass
+        elif p_control_mode and (p3 < Variables.pip_target * 1.15):
+            # TODO: clear alarm - no longer 15% above target pip
+            pass
+
+        # Operating in volume control mode, and tidal volume has reached, CLOSE all solonoids
+        if not p_control_mode and (vi > Variables.vt):
+            if not solenoids_closed:
+                close_all_solenoids(0.1)
                 solenoids_closed = True
 
             ti = (t2 - start_time).total_seconds()
@@ -209,10 +239,10 @@ def insp_phase():
         # Calculate volume in milli-litres
         vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
-        # TODO: separately calculate di for inp and oxy solenoids.
-        di = calculate_pid_duty_ratio(p3)
-        control_solenoid(SI_PIN, di)
-        control_solenoid(SO_PIN, di)
+        # duty ratio for solenoids controlling medical air and oxygen flows
+        di_i, di_o = calculate_pid_duty_ratio(p3)
+        control_solenoid(SI_PIN, di_i)
+        control_solenoid(SO_PIN, di_o)
 
         ti = (t2 - start_time).total_seconds()
         send_to_display(t2, p3, q2, vi)
@@ -408,12 +438,12 @@ def update_user_settings():
     calc_respiratory_params()
 
 
-def close_all_solenoids():
+def close_all_solenoids(delay):
     # Set the solenoids to OFF state
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SO_PIN, DUTY_RATIO_0)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
-    time.sleep(2)
+    time.sleep(delay)
 
 
 #######################################################################################################
@@ -438,5 +468,5 @@ try:
 
 finally:
     mqtt.clean_up()  # clean up mqtt service
-    close_all_solenoids()  # Set all solenoids to desired states before exiting
+    close_all_solenoids(2)  # Set all solenoids to desired states before exiting
     print("\nExiting. Good bye...\n")
