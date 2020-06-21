@@ -247,7 +247,7 @@ def insp_phase():
         ti = (t2 - start_time).total_seconds()
         send_to_display(t2, p3, q2, vi)
 
-        logger.debug("Ptarget: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.pip_target, p3, di))
+        logger.debug("Ptarget: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.pip_target, p3, di_i))
 
     # Store tidal volume for expiratory phase net volume calculation
     INSP_TOTAL_VOLUME = vi
