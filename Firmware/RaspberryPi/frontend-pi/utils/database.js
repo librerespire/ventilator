@@ -4,8 +4,8 @@ var volume = [];
 var tidle_volume
 var minute_volume
 var pip
-var major_alarms = {}   # major alarms {'code':'message'}
-var minor_alarms = {}   # minor alarms {'code':'message'}
+var major_alarms = {}   // major alarms {'code':'message'}
+var minor_alarms = {}   // minor alarms {'code':'message'}
 
 
 module.exports = {
