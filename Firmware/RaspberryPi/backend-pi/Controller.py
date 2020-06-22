@@ -14,6 +14,8 @@ from SensorReaderService import SensorReaderService
 # from PWMController import PWMController
 from MQTTTransceiver import MQTTTransceiver
 from PID import PID
+from Alarm import AlarmManager, AlarmType, AlarmLevel
+
 
 # Internal parameters
 T_IN = 2  # inspiratory time
@@ -41,6 +43,7 @@ last_p3 = 0;
 last_p4 = 0;
 
 mqtt = None
+alarms = None
 sensing_service = None
 Ki, Ke = 0, 0
 TIME_REF_MINUTE_VOL = None
@@ -209,22 +212,27 @@ def insp_phase():
                 time.sleep(0.1)
                 only_exp_sol_open = True
 
-            # TODO: set alarm - pressure has gone beyond safety limits
+            # raise an alarm
+            alarms.raise_alarm(AlarmType.PMAX_REACHED, AlarmLevel.MAJOR,
+                               "Current pressure (%.1f) has exceeded Pmax (%.0f)" % (p3, Variables.pmax))
             ti = (t2 - start_time).total_seconds()
             send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
         elif p_control_mode and (p3 < Variables.pmax):
-            # TODO: clear alarm - pressure is below safety limits
-            pass
+            # p3 is below Pmax, clear the alarm
+            alarms.clear_alarm(AlarmType.PMAX_REACHED,
+                               "Current pressure (%.1f) has dropped below Pmax (%.0f)" % (p3, Variables.pmax))
 
         # if pressure is beyond the target threshold (15% above target), rely on PID controller to bring it down
         # However, need to raise an alarm
         if p_control_mode and (p3 > Variables.pip_target * 1.15):
-            # TODO: set alarm - 15% above target pip has reached
-            pass
+            # raise an alarm
+            alarms.raise_alarm(AlarmType.PIP_REACHED, AlarmLevel.MINOR,
+                               "Current pressure (%.1f) has exceeded Pip (%.0f)" % (p3, Variables.pip_target))
         elif p_control_mode and (p3 < Variables.pip_target * 1.15):
-            # TODO: clear alarm - no longer 15% above target pip
-            pass
+            # p3 is dropped down to targeted pip, clear teh alarm
+            alarms.clear_alarm(AlarmType.PIP_REACHED,
+                               "Current pressure (%.1f) has dropped below pip (%.0f)" % (p3, Variables.pip_target))
 
         # Operating in volume control mode, and tidal volume has reached, CLOSE all solonoids
         if not p_control_mode and (vi > Variables.vt):
@@ -393,7 +401,7 @@ def calc_pressure_offsests():
 
 def init_parameters():
     """ Initialize the parameters """
-    global PWM_I, PWM_O, sensing_service, mqtt, pid
+    global PWM_I, PWM_O, sensing_service, mqtt, pid, alarms
 
     # Initialize PWM pins
     GPIO.setmode(GPIO.BCM)
@@ -406,6 +414,12 @@ def init_parameters():
     PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
     PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
 
+    # Start the MQTT transceiver to communicate with GUI
+    mqtt = MQTTTransceiver()
+
+    # Initialize AlarmManager
+    alarms = AlarmManager(mqtt)
+
     # Initially solenoids are all open
     PWM_I.start(DUTY_RATIO_100)
     PWM_O.start(DUTY_RATIO_100)
@@ -416,9 +430,6 @@ def init_parameters():
 
     # Calculate any pressure offsets
     calc_pressure_offsests()
-
-    # Start the MQTT transceiver to communicate with GUI
-    mqtt = MQTTTransceiver()
 
     # Initialize PID Controller
     pid = PID(Variables.Kp, Variables.Ki, Variables.Kd)
