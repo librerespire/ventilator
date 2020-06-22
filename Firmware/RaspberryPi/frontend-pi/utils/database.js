@@ -23,9 +23,9 @@ module.exports = {
   remove_alarm: function(code, level) {
     if (level == "MAJOR") {
       delete major_alarms[code]
-      console.log("Removed major alarm " + message)
+      console.log("Removed major alarm " + code)
     } else if (level == "MINOR") {
-      console.log("Removed minor alarm " + message)
+      console.log("Removed minor alarm " + code)
       delete minor_alarms[code]
     }
   },
