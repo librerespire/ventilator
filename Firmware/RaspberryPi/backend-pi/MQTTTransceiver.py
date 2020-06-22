@@ -28,6 +28,7 @@ class MQTTTransceiver:
     MODE_CONFIG_TOPIC = 'Config/mode'
 
     MQTT_HOST = "127.0.0.1"
+    # MQTT_HOST = "broker.hivemq.com"
     MQTT_PORT = 1883
     MQTT_KEEP_ALIVE = 60
 

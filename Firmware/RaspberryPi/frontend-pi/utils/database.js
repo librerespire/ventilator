@@ -4,9 +4,32 @@ var volume = [];
 var tidle_volume
 var minute_volume
 var pip
+var major_alarms = {}   # major alarms {'code':'message'}
+var minor_alarms = {}   # minor alarms {'code':'message'}
 
 
 module.exports = {
+
+  add_alarm: function(code, level, message) {
+    if (level == "MAJOR") {
+      major_alarms[code] = message
+      console.log("MAJOR+" + message)
+    } else if (level == "MINOR") {
+      minor_alarms[code] = message
+      console.log("MINOR+" + message)
+    }
+  },
+
+  remove_alarm: function(code, level) {
+    if (level == "MAJOR") {
+      delete major_alarms[code]
+      console.log("MAJOR-" + message)
+    } else if (level == "MINOR") {
+      console.log("MINOR-" + message)
+      delete minor_alarms[code]
+    }
+  },
+
   set_vt: function(data) {
     tidle_volume = data
   },

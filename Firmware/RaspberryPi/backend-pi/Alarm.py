@@ -18,7 +18,10 @@ class AlarmManager:
         self.mqtt.mqtt_publish(MQTTTransceiver.ALARMS_TOPIC, alarm.get_json_payload())
 
     def clear_alarm(self, code, message):
-        alarm = self.active_alarms.pop(code)
+        alarm = self.active_alarms.pop(code, None)
+        if alarm is None:
+            return
+
         alarm.disable_alarm()
         alarm.set_message(message)
 
@@ -57,5 +60,5 @@ class AlarmType(Enum):
 
 
 class AlarmLevel(Enum):
-    MINOR = 1
-    MAJOR = 2
+    MINOR = "MINOR"
+    MAJOR = "MAJOR"
