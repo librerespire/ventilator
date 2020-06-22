@@ -45,7 +45,7 @@ router.get('/ie', function (req, res) {
 })
 
 router.get('/pmax', function (req, res) {
-  mqtt_messenger.mqtt_sender(PMAX_CONFIG_TOPIC, req.query.ps);
+  mqtt_messenger.mqtt_sender(PMAX_CONFIG_TOPIC, req.query.pmax);
   res.sendStatus(200);
 })
 
