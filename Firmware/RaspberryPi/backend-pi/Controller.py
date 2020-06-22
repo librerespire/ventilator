@@ -262,7 +262,7 @@ def insp_phase():
 
     # Send pip to GUI
     mqtt.sender(mqtt.PIP_TOPIC, round(pip, 1))
-    logger.info("[%.4f] Pip is : %.3f mL " % (ti, pip))
+    logger.info("[%.4f] Pip is : %.3f " % (ti, pip))
 
     logger.info("Leaving inspiratory phase.")
 
