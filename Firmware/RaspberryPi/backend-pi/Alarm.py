@@ -2,6 +2,9 @@ from datetime import datetime
 from enum import Enum
 from MQTTTransceiver import MQTTTransceiver
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AlarmManager:
@@ -13,6 +16,7 @@ class AlarmManager:
     def raise_alarm(self, code, level, message):
         alarm = AlarmDetails(code, level, message)
         self.active_alarms[code] = alarm
+        logger.debug("Raised alarm " + alarm.get_json_payload())
 
         # send to GUI
         self.mqtt.mqtt_publish(MQTTTransceiver.ALARMS_TOPIC, alarm.get_json_payload())
@@ -24,6 +28,7 @@ class AlarmManager:
 
         alarm.disable_alarm()
         alarm.set_message(message)
+        logger.debug("Cleared alarm " + alarm.get_json_payload())
 
         # send to GUI
         self.mqtt.mqtt_publish(MQTTTransceiver.ALARMS_TOPIC, alarm.get_json_payload())
