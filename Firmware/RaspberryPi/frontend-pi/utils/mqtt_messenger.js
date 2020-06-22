@@ -45,15 +45,15 @@ var self = module.exports = {
   mqtt_alarms: function(message) {
     json_data = JSON.parse(message)
 
-    timestamp = new Date(json_data.time)
+//    timestamp = new Date(json_data.time)
     code = json_data.code
     active = json_data.active
     level = json_data.level
-    message = "[ " + timestamp.format("HH:MM:ssTT (yyyy-m-dd) ") + " ] " + json_data.message
+    message = "[ " + json_data.time + " ] " + json_data.message
 
-    if (active == 'true') {
+    if (active == true) {
       database.add_alarm(code, level, message)
-    } else if (active == 'false') {
+    } else if (active == false) {
       database.remove_alarm(code, level)
     }
     console.log(message)
