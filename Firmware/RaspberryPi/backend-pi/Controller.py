@@ -214,25 +214,25 @@ def insp_phase():
 
             # raise an alarm
             alarms.raise_alarm(AlarmType.PMAX_REACHED, AlarmLevel.MAJOR,
-                               "Current pressure (%.1f) has exceeded Pmax (%.0f)" % (p3, Variables.pmax))
+                               "Current pressure (%.1f) has exceeded Pmax (%.1f)" % (p3, Variables.pmax))
             ti = (t2 - start_time).total_seconds()
             send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
             continue
         elif p_control_mode and (p3 < Variables.pmax):
             # p3 is below Pmax, clear the alarm
             alarms.clear_alarm(AlarmType.PMAX_REACHED,
-                               "Current pressure (%.1f) has dropped below Pmax (%.0f)" % (p3, Variables.pmax))
+                               "Current pressure (%.1f) has dropped below Pmax (%.1f)" % (p3, Variables.pmax))
 
         # if pressure is beyond the target threshold (15% above target), rely on PID controller to bring it down
         # However, need to raise an alarm
         if p_control_mode and (p3 > Variables.pip_target * 1.15):
             # raise an alarm
             alarms.raise_alarm(AlarmType.PIP_REACHED, AlarmLevel.MINOR,
-                               "Current pressure (%.1f) has exceeded Pip (%.0f)" % (p3, Variables.pip_target))
+                               "Current pressure (%.1f) has exceeded Pip (%.1f)" % (p3, Variables.pip_target))
         elif p_control_mode and (p3 < Variables.pip_target * 1.15):
             # p3 is dropped down to targeted pip, clear teh alarm
             alarms.clear_alarm(AlarmType.PIP_REACHED,
-                               "Current pressure (%.1f) has dropped below pip (%.0f)" % (p3, Variables.pip_target))
+                               "Current pressure (%.1f) has dropped below pip (%.1f)" % (p3, Variables.pip_target))
 
         # Operating in volume control mode, and tidal volume has reached, CLOSE all solonoids
         if not p_control_mode and (vi > Variables.vt):
