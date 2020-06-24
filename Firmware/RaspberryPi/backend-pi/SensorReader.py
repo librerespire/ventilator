@@ -25,7 +25,10 @@ class SensorReader:
             return sensor.data.pressure
 
     def read_bmp280(self):
-        sensor = bmp280.BMP280(self.bus)
+        try:
+            sensor = bmp280.BMP280(bmp280.I2C_ADDRESS_GND, self.bus)
+        except IOError:
+            sensor = bmp280.BMP280(bmp280.I2C_ADDRESS_VCC, self.bus)
         return sensor.get_pressure()
 
     def read_pressure(self):
