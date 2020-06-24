@@ -13,7 +13,7 @@ class SensorReaderService:
     This class can use for probe sensors periodically with the delay 0.01
     sensor_reader() will set pressure values in to Variables class
     """
-    pressure_data = [0] * 6
+    pressure_data = [0] * 4
     delay = 0.01
     loop_flag = 1
 
