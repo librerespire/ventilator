@@ -126,28 +126,28 @@ def insp_phase():
         if pressure is None:
             continue
 
-        send_to_display(t1, convert_pressure(pressure), 0, 0)
+        send_to_display(t1, pressure, 0, 0)
 
         if pressure > peak_pressure:
             peak_pressure = pressure
 
-        if (convert_pressure(pressure) > (Variables.pip_target - 1)) or skip_pid:
+        if (pressure > (Variables.pip_target - 1)) or skip_pid:
             PWM_I.ChangeDutyCycle(leak_duty)
             t1 = datetime.now()
             t = (t1 - start_time).total_seconds()
-            print(">>> Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.pip_target, convert_pressure(pressure), leak_duty))
+            print(">>> Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.pip_target, pressure, leak_duty))
             skip_pid = True
             time.sleep(Variables.pid_sampling_period)
             continue
 
-        pid.update(convert_pressure(pressure))
+        pid.update(pressure)
         target_duty_ratio = pid.output
         target_duty_ratio = max(min(int(target_duty_ratio), 100), 0)
 
         # logger.debug("Target: %.1f | Current: %.1f | Duty Ratio: %d"
         #              % (Variables.pip_target, pressure, target_duty_ratio))
         print(
-            "Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.pip_target, convert_pressure(pressure), target_duty_ratio))
+            "Target: %.1f | Current: %.1f | Duty Ratio: %d" % (Variables.pip_target, pressure, target_duty_ratio))
 
         # Set PWM to target duty
         PWM_I.ChangeDutyCycle(target_duty_ratio)
@@ -156,7 +156,7 @@ def insp_phase():
         t1 = datetime.now()
         t = (t1 - start_time).total_seconds()
 
-    print("Max P = %.1f" % convert_pressure(peak_pressure))
+    print("Max P = %.1f" % peak_pressure)
 
 
 def exp_phase():
@@ -179,8 +179,8 @@ def exp_phase():
         if pressure is None:
             continue
 
-        send_to_display(t1, convert_pressure(pressure), 0, 0)
-        print("Pressure = %.1f" % convert_pressure(pressure))
+        send_to_display(t1, pressure, 0, 0)
+        print("Pressure = %.1f" % pressure)
         time.sleep(Variables.pid_sampling_period)
         t1 = datetime.now()
         t = (t1 - start_time).total_seconds()
