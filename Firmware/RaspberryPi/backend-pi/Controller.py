@@ -362,11 +362,6 @@ def wait_phase():
     logger.info("Leaving wait phase.")
 
 
-def convert_pressure(p_hpa):
-    """ returns inspiratory pressure relative to atm in cmH2O"""
-    return (p_hpa * 1.0197442) - 1033.23
-
-
 def calc_respiratory_params():
     """ calculate inspiratory time and expiratory time using parameters set via UI """
     global T_IN, T_EX

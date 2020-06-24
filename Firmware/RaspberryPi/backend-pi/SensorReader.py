@@ -22,29 +22,25 @@ class SensorReader:
             sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY, self.bus)
         sensor.set_pressure_oversample(bme680.OS_4X)
         if sensor.get_sensor_data():
-            return sensor.data.pressure
+            self.pressure = self.convert_pressure(sensor.data.pressure)
 
     def read_bmp280(self):
         try:
             sensor = bmp280.BMP280(bmp280.I2C_ADDRESS_GND, self.bus)
         except IOError:
             sensor = bmp280.BMP280(bmp280.I2C_ADDRESS_VCC, self.bus)
-        return sensor.get_pressure()
+        self.pressure = self.convert_pressure(sensor.get_pressure())
 
     def read_pressure(self):
-
         # For demo, p3 is read from a bme680 sensor
         if Variables.demo and self.bus_number == Variables.BUS_3:
-            self.pressure = self.read_bme680() - self.get_offset()
+            self.read_bme680()
         else:
-            self.pressure = self.read_bmp280() - self.get_offset()
-
-        return self.pressure
-
+            self.read_bmp280()
 
     def convert_pressure(self, p_hpa):
         """ returns inspiratory pressure relative to atm in cmH2O"""
-        return (p_hpa * 1.0197442) - 1033.23
+        return ((p_hpa * 1.0197442) - 1033.23) - self.get_offset()
 
     def get_offset(self):
         if self.bus_number is Variables.BUS_1:
