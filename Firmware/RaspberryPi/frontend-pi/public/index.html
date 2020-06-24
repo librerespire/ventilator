@@ -21,6 +21,15 @@
       background-color: #000000;
     }
 
+    input[type=number] {
+      border: none;
+      text-align: center;
+      border-bottom: 2px solid blue;
+      background-color: #737373;
+      color: yellow;
+      box-shadow: 3px 4px #262626;
+    }
+
     #bottom_menu {
       font-color: #ffffff;
     }
@@ -90,7 +99,6 @@
   <script type="text/javascript">
     jQuery(document).ready(function() {
       $("#fio2_input").bind("change paste keyup", function() {
-        console.log("fio2 change called")
         $("#fio2").html($(this).val())
         $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
       });
@@ -106,13 +114,21 @@
         $("#peep").html($(this).val())
         $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
       });
-      $("#vt_input").bind("change paste keyup", function() {
+      $("#tidle_volume_input").bind("change paste keyup", function() {
         $("#tidle_volume").html($(this).val())
         $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
       });
       $("#pressure_support_input").bind("change paste keyup", function() {
         $("#pressure_support").html($(this).val())
         $.get("/api/configs/ps?ps=" + $(this).val(), function(data, status) {})
+      });
+      $("#min_volume_input").bind("change paste keyup", function() {
+        $("#min_volume").html($(this).val())
+        $.get("/api/configs/mv?mv=" + $(this).val(), function(data, status) {})
+      });
+      $("#peak_pressure_input").bind("change paste keyup", function() {
+        $("#peak_pressure").html($(this).val())
+        $.get("/api/configs/pip?pip=" + $(this).val(), function(data, status) {})
       });
     });
 
@@ -130,13 +146,13 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="calibarateModalLabel">Flow control calibaration</h5>
+              <h5 class="modal-title" id="calibarateModalLabel">Flow control calibration</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              <p>Please enter flow control value to calibarate the air flow.</p>
+              <p>Please enter flow rate in L/min.</p>
               <input type="tel" class="keyboard form-control" id="calibarate_flow_input" type="number" onclick="show_easy_numpad(this);">
             </div>
             <div class="modal-footer">
@@ -147,30 +163,33 @@
         </div>
       </div>
       <div class="row align-items-center" width="100%">
-        <div class="col-sm">
+        <div class="col">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Ventilator Mode
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">CMV-PC</a>
+              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;">CMV-PC</a>
             </div>
           </div>
         </div>
         <div class="col-xl">
-          <div class="alert alert-success" role="alert">
-            <p></p>
+          <div class="card text-center">
+            <img src="/images/librerespire.svg" style="z-index: 30" width="100%" height="100px" alt="">
+          </div>
+          <div class="alert alert-success" style="display: none;" role="alert">
+            <p>test alert!</p>
           </div>
         </div>
-        <div class="col-sm">
+        <div class="col">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Settings
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#calibarate">Calibarate</a>
-              <a class="dropdown-item" href="#" id="restart">Restart</a>
-              <a class="dropdown-item" href="#" id="shutdown">Shutdown</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" style="font-size:30px;font-style:initial;" data-target="#calibarate">Calibarate</a>
+              <a class="dropdown-item" href="#" id="restart" style="font-size:30px;font-style:initial;">Restart</a>
+              <a class="dropdown-item" href="#" id="shutdown" style="font-size:30px;font-style:initial;">Shutdown</a>
             </div>
           </div>
         </div>
@@ -195,7 +214,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>Tidal Volume</div>
-                      <div id="tidle_volume" style="font-size:60px;font-style:initial;">500</div>
+                      <div id="tidle_volume" style="font-size:40px;font-style:initial;">500</div>
+                      <input class="keyboard form-control" id="tidle_volume_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -203,7 +223,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>Minute Volume</div>
-                      <div id="min_volume" style="font-size:60px;font-style:initial;">5</div>
+                      <div id="min_volume" style="font-size:40px;font-style:initial;">5</div>
+                      <input class="keyboard form-control" id="min_volume_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -212,8 +233,9 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Pip</div>
-                      <div id="peak_pressure" style="font-size:60px;font-style:initial;">20</div>
+                      <div>PIP</div>
+                      <div id="peak_pressure" style="font-size:40px;font-style:initial;">20</div>
+                      <input class="keyboard form-control" id="peak_pressure_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -221,7 +243,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>PEEP</div>
-                      <div id="peep" style="font-size:60px;font-style:initial;">5</div>
+                      <div id="peep" style="font-size:40px;font-style:initial;">5</div>
+                      <input class="keyboard form-control" id="peep_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -231,7 +254,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>FiO<sub>2</sub></div>
-                      <div id="fio2" style="font-size:60px;font-style:initial;">40</div>
+                      <div id="fio2" style="font-size:40px;font-style:initial;">40</div>
+                      <input class="keyboard form-control" id="fio2_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -239,7 +263,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>R.R.</div>
-                      <div id="rr" style="font-size:60px;font-style:initial;">10</div>
+                      <div id="rr" style="font-size:40px;font-style:initial;">10</div>
+                      <input class="keyboard form-control" id="rr_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -248,8 +273,9 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Pressure Support (Ps)</div>
-                      <div id="pressure_support" style="font-size:60px;font-style:initial;">20</div>
+                      <div>Pressure Support</div>
+                      <div id="pressure_support" style="font-size:40px;font-style:initial;">20</div>
+                      <input class="keyboard form-control" id="pressure_support_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -257,7 +283,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>IE Ratio</div>
-                      <div id="ie_ratio" style="font-size:60px;font-style:initial;">1:2</div>
+                      <div id="ie_ratio" style="font-size:40px;font-style:initial;">1 : 2</div>
+                      <input class="keyboard form-control" id="ie_ratio_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -266,7 +293,7 @@
           </table>
         </div>
       </div>
-      <div class="row align-items-end" width="100%">
+      <!-- <div class="row align-items-end" width="100%">
         <div class="col-sm">
           <div class="card text-white bg-secondary text-center">
             <div class="card-body">
@@ -315,180 +342,182 @@
             </div>
           </div>
         </div>
-      </div>
-  </dev>
+      </div> -->
+    </div>
 
 
 
-  <!-- Chart JavaScript -->
-  <script type="text/javascript">
-    $(function() {
-      // Pressure chart
-      var PressureData = [];
-      var pressureChart = Highcharts.chart({
-        chart: {
-          renderTo: 'pressureChart',
-          type: 'area',
-          backgroundColor: '#000000'
-        },
-        credits: {
-          enabled: false
-        },
-        exporting: {
-          enabled: false
-        },
-        title: {
-          text: null,
-          enable: false
-        },
-        xAxis: {
-          type: 'datetime',
-          tickPixelInterval: 150,
-          dateTimeLabelFormats: {
-            millisecond: '%S.%L',
-            second: '%S'
+    <!-- Chart JavaScript -->
+    <script type="text/javascript">
+      $(function() {
+        // Pressure chart
+        var PressureData = [];
+        var pressureChart = Highcharts.chart({
+          chart: {
+            renderTo: 'pressureChart',
+            type: 'area',
+            backgroundColor: '#000000'
           },
-        },
-        time: {
-          useUTC: false
-        },
-        yAxis: {
-          title: {
-            text: 'Pressure'
-          },
-          type: 'linear',
-          minorTickInterval: 'auto'
-        },
-        legend: {
-          enabled: false
-        },
-        series: [{
-          name: 'Pressure',
-          marker: {
+          credits: {
             enabled: false
           },
-          color: '#0066FF',
-          data: PressureData
-        }],
-      });
-      setInterval(function() {
-        $.get("/api/graphs/pressure", function(data, status) {
-          PressureData = data['data'];
-        });
-        pressureChart.series[0].setData(PressureData);
-      }, 1000);
-    });
-    $(function() {
-      // Flow chart
-      var flowData = [];
-
-      var flowChart = Highcharts.chart({
-        chart: {
-          renderTo: 'flowChart',
-          type: 'area',
-          backgroundColor: '#000000'
-        },
-        credits: {
-          enabled: false
-        },
-        exporting: {
-          enabled: false
-        },
-        time: {
-          useUTC: false
-        },
-        title: {
-          text: null,
-          enable: false
-        },
-        xAxis: {
-          type: 'datetime',
-          dateTimeLabelFormats: {
-            second: '%S'
-          },
-        },
-        yAxis: {
-          title: {
-            text: 'Flow'
-          },
-          type: 'linear',
-          minorTickInterval: 'auto'
-        },
-        legend: {
-          enabled: false
-        },
-        series: [{
-          name: 'Flow',
-          marker: {
+          exporting: {
             enabled: false
           },
-          color: '#ebeb34',
-          data: flowData
-        }],
-      });
-      setInterval(function() {
-        $.get("/api/graphs/flowrate", function(data, status) {
-          flowData = data['data'];
-        });
-        flowChart.series[0].setData(flowData);
-      }, 1000);
-    });
-
-    $(function() {
-      var volumeData = [];
-      // Volume chart
-      var volumeChart = Highcharts.chart({
-        chart: {
-          renderTo: 'volumeChart',
-          type: 'area',
-          backgroundColor: '#000000'
-        },
-        credits: {
-          enabled: false
-        },
-        exporting: {
-          enabled: false
-        },
-        title: {
-          text: null,
-          enable: false
-        },
-        xAxis: {
-          type: 'datetime',
-          tickPixelInterval: 150,
-          dateTimeLabelFormats: {
-            millisecond: '%S.%L',
-            second: '%S'
-          },
-        },
-        yAxis: {
           title: {
-            text: 'Volume'
+            text: null,
+            enable: false
           },
-          type: 'linear',
-          minorTickInterval: 'auto'
-        },
-        time: {
-          useUTC: false
-        },
-        legend: {
-          enabled: false
-        },
-        series: [{
-          name: 'Volume',
-          marker: {
+          xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            dateTimeLabelFormats: {
+              millisecond: '%S.%L',
+              second: '%S'
+            },
+          },
+          time: {
+            useUTC: false
+          },
+          yAxis: {
+            title: {
+              text: 'Pressure'
+            },
+            type: 'linear',
+            minorTickInterval: 'auto'
+          },
+          legend: {
             enabled: false
           },
-          color: '#c5d4d3',
-          data: volumeData
-        }],
-      });
-      setInterval(function() {
-        $.get("/api/graphs/volume", function(data, status) {
-          volumeData = data['data'];
+          series: [{
+            name: 'Pressure',
+            marker: {
+              enabled: false
+            },
+            color: '#0066FF',
+            data: PressureData
+          }],
         });
-        volumeChart.series[0].setData(volumeData);
-      }, 1000);
+        setInterval(function() {
+          $.get("/api/graphs/pressure", function(data, status) {
+            PressureData = data['data'];
+          });
+          pressureChart.series[0].setData(PressureData);
+        }, 1000);
+      });
+
+      $(function() {
+        // Flow chart
+        var flowData = [];
+
+        var flowChart = Highcharts.chart({
+          chart: {
+            renderTo: 'flowChart',
+            type: 'area',
+            backgroundColor: '#000000'
+          },
+          credits: {
+            enabled: false
+          },
+          exporting: {
+            enabled: false
+          },
+          time: {
+            useUTC: false
+          },
+          title: {
+            text: null,
+            enable: false
+          },
+          xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: {
+              second: '%S'
+            },
+          },
+          yAxis: {
+            title: {
+              text: 'Flow'
+            },
+            type: 'linear',
+            minorTickInterval: 'auto'
+          },
+          legend: {
+            enabled: false
+          },
+          series: [{
+            name: 'Flow',
+            marker: {
+              enabled: false
+            },
+            color: '#ebeb34',
+            data: flowData
+          }],
+        });
+        setInterval(function() {
+          $.get("/api/graphs/flowrate", function(data, status) {
+            flowData = data['data'];
+          });
+          flowChart.series[0].setData(flowData);
+        }, 1000);
+      });
+
+      $(function() {
+        var volumeData = [];
+        // Volume chart
+        var volumeChart = Highcharts.chart({
+          chart: {
+            renderTo: 'volumeChart',
+            type: 'area',
+            backgroundColor: '#000000'
+          },
+          credits: {
+            enabled: false
+          },
+          exporting: {
+            enabled: false
+          },
+          title: {
+            text: null,
+            enable: false
+          },
+          xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            dateTimeLabelFormats: {
+              millisecond: '%S.%L',
+              second: '%S'
+            },
+          },
+          yAxis: {
+            title: {
+              text: 'Volume'
+            },
+            type: 'linear',
+            minorTickInterval: 'auto'
+          },
+          time: {
+            useUTC: false
+          },
+          legend: {
+            enabled: false
+          },
+          series: [{
+            name: 'Volume',
+            marker: {
+              enabled: false
+            },
+            color: '#c5d4d3',
+            data: volumeData
+          }],
+        });
+        setInterval(function() {
+          $.get("/api/graphs/volume", function(data, status) {
+            volumeData = data['data'];
+          });
+          volumeChart.series[0].setData(volumeData);
+        }, 1000);
+      });
 
       setInterval(function() {
         $.get("/api/table/values", function(data, status) {
@@ -497,11 +526,10 @@
           $("#peak_pressure").html(data['peak_pressure']);
         });
       }, 1000);
-    });
-  </script>
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 
 </html>

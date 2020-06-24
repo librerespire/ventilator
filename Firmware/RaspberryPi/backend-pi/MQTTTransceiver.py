@@ -9,13 +9,11 @@ client = None
 
 
 class MQTTTransceiver:
-    PRESSURE_TOPIC = 'Ventilator/pressure'
-    FLOWRATE_TOPIC = 'Ventilator/flow_rate'
-    VOLUME_TOPIC = 'Ventilator/volume'
     CHART_DATA_TOPIC = 'Ventilator/chart_data'
     ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
     MINUTE_VOLUME_TOPIC = 'Ventilator/minute_volume'
     PIP_TOPIC = 'Ventilator/pip'
+    PRESSURE_DATA_TOPIC = "Ventilator/pressure_data"
 
     CALIB_FLOW_RATE_CONFIG_TOPIC = 'Config/calib_flow_rate'
     FIO2_CONFIG_TOPIC = 'Config/fio2'
@@ -24,6 +22,8 @@ class MQTTTransceiver:
     VT_CONFIG_TOPIC = 'Config/vt'
     IE_CONFIG_TOPIC = 'Config/ie'
     PS_CONFIG_TOPIC = 'Config/ps'
+    MV_CONFIG_TOPIC = 'Config/mv'
+    PIP_CONFIG_TOPIC = 'Config/pip'
 
     MQTT_HOST = "127.0.0.1"
     MQTT_PORT = 1883
@@ -60,6 +60,8 @@ class MQTTTransceiver:
         client.subscribe(self.VT_CONFIG_TOPIC)
         client.subscribe(self.IE_CONFIG_TOPIC)
         client.subscribe(self.PS_CONFIG_TOPIC)
+        client.subscribe(self.MV_CONFIG_TOPIC)
+        client.subscribe(self.PIP_CONFIG_TOPIC)
         client.on_message = self.on_message
         client.loop_forever()
 
@@ -85,6 +87,12 @@ class MQTTTransceiver:
         elif (msg.topic == self.PS_CONFIG_TOPIC):
             Variables.ps = float(msg.payload.decode())
             logger.debug("PS received: %.2f" % Variables.ps)
+        elif (msg.topic == self.MV_CONFIG_TOPIC):
+            Variables.mv = float(msg.payload.decode())
+            logger.debug("MV received: %.2f" % Variables.mv)
+        elif (msg.topic == self.PIP_CONFIG_TOPIC):
+            Variables.pip = float(msg.payload.decode())
+            logger.debug("Pip received: %.2f" % Variables.pip)
         else:
             logger.debug("Message [%s] - [%s] not found" % (msg.topic, msg.payload.decode()))
 
