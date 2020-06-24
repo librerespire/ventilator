@@ -191,6 +191,9 @@ try:
     init_parameters()
 
     time.sleep(2)
+    if Variables.p1 is None or Variables.p2 is None or Variables.p3 is None or Variables.p4 is None:
+        print("Pressure values cannot be read from sensors. Exiting...")
+        exit(-1)
     print("P1 = %.1f,\tP2 = %.1f,\tP3 = %.1f,\tP4 = %.1f" % (Variables.p1, Variables.p2, Variables.p3, Variables.p4))
 
     while True:

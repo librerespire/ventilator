@@ -23,6 +23,8 @@ class SensorReader:
         sensor.set_pressure_oversample(bme680.OS_4X)
         if sensor.get_sensor_data():
             self.pressure = self.convert_pressure(sensor.data.pressure)
+        else:
+            self.pressure = 0
 
     def read_bmp280(self):
         try:
