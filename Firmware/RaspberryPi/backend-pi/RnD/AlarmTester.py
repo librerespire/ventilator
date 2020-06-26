@@ -20,4 +20,5 @@ time.sleep(5)
 p = 14.5
 alarms.clear_alarm(AlarmType.PMAX_REACHED, "Current pressure (%.1f) has dropped below pmax (%.0f)" % (p, pmax))
 
+logger.debug("Exiting")
 exit()
