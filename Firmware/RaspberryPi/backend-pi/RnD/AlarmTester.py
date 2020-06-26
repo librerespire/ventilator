@@ -21,8 +21,8 @@ alarms.raise_alarm(AlarmType.PMAX_REACHED, AlarmLevel.MINOR, "Current pressure (
 
 time.sleep(5)
 p = 14.5
-print("going to raise an alarm")
-alarms.clear_alarm(AlarmType.PMAX_REACHED, "Current pressure (%.1f) has dropped below pmax (%.0f)" % (p, pmax))
+# print("going to clear an alarm")
+# alarms.clear_alarm(AlarmType.PMAX_REACHED, "Current pressure (%.1f) has dropped below pmax (%.0f)" % (p, pmax))
 
 logger.debug("Exiting")
 exit()
