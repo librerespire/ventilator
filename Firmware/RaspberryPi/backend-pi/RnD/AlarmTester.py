@@ -6,6 +6,7 @@ from MQTTTransceiver import MQTTTransceiver
 from Alarm import AlarmManager, AlarmType, AlarmLevel
 import time
 import logging
+import logging.config
 
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
