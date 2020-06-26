@@ -16,7 +16,7 @@ class SensorReader:
     def __init__(self, bus_number):
         # Get I2C
         self.bus_number = bus_number
-        if Ventilator.demo == True:
+        if Variables.demo == True:
             bus_address = 0x77
         else:
             bus_address = 0x76
