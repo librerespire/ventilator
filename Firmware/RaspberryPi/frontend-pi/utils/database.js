@@ -30,6 +30,14 @@ module.exports = {
     }
   },
 
+  get_minor_alarm: function(){
+    return minor_alarms
+  },
+
+  get_major_alarm: function(){
+    return major_alarms
+  },
+
   set_vt: function(data) {
     tidle_volume = data
   },

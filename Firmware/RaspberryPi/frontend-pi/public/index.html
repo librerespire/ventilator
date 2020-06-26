@@ -122,20 +122,32 @@
         $("#pmax").html($(this).val())
         $.get("/api/configs/pmax?pmax=" + $(this).val(), function(data, status) {})
       });
-      $("#min_volume_input").bind("change paste keyup", function() {
-        $("#min_volume").html($(this).val())
-        $.get("/api/configs/mv?mv=" + $(this).val(), function(data, status) {})
-      });
       $("#pip_input").bind("change paste keyup", function() {
         $("#pip").html($(this).val())
         $.get("/api/configs/pip?pip=" + $(this).val(), function(data, status) {})
       });
+
+      mode_selector(1)
     });
 
     function calib_flow() {
       $.get("/api/configs/calib_flow_rate?calib_flow_rate=" + $("#calibarate_flow_input").val(), function(data, status) {});
       $('#calibarate').modal('hide')
     }
+
+    function mode_selector(mode){
+      $.get("/api/configs/mode?mode=" + mode, function(data, status) {});
+      if (mode == 1){
+        $("#tidle_volume_input").prop( "disabled", true ).css("background-color","#3c3d3d");
+        $("#pmax_input").prop( "disabled", false ).css("background-color","#737373");
+        $("#pip_input").prop( "disabled", false ).css("background-color","#737373");
+      } else if (mode == 2){
+        $("#pmax_input").prop( "disabled", true ).css("background-color","#3c3d3d");
+        $("#pip_input").prop( "disabled", true ).css("background-color","#3c3d3d");
+        $("#tidle_volume_input").prop( "disabled", false ).css("background-color","#737373");
+      }
+    }
+
   </script>
 </head>
 
@@ -169,7 +181,8 @@
               Ventilator Mode
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;">CMV-PC</a>
+              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;" onclick="mode_selector(1);">Pressure Control</a>
+              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;" onclick="mode_selector(2);">Volume Control</a>
             </div>
           </div>
         </div>
@@ -224,7 +237,7 @@
                     <div class="card-body">
                       <div>Minute Volume</div>
                       <div id="min_volume" style="font-size:40px;font-style:initial;">5000</div>
-                      <input class="keyboard form-control" id="min_volume_input" type="number" onclick="show_easy_numpad(this);">
+                      <br>
                     </div>
                   </div>
                 </td>
