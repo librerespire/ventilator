@@ -490,7 +490,6 @@
       setInterval(function() {
         major_alerts = 0;
         minor_alerts = 0;
-        $("#alert").html();
         $.get("/api/alarms/major", function(data, status) {
           if (data && data.length) {
             major_alerts = 1;
@@ -515,6 +514,7 @@
         } else {
           $("#logo").show();
           $("#alert").hide();
+          $("#alert").html();
         }
       }, 1000);
     </script>

@@ -13,10 +13,10 @@ module.exports = {
   add_alarm: function(code, level, message) {
     if (level == "MAJOR") {
       major_alarms[code] = message
-      console.log("Added major alarm " + message)
+      console.log("Active major alarm " + major_alarms)
     } else if (level == "MINOR") {
       minor_alarms[code] = message
-      console.log("Added minor alarm " + message)
+      console.log("Active minor alarm " + minor_alarms)
     }
   },
 
