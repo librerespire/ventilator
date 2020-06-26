@@ -15,6 +15,7 @@ app.use(logger('combined'));
 app.use('/api/graphs', graphs);
 app.use('/api/configs', configs);
 app.use('/api/alarms', alarms);
+app.use('/api/table', table);
 
 app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`);
