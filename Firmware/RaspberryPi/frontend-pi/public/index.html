@@ -127,7 +127,8 @@
         $.get("/api/configs/pip?pip=" + $(this).val(), function(data, status) {})
       });
 
-      mode_selector(1)
+      mode_selector(1);
+      $("#alert").hide();
     });
 
     function calib_flow() {
@@ -135,19 +136,18 @@
       $('#calibarate').modal('hide')
     }
 
-    function mode_selector(mode){
+    function mode_selector(mode) {
       $.get("/api/configs/mode?mode=" + mode, function(data, status) {});
-      if (mode == 1){
-        $("#tidle_volume_input").prop( "disabled", true ).css("background-color","#3c3d3d");
-        $("#pmax_input").prop( "disabled", false ).css("background-color","#737373");
-        $("#pip_input").prop( "disabled", false ).css("background-color","#737373");
-      } else if (mode == 2){
-        $("#pmax_input").prop( "disabled", true ).css("background-color","#3c3d3d");
-        $("#pip_input").prop( "disabled", true ).css("background-color","#3c3d3d");
-        $("#tidle_volume_input").prop( "disabled", false ).css("background-color","#737373");
+      if (mode == 1) {
+        $("#tidle_volume_input").prop("disabled", true).css("background-color", "#3c3d3d");
+        $("#pmax_input").prop("disabled", false).css("background-color", "#737373");
+        $("#pip_input").prop("disabled", false).css("background-color", "#737373");
+      } else if (mode == 2) {
+        $("#pmax_input").prop("disabled", true).css("background-color", "#3c3d3d");
+        $("#pip_input").prop("disabled", true).css("background-color", "#3c3d3d");
+        $("#tidle_volume_input").prop("disabled", false).css("background-color", "#737373");
       }
     }
-
   </script>
 </head>
 
@@ -187,11 +187,10 @@
           </div>
         </div>
         <div class="col-xl">
-          <div class="card text-center">
-            <img src="/images/librerespire.svg" style="z-index: 30" width="100%" height="100px" alt="">
+          <div class="card text-center" id="logo">
+            <img src="/images/librerespire.svg" width="100%" height="100px" alt="">
           </div>
-          <div class="alert alert-success" style="display: none;" role="alert">
-            <p>test alert!</p>
+          <div class="alert" id="alert" role="alert">
           </div>
         </div>
         <div class="col">
@@ -306,59 +305,7 @@
           </table>
         </div>
       </div>
-      <!-- <div class="row align-items-end" width="100%">
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">FiO<sub>2</sub></div>
-              <input type="tel" class="keyboard form-control" id="fio2_input" type="number" onclick="this.value = show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">VT</div>
-              <input type="tel" class="keyboard form-control" id="vt_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">R.R.</div>
-              <input type="tel" class="keyboard form-control" id="rr_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">IE Ratio</div>
-              <input type="tel" class="keyboard form-control" id="ie_ratio_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">PEEP</div>
-              <input type="tel" class="keyboard form-control" id="peep_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">Ps</div>
-              <input type="tel" class="keyboard form-control" id="pmax_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
-
-
 
     <!-- Chart JavaScript -->
     <script type="text/javascript">
@@ -538,6 +485,37 @@
           $("#min_volume").html(data['minute_volume']);
           $("#pip").html(data['pip']);
         });
+      }, 1000);
+
+      setInterval(function() {
+        major_alerts = 0;
+        minor_alerts = 0;
+        $("#alert").html();
+        $.get("/api/alarms/major", function(data, status) {
+          if (data && data.length) {
+            major_alerts = 1;
+            for (var r = 0; r < data.length; r++) {
+              div = '<div class="alert alert-danger" role="alert" id = "alert-' + data['code'] + '" > ' + data['message '] + ' < /div>';
+              $("#alert").append(div);
+            }
+          }
+        });
+        $.get("/api/alarms/minor", function(data, status) {
+          if (data && data.length) {
+            minor_alerts = 1;
+            for (var r = 0; r < data.length; r++) {
+              div = '<div class="alert alert-warning" role="alert" id = "alert-' + data['code'] + '" > ' + data['message '] + ' < /div>';
+              $("#alert").append(div);
+            }
+          }
+        });
+        if (major_alerts || minor_alerts) {
+          $("#logo").hide();
+          $("#alert").show();
+        } else {
+          $("#logo").show();
+          $("#alert").hide();
+        }
       }, 1000);
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
