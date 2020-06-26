@@ -4,6 +4,7 @@ var mqtt_messenger = require('./utils/mqtt_messenger.js');
 var graphs = require('./routes/graphs.js');
 var configs = require('./routes/configs.js');
 var table = require('./routes/tableValues.js');
+var alarms = require('./routes/alarms.js');
 
 mqtt_messenger.mqtt_receiver();
 const app = express();
@@ -13,7 +14,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(logger('combined'));
 app.use('/api/graphs', graphs);
 app.use('/api/configs', configs);
-app.use('/api/table', table);
+app.use('/api/alarms', alarms);
 
 app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`);
