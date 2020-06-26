@@ -192,7 +192,7 @@ def insp_phase():
 
     while ti < T_IN:
 
-        send_pressure_data()
+        # send_pressure_data()
 
         t1 = t2
         q1 = q2
@@ -288,7 +288,7 @@ def exp_phase():
 
     while ti < T_EX:
 
-        send_pressure_data()
+        # send_pressure_data()
 
         t1 = t2
         q1 = q2
