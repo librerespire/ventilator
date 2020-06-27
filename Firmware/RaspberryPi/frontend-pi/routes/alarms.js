@@ -11,7 +11,7 @@ router.get('/major', function(req, res) {
 
 router.get('/minor', function(req, res) {
   minor_alarm = database.get_minor_alarm();
-  console.log(major_alarms);
+  console.log(minor_alarm);
   res.json(minor_alarm);
 })
 
