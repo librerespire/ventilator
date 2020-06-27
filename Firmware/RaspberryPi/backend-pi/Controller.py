@@ -197,7 +197,7 @@ def insp_phase():
         q2, p3 = get_average_flow_rate_and_pressure(INSP_FLOW)
         t2 = datetime.now()
 
-        logger.debug("\n>>>>>> Time constant %time_const = $.1f msec <<<<<<" % time_const, 1000*(t2-t1).total_seconds())
+        logger.debug("\n>>>>> Time constant %time_const = $.1f msec <<<<<" % (time_const, 1000*(t2-t1).total_seconds()))
         time_const += 1
 
         # Record peak inspiratory pressure (pip)
@@ -296,7 +296,7 @@ def exp_phase():
         q2, p3 = get_average_flow_rate_and_pressure(EXP_FLOW)
         t2 = datetime.now()
 
-        logger.debug("\n>>>>>> Time constant %time_const = %.1f msec <<<<<<" % time_const, 1000*(t2-t1).total_seconds())
+        logger.debug("\n>>>>> Time constant %time_const = $.1f msec <<<<<" % (time_const, 1000*(t2-t1).total_seconds()))
         time_const += 1
 
         # Calculate volume
