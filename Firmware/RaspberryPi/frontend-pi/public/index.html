@@ -492,7 +492,7 @@
         minor_alerts = 0;
         messages = {};
         $.get("/api/alarms/major", function(data, status) {
-          if (data.length > 0 ) {
+          if (data) {
             major_alerts = 1;
             var messages = Object.keys(data).map(function(key) {
               return data[key];
@@ -505,7 +505,7 @@
           }
         });
         $.get("/api/alarms/minor", function(data, status) {
-          if (data.length > 0) {
+          if (data) {
             minor_alerts = 1;
             var messages = Object.keys(data).map(function(key) {
               return data[key];
