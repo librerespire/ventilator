@@ -35,7 +35,7 @@
     }
 
     .alert {
-      font-size: 16px;
+      font-size: 10px;
     }
 
     .highcharts-figure,
@@ -132,8 +132,8 @@
       });
 
       mode_selector(1);
-      $("#logo").show();
-      $("#alert").hide();
+      $("#logo").hide();
+      $("#alert").show();
     });
 
     function calib_flow() {
@@ -525,8 +525,6 @@
               '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
               "</button></div>";
             $("#alert").html(div);
-            $("#logo").hide();
-            $("#alert").show();
           }
         });
       }, 1000);
