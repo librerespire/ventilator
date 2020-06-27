@@ -69,8 +69,7 @@ var self = module.exports = {
     minutes = minutes < 10 ? '0'+minutes : minutes;
     var strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
-}
-
+},
 
   mqtt_chartdata: function(message) {
     json_data = JSON.parse(message)
