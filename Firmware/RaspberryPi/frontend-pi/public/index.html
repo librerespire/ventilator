@@ -492,6 +492,7 @@
         major_alerts = 0;
         minor_alerts = 0;
         messages = {};
+        $("#alert").html();
         $.get("/api/alarms/major", function(data, status) {
           if (data) {
             major_alerts = 1;
@@ -513,7 +514,7 @@
             });
             console.log("minor: " + messages);
             for (var r = 0; r < messages.length; r++) {
-              div = '<div class="alert alert-danger" role="alert" > ' + messages[r] + ' < /div>';
+              div = "<div class='alert alert-warning' role='alert' > " + messages[r] + " < /div>";
               $("#alert").append(div);
             }
           }
