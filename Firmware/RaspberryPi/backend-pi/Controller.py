@@ -175,6 +175,7 @@ def insp_phase():
     control_solenoid(SO_PIN, DUTY_RATIO_100)
     control_solenoid(SE_PIN, DUTY_RATIO_0)
 
+    time_const = 0
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
@@ -195,6 +196,9 @@ def insp_phase():
         q1 = q2
         q2, p3 = get_average_flow_rate_and_pressure(INSP_FLOW)
         t2 = datetime.now()
+
+        logger.debug("\n>>>>>> Time constant %time_const = $.1f msec <<<<<<" % time_const, 1000*(t2-t1).total_seconds())
+        time_const += 1
 
         # Record peak inspiratory pressure (pip)
         if p3 > pip:
@@ -268,6 +272,7 @@ def exp_phase():
     logger.info("Entering expiratory phase...")
 
     global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL, MINUTE_VOLUME
+    time_const = 0
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
@@ -290,6 +295,9 @@ def exp_phase():
         q1 = q2
         q2, p3 = get_average_flow_rate_and_pressure(EXP_FLOW)
         t2 = datetime.now()
+
+        logger.debug("\n>>>>>> Time constant %time_const = %.1f msec <<<<<<" % time_const, 1000*(t2-t1).total_seconds())
+        time_const += 1
 
         # Calculate volume
         vi = 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
