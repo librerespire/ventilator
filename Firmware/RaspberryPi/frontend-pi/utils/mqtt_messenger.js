@@ -50,7 +50,7 @@ var self = module.exports = {
     code = json_data.code
     active = json_data.active
     level = json_data.level
-    message = timestamp + " -- [ Code = " + code + " ]\n" + json_data.message
+    message = timestamp + " -- [ Code = " + code + " ]<br/>" + json_data.message
 
     if (active == true) {
       database.add_alarm(code, level, message)
