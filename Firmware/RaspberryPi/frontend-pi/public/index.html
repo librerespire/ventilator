@@ -132,8 +132,8 @@
       });
 
       mode_selector(1);
-      $("#logo").hide();
-      $("#alert").show();
+      $("#logo").show();
+      $("#alert").hide();
     });
 
     function calib_flow() {
@@ -180,7 +180,7 @@
         </div>
       </div>
       <div class="row align-items-center" width="100%">
-        <div class="col">
+        <div class="col-sm">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Ventilator Mode
@@ -195,10 +195,10 @@
           <div class="card text-center" id="logo">
             <img src="/images/librerespire.svg" width="100%" height="100px" alt="">
           </div>
-          <div class="alert" id="alert" role="alert">
+          <div class="alert" id="alert" style="position: absolute; z-index: 999; " role="alert">
           </div>
         </div>
-        <div class="col">
+        <div class="col-sm">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Settings
@@ -503,27 +503,33 @@
         $.get("/api/alarms/major", function(data, status) {
           if (data) {
             var div = "";
-            major_alerts = true;
-            var messages = Object.keys(data).map(function(key) {
-              return data[key];
+            var keys = Object.keys(data);
+            var is_same = major_codes.length == keys.length) && major_codes.every(function(element, index) {
+              return element === keys[index];
             });
-            console.log("major: " + messages);
-            div = "<div class='alert alert-danger alert-dismissible fade show' role='alert'> " + messages.toString() +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
-              "</button></div>";
-            $("#alert").html(div);
+            if (!is_same) {
+              major_alerts = true;
+              major_codes = keys;
+              var messages = Object.keys(data).map(function(key) {
+                return data[key];
+              });
+              div = "<div class='alert alert-danger alert-dismissible fade show' role='alert'> " + messages.toString() +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
+                "</button></div>";
+              $("#alert").append(div);
+            }
           }
         });
         $.get("/api/alarms/minor", function(data, status) {
           if (data) {
             var div = "";
-            minor_alerts = true;
             var keys = Object.keys(data);
             var is_same = (minor_codes.length == keys.length) && minor_codes.every(function(element, index) {
               return element === keys[index];
             });
             if (!is_same) {
-              codes = keys;
+              minor_alerts = true;
+              minor_codes = keys;
               var messages = Object.keys(data).map(function(key) {
                 return data[key];
               });
@@ -534,6 +540,13 @@
             }
           }
         });
+        if (major_alerts || minor_alerts) {
+          $("#logo").hide();
+          $("#alert").show();
+        } else {
+          $("#logo").show();
+          $("#alert").hide();
+        }
       }, 1000);
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
