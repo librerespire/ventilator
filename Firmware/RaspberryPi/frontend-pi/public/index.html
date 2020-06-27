@@ -504,7 +504,7 @@
           if (data) {
             var div = "";
             var keys = Object.keys(data);
-            var is_same = major_codes.length == keys.length) && major_codes.every(function(element, index) {
+            var is_same = (major_codes.length == keys.length) && major_codes.every(function(element, index) {
               return element === keys[index];
             });
             if (!is_same) {
