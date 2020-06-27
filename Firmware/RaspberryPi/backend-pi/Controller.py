@@ -132,14 +132,11 @@ def calculate_pid_duty_ratio(pressure):
     """ PID controller determines the required duty ratio to achieve the desired pressure curve """
 
     # TODO: Calculate duty ratio for medical air and oxygen separately
-    logger.debug("<<<< HIT PID Controller >>>> : pressure = " + str(pressure))
     pid.update(pressure)
     duty_ratio = pid.output
 
     # Duty ratio is adjusted between 0 and 100
     duty_ratio = max(min(int(duty_ratio), 100), 0)
-
-    logger.debug("<<<< LEAVE PID Controller >>>> : duty_ratio = " + str(duty_ratio))
 
     # Currently both the medical air and oxygen are using the same duty ratio
     return duty_ratio, duty_ratio
@@ -185,14 +182,12 @@ def insp_phase():
     pip = 0  # peak inspiratory pressure
     solenoids_closed = False
     only_exp_sol_open = False
-    p_control_mode = Variables.mode is Variables.P_CONTROL    # ventilator in pressure control mode
+    p_control_mode = Variables.mode == Variables.P_CONTROL    # ventilator in pressure control mode
 
     # Reset inspiratory cycle volume
     INSP_TOTAL_VOLUME = 0
 
     while ti < T_IN:
-
-        # send_pressure_data()
 
         t1 = t2
         q1 = q2
@@ -262,7 +257,6 @@ def insp_phase():
 
     # Send pip to GUI
     mqtt.sender(mqtt.PIP_TOPIC, round(pip, 1))
-    logger.info("[%.4f] Pip is : %.3f " % (ti, pip))
 
     logger.info("Leaving inspiratory phase.")
 
