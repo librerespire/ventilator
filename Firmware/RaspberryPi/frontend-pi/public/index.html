@@ -493,8 +493,12 @@
         $.get("/api/alarms/major", function(data, status) {
           if (data && data.length) {
             major_alerts = 1;
-            for (var r = 0; r < data.length; r++) {
-              div = '<div class="alert alert-danger" role="alert" id = "alert-' + data['code'] + '" > ' + data['message '] + ' < /div>';
+            var messages = Object.keys(data).map(function(key) {
+              return data[key];
+            });
+            console.log(messages);
+            for (var r = 0; r < messages.length; r++) {
+              div = '<div class="alert alert-danger" role="alert" > ' + messages[r] + ' < /div>';
               $("#alert").append(div);
             }
           }
@@ -502,8 +506,12 @@
         $.get("/api/alarms/minor", function(data, status) {
           if (data && data.length) {
             minor_alerts = 1;
-            for (var r = 0; r < data.length; r++) {
-              div = '<div class="alert alert-warning" role="alert" id = "alert-' + data['code'] + '" > ' + data['message '] + ' < /div>';
+            var messages = Object.keys(data).map(function(key) {
+              return data[key];
+            });
+            console.log(messages);
+            for (var r = 0; r < messages.length; r++) {
+              div = '<div class="alert alert-danger" role="alert" > ' + messages[r] + ' < /div>';
               $("#alert").append(div);
             }
           }
