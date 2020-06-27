@@ -35,7 +35,7 @@
     }
 
     .alert {
-      font-size: 24px;
+      font-size: 16px;
     }
 
     .highcharts-figure,
@@ -505,7 +505,7 @@
             });
             console.log("major: " + messages);
             for (var r = 0; r < messages.length; r++) {
-              div = '<div class="alert alert-danger" role="alert" > ' + messages[r] + ' < /div>';
+              div = concat('<div class="alert alert-danger" role="alert" > ', messages[r] , ' < /div>');
               $("#alert").html(div);
             }
           }
@@ -518,7 +518,7 @@
             });
             console.log("minor: " + messages);
             for (var r = 0; r < messages.length; r++) {
-              div = "<div class='alert alert-warning' role='alert' > " + messages[r] + " < /div>";
+              div = concat("<div class='alert alert-warning' role='alert' > " , messages[r] , " < /div>");
               $("#alert").html(div);
             }
           }
