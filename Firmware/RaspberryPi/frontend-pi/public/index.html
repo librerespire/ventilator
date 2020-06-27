@@ -513,16 +513,14 @@
         });
         $.get("/api/alarms/minor", function(data, status) {
           if (data) {
-            div = "";
+            var div = "";
             minor_alerts = 1;
             var messages = Object.keys(data).map(function(key) {
               return data[key];
             });
             console.log("minor: " + messages);
-            for (var r = 0; r < messages.length; r++) {
-              div.concat("<div class='alert alert-warning' role='alert' > " , messages[r] , " < /div>");
-              $("#alert").html(div);
-            }
+            div.concat("<div class='alert alert-warning' role='alert' > " , messages[r] , " < /div>");
+            $("#alert").html(div);
           }
         });
         // if (major_alerts || minor_alerts) {
