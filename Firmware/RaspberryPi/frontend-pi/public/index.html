@@ -499,26 +499,28 @@
         $("#alert").html();
         $.get("/api/alarms/major", function(data, status) {
           if (data) {
+            div = "";
             major_alerts = 1;
             var messages = Object.keys(data).map(function(key) {
               return data[key];
             });
             console.log("major: " + messages);
             for (var r = 0; r < messages.length; r++) {
-              div = concat('<div class="alert alert-danger" role="alert" > ', messages[r] , ' < /div>');
+              div.concat('<div class="alert alert-danger" role="alert" > ', messages[r] , ' < /div>');
               $("#alert").html(div);
             }
           }
         });
         $.get("/api/alarms/minor", function(data, status) {
           if (data) {
+            div = "";
             minor_alerts = 1;
             var messages = Object.keys(data).map(function(key) {
               return data[key];
             });
             console.log("minor: " + messages);
             for (var r = 0; r < messages.length; r++) {
-              div = concat("<div class='alert alert-warning' role='alert' > " , messages[r] , " < /div>");
+              div.concat("<div class='alert alert-warning' role='alert' > " , messages[r] , " < /div>");
               $("#alert").html(div);
             }
           }
