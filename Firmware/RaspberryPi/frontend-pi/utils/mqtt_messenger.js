@@ -46,12 +46,11 @@ var self = module.exports = {
   mqtt_alarms: function(message) {
     json_data = JSON.parse(message)
 
-    timestamp = new Date(json_data.time)
+    timestamp = self.format_date(new Date(json_data.time))
     code = json_data.code
     active = json_data.active
     level = json_data.level
-    message = "[ " + timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds() +
-                " ] Code = " + code + " -- " + json_data.message
+    message = timestamp + " -- [ Code = " + code + " ] -- " + json_data.message
 
     if (active == true) {
       database.add_alarm(code, level, message)
@@ -60,6 +59,18 @@ var self = module.exports = {
     }
     console.log(message)
   },
+
+  format_date: function (date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+}
+
 
   mqtt_chartdata: function(message) {
     json_data = JSON.parse(message)
