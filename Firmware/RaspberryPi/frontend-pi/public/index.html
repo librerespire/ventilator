@@ -506,7 +506,7 @@
             });
             console.log("major: " + messages);
             for (var r = 0; r < messages.length; r++) {
-              div.concat('<div class="alert alert-danger" role="alert" > ', messages[r] , ' < /div>');
+              div.concat('<div class="alert alert-danger" role="alert" > ', messages[r], ' < /div>');
               $("#alert").html(div);
             }
           }
@@ -519,7 +519,7 @@
               return data[key];
             });
             console.log("minor: " + messages);
-            div = "<div class='alert alert-warning' role='alert'> {0} </div>".format(messages.toString());
+            div = "<div class='alert alert-warning' role='alert'> " + messages.toString() + " </div>";
             $("#alert").html(div);
           }
         });
