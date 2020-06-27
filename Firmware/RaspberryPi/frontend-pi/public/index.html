@@ -34,6 +34,10 @@
       font-color: #ffffff;
     }
 
+    .alert {
+      font-size: 4px
+    }
+
     .highcharts-figure,
     .highcharts-data-table table {
       min-width: 100px;
@@ -502,7 +506,7 @@
             console.log("major: " + messages);
             for (var r = 0; r < messages.length; r++) {
               div = '<div class="alert alert-danger" role="alert" > ' + messages[r] + ' < /div>';
-              $("#alert").append(div);
+              $("#alert").html(div);
             }
           }
         });
@@ -515,7 +519,7 @@
             console.log("minor: " + messages);
             for (var r = 0; r < messages.length; r++) {
               div = "<div class='alert alert-warning' role='alert' > " + messages[r] + " < /div>";
-              $("#alert").append(div);
+              $("#alert").html(div);
             }
           }
         });
