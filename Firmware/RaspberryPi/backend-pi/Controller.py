@@ -165,7 +165,7 @@ def insp_phase():
     """ inspiratory phase tasks """
 
     global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL, VENTILATOR_MODE
-    logger.info("Entering inspiratory phase...")
+    logger.info("\n\nEntering inspiratory phase...")
 
     # beep sound added to inspiratory cycle
     system("echo -ne '\007'")
@@ -271,7 +271,7 @@ def insp_phase():
 
 def exp_phase():
     """ expiratory phase tasks """
-    logger.info("Entering expiratory phase...")
+    logger.info("\n\nEntering expiratory phase...")
 
     global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL, MINUTE_VOLUME
     time_const = 0
