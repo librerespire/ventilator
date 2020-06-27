@@ -1,5 +1,7 @@
 const mqtt = require('mqtt')
 var database = require("./database.js")
+var dateFormat = require('dateformat');
+
 const client = mqtt.connect('mqtt://localhost')
 
 const CHART_DATA_TOPIC = 'Ventilator/chart_data'
@@ -45,11 +47,12 @@ var self = module.exports = {
   mqtt_alarms: function(message) {
     json_data = JSON.parse(message)
 
-//    timestamp = new Date(json_data.time)
+    timestamp = new Date(json_data.time)
+    dateFormat(timestamp, "h:MM:ss TT");
     code = json_data.code
     active = json_data.active
     level = json_data.level
-    message = "[ " + json_data.time + " ] " + json_data.message
+    message = "[ " + timestamp + " ] Code = " + code + " -- " + json_data.message
 
     if (active == true) {
       database.add_alarm(code, level, message)
