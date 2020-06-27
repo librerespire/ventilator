@@ -493,8 +493,8 @@
       }, 1000);
 
       setInterval(function() {
-        major_alerts = false;
-        minor_alerts = false;
+        var major_alerts = false;
+        var minor_alerts = false;
         messages = {};
         $("#alert").html();
         $.get("/api/alarms/major", function(data, status) {
@@ -525,7 +525,7 @@
             $("#alert").html(div);
           }
         });
-        if (major_alerts || minor_alerts) {
+        if (major_alerts == true || minor_alerts == true) {
           $("#logo").hide();
           $("#alert").show();
         } else {
