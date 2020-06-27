@@ -182,6 +182,7 @@ def insp_phase():
     ti = 0  # instantaneous time
     q1, q2 = 0, 0  # flow rates
     vi = 0  # volume
+    exceeded_vt = 0 # In volume control mode, if vt had exceeded the intended one, it's stored here
     pip = 0  # peak inspiratory pressure
     solenoids_closed = False
     only_exp_sol_open = False
@@ -242,9 +243,10 @@ def insp_phase():
             if not solenoids_closed:
                 close_all_solenoids(0.1)
                 solenoids_closed = True
+                exceeded_vt = vi
 
             ti = (t2 - start_time).total_seconds()
-            send_to_display(t2, p3, 0, vi)  # flow rate is 0 when insp. solenoid is closed
+            send_to_display(t2, p3, 0, exceeded_vt)  # flow rate is 0 when insp. solenoid is closed
             continue
 
         # Calculate volume in milli-litres
