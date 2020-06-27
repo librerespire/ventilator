@@ -48,6 +48,7 @@ sensing_service = None
 Ki, Ke = 0, 0
 TIME_REF_MINUTE_VOL = None
 MINUTE_VOLUME = 0
+VENTILATOR_MODE = Variables.mode
 
 # declare logger parameters
 logging.config.fileConfig(fname='logger.conf', disable_existing_loggers=False)
@@ -163,7 +164,7 @@ def send_to_display(timeT, pressure, flow_rate, volume):
 def insp_phase():
     """ inspiratory phase tasks """
 
-    global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL
+    global INSP_TOTAL_VOLUME, TIME_REF_MINUTE_VOL, VENTILATOR_MODE
     logger.info("Entering inspiratory phase...")
 
     # beep sound added to inspiratory cycle
@@ -182,7 +183,8 @@ def insp_phase():
     pip = 0  # peak inspiratory pressure
     solenoids_closed = False
     only_exp_sol_open = False
-    p_control_mode = Variables.mode == Variables.P_CONTROL    # ventilator in pressure control mode
+    p_control_mode = VENTILATOR_MODE == Variables.P_CONTROL    # ventilator in pressure control mode
+    logger.debug("Current mode is " + VENTILATOR_MODE)
 
     # Reset inspiratory cycle volume
     INSP_TOTAL_VOLUME = 0
@@ -436,11 +438,15 @@ def init_parameters():
 def update_user_settings():
     """ User can change certain settings via GUI. Utilize the latest user settings for calculations """
 
+    global VENTILATOR_MODE
     # update the target pressure in pid controller
     pid.SetPoint = Variables.pip_target
 
     # use the latest input parameters set via UI
     calc_respiratory_params()
+
+    # Update the ventilator mode
+    VENTILATOR_MODE = Variables.mode
 
 
 def close_all_solenoids(delay):
