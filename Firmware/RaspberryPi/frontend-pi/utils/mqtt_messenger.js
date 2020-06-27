@@ -1,6 +1,5 @@
 const mqtt = require('mqtt')
 var database = require("./database.js")
-var dateFormat = require('dateformat');
 
 const client = mqtt.connect('mqtt://localhost')
 
@@ -48,11 +47,11 @@ var self = module.exports = {
     json_data = JSON.parse(message)
 
     timestamp = new Date(json_data.time)
-    dateFormat(timestamp, "h:MM:ss TT");
     code = json_data.code
     active = json_data.active
     level = json_data.level
-    message = "[ " + timestamp + " ] Code = " + code + " -- " + json_data.message
+    message = "[ " + timestamp.getHours() + ":" + timestamp.getMinutes() + ":" + timestamp.getSeconds() +
+                " ] Code = " + code + " -- " + json_data.message
 
     if (active == true) {
       database.add_alarm(code, level, message)
