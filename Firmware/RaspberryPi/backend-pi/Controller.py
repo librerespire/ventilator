@@ -185,7 +185,7 @@ def insp_phase():
     solenoids_closed = False
     only_exp_sol_open = False
     p_control_mode = VENTILATOR_MODE == Variables.P_CONTROL    # ventilator in pressure control mode
-    logger.debug("Current mode is " + VENTILATOR_MODE)
+    logger.debug("Current mode is " + str(VENTILATOR_MODE))
 
     # Reset inspiratory cycle volume
     INSP_TOTAL_VOLUME = 0
