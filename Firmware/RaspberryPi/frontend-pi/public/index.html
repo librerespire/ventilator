@@ -495,8 +495,11 @@
       setInterval(function() {
         var major_alerts = false;
         var minor_alerts = false;
+        var codes = [];
+        var minor_codes = [];
+        var major_codes = [];
         messages = {};
-        $("#alert").html();
+        $("#alert").empty();
         $.get("/api/alarms/major", function(data, status) {
           if (data) {
             var div = "";
@@ -509,24 +512,27 @@
               '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
               "</button></div>";
             $("#alert").html(div);
-            // $("#logo").hide();
-            // $("#alert").show();
           }
         });
         $.get("/api/alarms/minor", function(data, status) {
           if (data) {
             var div = "";
             minor_alerts = true;
-            var messages = Object.keys(data).map(function(key) {
-              return data[key];
+            var keys = Object.keys(data);
+            var is_same = (minor_codes.length == keys.length) && minor_codes.every(function(element, index) {
+              return element === keys[index];
             });
-            console.log("minor: " + messages);
-            div = "<div class='alert alert-warning alert-dismissible fade show' role='alert'> " + messages.toString() +
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
-              "</button></div>";
-            $("#alert").html(div);
+            if (!is_same) {
+              codes = keys;
+              var messages = Object.keys(data).map(function(key) {
+                return data[key];
+              });
+              div = "<div class='alert alert-warning alert-dismissible fade show' role='alert'> " + messages.toString() +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
+                "</button></div>";
+              $("#alert").append(div);
+            }
           }
-        });
       }, 1000);
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
