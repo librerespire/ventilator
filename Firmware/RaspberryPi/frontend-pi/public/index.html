@@ -509,6 +509,8 @@
               '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
               "</button></div>";
             $("#alert").html(div);
+            // $("#logo").hide();
+            // $("#alert").show();
           }
         });
         $.get("/api/alarms/minor", function(data, status) {
@@ -523,16 +525,10 @@
               '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
               "</button></div>";
             $("#alert").html(div);
+            $("#logo").hide();
+            $("#alert").show();
           }
         });
-        if (major_alerts == true || minor_alerts == true) {
-          $("#logo").hide();
-          $("#alert").show();
-        } else {
-          $("#logo").show();
-          $("#alert").hide();
-          $("#alert").html();
-        }
       }, 1000);
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
