@@ -34,7 +34,7 @@
       font-color: #ffffff;
     }
 
-    .alert {
+    #alert {
       font-size: 13px;
     }
 
@@ -133,7 +133,7 @@
 
       mode_selector(1);
       $("#logo").show();
-      $("#alert").show();
+      $("#alert").hide();
     });
 
     function calib_flow() {
@@ -194,8 +194,6 @@
         <div class="col-xl">
           <div class="card text-center" id="logo">
             <img src="/images/librerespire.svg" width="100%" height="100px" alt="">
-          </div>
-          <div class="alert" id="alert" style="position: absolute; z-index: 999; " role="alert">
           </div>
         </div>
         <div class="col-sm">
@@ -308,6 +306,12 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+      <div class="row align-items-center" width="100%">
+        <div class="col-xl">
+          <div class="card" id="alert" role="alert">
+          </div>
         </div>
       </div>
     </div>
