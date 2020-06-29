@@ -380,6 +380,15 @@ def convert_pressure(p_hpa):
 def calc_respiratory_params():
     """ calculate inspiratory time and expiratory time using parameters set via UI """
     global T_IN, T_EX
+
+    # if rr is non-positive, default it to 10
+    if Variables.rr <= 0:
+        Variables.rr = 10
+
+    # if ie is non-positive, default it to 2
+    if Variables.ie <= 0:
+        Variables.ie = 2
+
     one_breath_time = 60 / Variables.rr
     T_IN = one_breath_time * 1 / (1 + Variables.ie)
     T_EX = one_breath_time * Variables.ie / (1 + Variables.ie)
