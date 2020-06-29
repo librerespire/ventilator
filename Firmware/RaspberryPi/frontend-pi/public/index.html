@@ -107,7 +107,7 @@
         $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
       });
       $("#rr_input").bind("change paste keyup", function() {
-        $("#rr").html("1 : " + $(this).val())
+        $("#rr").html($(this).val())
         $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
       });
       $("#ie_ratio_input").bind("change paste keyup", function() {
