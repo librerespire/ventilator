@@ -103,24 +103,44 @@
   <script type="text/javascript">
     jQuery(document).ready(function() {
       $("#fio2_input").bind("change paste keyup", function() {
-        $("#fio2").html($(this).val())
-        $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
+        if ($(this).val() < 0 || $(this).val() > 100) {
+          alert("Invalid FiO2, try again");
+          $("#fio2_input").focus();
+        } else {
+          $("#fio2").html($(this).val())
+          $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#rr_input").bind("change paste keyup", function() {
-        $("#rr").html($(this).val())
-        $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <=0 || $(this).val() > 30) {
+          alert("Invalid RR, try again");
+          $("#rr_input").focus();
+        } else {
+          $("#rr").html($(this).val())
+          $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#ie_ratio_input").bind("change paste keyup", function() {
-        $("#ie_ratio").html("1 : " + $(this).val())
-        $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <=0 || $(this).val() > 10) {
+          alert("Invalid IE ratio, try again");
+          $("#ie_ratio_input").focus();
+        } else {
+          $("#ie_ratio").html("1 : " + $(this).val())
+          $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#peep_input").bind("change paste keyup", function() {
         $("#peep").html($(this).val())
         $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
       });
       $("#tidle_volume_input").bind("change paste keyup", function() {
-        $("#tidle_volume").html($(this).val())
-        $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <=0 || $(this).val() > 5000) {
+          alert("Invalid Tidle Volume, try again");
+          $("#tidle_volume_input").focus();
+        } else {
+          $("#tidle_volume").html($(this).val())
+          $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#pmax_input").bind("change paste keyup", function() {
         $("#pmax").html($(this).val())
