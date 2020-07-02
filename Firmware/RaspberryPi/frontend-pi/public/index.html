@@ -392,7 +392,7 @@
             PressureData = data['data'];
           });
           pressureChart.series[0].setData(PressureData);
-        }, 1000);
+        }, 500);
       });
 
       $(function() {
@@ -448,7 +448,7 @@
             flowData = data['data'];
           });
           flowChart.series[0].setData(flowData);
-        }, 1000);
+        }, 500);
       });
 
       $(function() {
@@ -514,7 +514,7 @@
           $("#min_volume").html(data['minute_volume']);
           $("#pip").html(data['pip']);
         });
-      }, 1000);
+      }, 500);
 
       setInterval(function() {
         var major_alerts = false;
