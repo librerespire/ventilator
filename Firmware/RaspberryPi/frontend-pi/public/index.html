@@ -372,7 +372,7 @@
             title: {
               text: 'Pressure'
             },
-            type: 'linear',
+            type: 'logarithmic',
             tickPositioner: function () {
                 var positions = [],
                     tick = Math.floor(this.dataMin),
@@ -385,7 +385,7 @@
                 }
                 return positions;
             },
-            minorTickInterval: 'auto'
+            //minorTickInterval: 'auto'
           },
           legend: {
             enabled: false
@@ -440,7 +440,7 @@
             title: {
               text: 'Flow'
             },
-            type: 'linear',
+            type: 'logarithmic',
             tickPositioner: function () {
                 var positions = [],
                     tick = Math.floor(this.dataMin),
@@ -453,7 +453,7 @@
                 }
                 return positions;
             },
-            minorTickInterval: 'auto'
+            //minorTickInterval: 'auto'
           },
           legend: {
             enabled: false
@@ -506,7 +506,7 @@
             title: {
               text: 'Volume'
             },
-            type: 'linear',
+            type: 'logarithmic',
             tickPositioner: function () {
                 var positions = [],
                     tick = Math.floor(this.dataMin),
@@ -519,7 +519,7 @@
                 }
                 return positions;
             },
-            minorTickInterval: 'auto'
+            //minorTickInterval: 'auto'
           },
           time: {
             useUTC: false
