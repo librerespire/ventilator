@@ -373,7 +373,18 @@
               text: 'Pressure'
             },
             type: 'linear',
-            tickPixelInterval: 5,
+            tickPositioner: function () {
+                var positions = [],
+                    tick = Math.floor(this.dataMin),
+                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+
+                if (this.dataMax !== null && this.dataMin !== null) {
+                    for (tick; tick - increment <= this.dataMax; tick += increment) {
+                        positions.push(tick);
+                    }
+                }
+                return positions;
+            },
             minorTickInterval: 'auto'
           },
           legend: {
@@ -430,7 +441,18 @@
               text: 'Flow'
             },
             type: 'linear',
-            tickPixelInterval: 100,
+            tickPositioner: function () {
+                var positions = [],
+                    tick = Math.floor(this.dataMin),
+                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+
+                if (this.dataMax !== null && this.dataMin !== null) {
+                    for (tick; tick - increment <= this.dataMax; tick += increment) {
+                        positions.push(tick);
+                    }
+                }
+                return positions;
+            },
             minorTickInterval: 'auto'
           },
           legend: {
@@ -485,7 +507,18 @@
               text: 'Volume'
             },
             type: 'linear',
-            tickPixelInterval: 1000,
+            tickPositioner: function () {
+                var positions = [],
+                    tick = Math.floor(this.dataMin),
+                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+
+                if (this.dataMax !== null && this.dataMin !== null) {
+                    for (tick; tick - increment <= this.dataMax; tick += increment) {
+                        positions.push(tick);
+                    }
+                }
+                return positions;
+            },
             minorTickInterval: 'auto'
           },
           time: {
