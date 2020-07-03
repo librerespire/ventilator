@@ -361,15 +361,10 @@
           },
           xAxis: {
             type: 'datetime',
-            tickPixelInterval: 300,
+            tickPixelInterval: 200,
             dateTimeLabelFormats: {
-                second: '%Y-%m-%d<br/>%H:%M:%S',
-                minute: '%Y-%m-%d<br/>%H:%M',
-                hour: '%Y-%m-%d<br/>%H:%M',
-                day: '%Y<br/>%m-%d',
-                week: '%Y<br/>%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
+                second: '%H:%M:%S',
+                minute: '%H:%M',
             },
             visible: true,
           },
@@ -441,10 +436,11 @@
           },
           xAxis: {
             type: 'datetime',
-            // dateTimeLabelFormats: {
-            //   millisecond: '%S.%L',
-            //   second: '%S'
-            // },
+            tickPixelInterval: 200,
+            dateTimeLabelFormats: {
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+            },
             visible: true,
           },
           yAxis: {
@@ -508,10 +504,10 @@
           },
           xAxis: {
             type: 'datetime',
-            //tickPixelInterval: 150,
+            tickPixelInterval: 200,
             dateTimeLabelFormats: {
-              millisecond: '%S.%L',
-              second: '%S'
+                second: '%H:%M:%S',
+                minute: '%H:%M',
             },
             visible: true,
           },
