@@ -354,8 +354,9 @@ def submit_minute_vol(reset_time):
     global TIME_REF_MINUTE_VOL, MINUTE_VOLUME
 
     # Send minute volume to GUI
-    mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(MINUTE_VOLUME))
-    logger.debug("<<< SUBMIT >> min_vol=%.1f", MINUTE_VOLUME)
+    min_vol_litres = MINUTE_VOLUME / 1000
+    mqtt.sender(mqtt.MINUTE_VOLUME_TOPIC, round(min_vol_litres, 3))
+    logger.debug("<<< SUBMIT >> min_vol=%.3f L", min_vol_litres)
 
     # Reset minute volume calculation
     TIME_REF_MINUTE_VOL = reset_time
