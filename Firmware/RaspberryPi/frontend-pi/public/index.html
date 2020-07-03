@@ -112,7 +112,7 @@
         }
       });
       $("#rr_input").bind("change paste keyup", function() {
-        if ($(this).val() <=0 || $(this).val() > 30) {
+        if ($(this).val() <= 0 || $(this).val() > 30) {
           alert("Invalid RR, try again");
           $("#rr_input").focus();
         } else {
@@ -121,7 +121,7 @@
         }
       });
       $("#ie_ratio_input").bind("change paste keyup", function() {
-        if ($(this).val() <=0 || $(this).val() > 10) {
+        if ($(this).val() <= 0 || $(this).val() > 10) {
           alert("Invalid IE ratio, try again");
           $("#ie_ratio_input").focus();
         } else {
@@ -134,7 +134,7 @@
         $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
       });
       $("#tidle_volume_input").bind("change paste keyup", function() {
-        if ($(this).val() <=0 || $(this).val() > 5000) {
+        if ($(this).val() <= 0 || $(this).val() > 5000) {
           alert("Invalid Tidle Volume, try again");
           $("#tidle_volume_input").focus();
         } else {
@@ -338,6 +338,8 @@
 
     <!-- Chart JavaScript -->
     <script type="text/javascript">
+      // Chart refresh interval
+      var refreshInterval = 100;
       $(function() {
         // Pressure chart
         var PressureData = [];
@@ -374,17 +376,17 @@
               text: 'Pressure'
             },
             type: 'linear',
-            tickPositioner: function () {
-                var positions = [],
-                    tick = Math.floor(this.dataMin),
-                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+            tickPositioner: function() {
+              var positions = [],
+                tick = Math.floor(this.dataMin),
+                increment = Math.ceil((this.dataMax - this.dataMin) / 6);
 
-                if (this.dataMax !== null && this.dataMin !== null) {
-                    for (tick; tick - increment <= this.dataMax; tick += increment) {
-                        positions.push(tick);
-                    }
+              if (this.dataMax !== null && this.dataMin !== null) {
+                for (tick; tick - increment <= this.dataMax; tick += increment) {
+                  positions.push(tick);
                 }
-                return positions;
+              }
+              return positions;
             },
             //minorTickInterval: 'auto'
             visible: false,
@@ -406,7 +408,7 @@
             PressureData = data['data'];
           });
           pressureChart.series[0].setData(PressureData);
-        }, 1000);
+        }, refreshInterval);
       });
 
       $(function() {
@@ -445,17 +447,17 @@
               text: 'Flow'
             },
             type: 'linear',
-            tickPositioner: function () {
-                var positions = [],
-                    tick = Math.floor(this.dataMin),
-                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+            tickPositioner: function() {
+              var positions = [],
+                tick = Math.floor(this.dataMin),
+                increment = Math.ceil((this.dataMax - this.dataMin) / 6);
 
-                if (this.dataMax !== null && this.dataMin !== null) {
-                    for (tick; tick - increment <= this.dataMax; tick += increment) {
-                        positions.push(tick);
-                    }
+              if (this.dataMax !== null && this.dataMin !== null) {
+                for (tick; tick - increment <= this.dataMax; tick += increment) {
+                  positions.push(tick);
                 }
-                return positions;
+              }
+              return positions;
             },
             //minorTickInterval: 'auto'
             visible: false,
@@ -477,7 +479,7 @@
             flowData = data['data'];
           });
           flowChart.series[0].setData(flowData);
-        }, 1000);
+        }, refreshInterval);
       });
 
       $(function() {
@@ -513,17 +515,17 @@
               text: 'Volume'
             },
             type: 'linear',
-            tickPositioner: function () {
-                var positions = [],
-                    tick = Math.floor(this.dataMin),
-                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+            tickPositioner: function() {
+              var positions = [],
+                tick = Math.floor(this.dataMin),
+                increment = Math.ceil((this.dataMax - this.dataMin) / 6);
 
-                if (this.dataMax !== null && this.dataMin !== null) {
-                    for (tick; tick - increment <= this.dataMax; tick += increment) {
-                        positions.push(tick);
-                    }
+              if (this.dataMax !== null && this.dataMin !== null) {
+                for (tick; tick - increment <= this.dataMax; tick += increment) {
+                  positions.push(tick);
                 }
-                return positions;
+              }
+              return positions;
             },
             //minorTickInterval: 'auto'
             visible: false,
@@ -548,7 +550,7 @@
             volumeData = data['data'];
           });
           volumeChart.series[0].setData(volumeData);
-        }, 1000);
+        }, refreshInterval);
       });
 
       // This timeout is for table values
