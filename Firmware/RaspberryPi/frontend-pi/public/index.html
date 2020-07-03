@@ -339,7 +339,7 @@
     <!-- Chart JavaScript -->
     <script type="text/javascript">
       // Chart refresh interval
-      var refreshInterval = 500;
+      var refreshInterval = 1000;
       $(function() {
         // Pressure chart
         var PressureData = [];
@@ -366,7 +366,7 @@
             //   millisecond: '%S.%L',
             //   second: '%S'
             // },
-            visible: false,
+            visible: true,
           },
           time: {
             useUTC: false
@@ -389,7 +389,7 @@
               return positions;
             },
             //minorTickInterval: 'auto'
-            visible: false,
+            visible: true,
           },
           legend: {
             enabled: false
@@ -440,7 +440,7 @@
             //   millisecond: '%S.%L',
             //   second: '%S'
             // },
-            visible: false,
+            visible: true,
           },
           yAxis: {
             title: {
@@ -460,7 +460,7 @@
               return positions;
             },
             //minorTickInterval: 'auto'
-            visible: false,
+            visible: true,
           },
           legend: {
             enabled: false
@@ -508,7 +508,7 @@
               millisecond: '%S.%L',
               second: '%S'
             },
-            visible: false,
+            visible: true,
           },
           yAxis: {
             title: {
@@ -528,7 +528,7 @@
               return positions;
             },
             //minorTickInterval: 'auto'
-            visible: false,
+            visible: true,
           },
           time: {
             useUTC: false
