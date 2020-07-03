@@ -9,9 +9,10 @@ const RR_CONFIG_TOPIC = 'Config/rr';
 const PEEP_CONFIG_TOPIC = 'Config/peep';
 const VT_CONFIG_TOPIC = 'Config/vt';
 const IE_CONFIG_TOPIC = 'Config/ie';
-const PS_CONFIG_TOPIC = 'Config/ps';
-const MV_CONFIG_TOPIC = 'Config/mv';
+const PMAX_CONFIG_TOPIC = 'Config/pmax';
 const PIP_CONFIG_TOPIC = 'Config/pip';
+const MINUTE_VOL_CONFIG_TOPIC = 'Config/mv';
+const MODE_CONFIG_TOPIC = 'Config/mode';
 
 router.get('/calib_flow_rate', function (req, res) {
   mqtt_messenger.mqtt_sender(CALIB_FLOW_RATE_CONFIG_TOPIC, req.query.calib_flow_rate);
@@ -43,17 +44,24 @@ router.get('/ie', function (req, res) {
   res.sendStatus(200);
 })
 
-router.get('/ps', function (req, res) {
-  mqtt_messenger.mqtt_sender(PS_CONFIG_TOPIC, req.query.ps);
+router.get('/pmax', function (req, res) {
+  mqtt_messenger.mqtt_sender(PMAX_CONFIG_TOPIC, req.query.pmax);
   res.sendStatus(200);
 })
 
 router.get('/pip', function (req, res) {
-  mqtt_messenger.mqtt_sender(PS_CONFIG_TOPIC, req.query.pip);
+  mqtt_messenger.mqtt_sender(PIP_CONFIG_TOPIC, req.query.pip);
   res.sendStatus(200);
 })
+
 router.get('/mv', function (req, res) {
-  mqtt_messenger.mqtt_sender(PS_CONFIG_TOPIC, req.query.mv);
+  mqtt_messenger.mqtt_sender(MINUTE_VOL_CONFIG_TOPIC, req.query.mv);
   res.sendStatus(200);
 })
+
+router.get('/mode', function (req, res) {
+    mqtt_messenger.mqtt_sender(MODE_CONFIG_TOPIC, req.query.mode);
+    res.sendStatus(200);
+})
+
 module.exports = router;

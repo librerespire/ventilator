@@ -1,11 +1,13 @@
 const mqtt = require('mqtt')
 var database = require("./database.js")
+
 const client = mqtt.connect('mqtt://localhost')
 
 const CHART_DATA_TOPIC = 'Ventilator/chart_data'
 const ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
 const MINUTE_VOLUME_TOPIC = 'Ventilator/minute_volume'
 const PIP_TOPIC = 'Ventilator/pip'
+const ALARM_TOPIC = 'Ventilator/alarms'
 
 var self = module.exports = {
   mqtt_sender: function(topic, message) {
@@ -20,6 +22,7 @@ var self = module.exports = {
       client.subscribe(ACTUAL_TIDAL_VOLUME_TOPIC)
       client.subscribe(MINUTE_VOLUME_TOPIC)
       client.subscribe(PIP_TOPIC)
+      client.subscribe(ALARM_TOPIC)
     });
 
     client.on('message', (topic, message) => {
@@ -33,10 +36,42 @@ var self = module.exports = {
           return self.mqtt_minute_volume(message)
         case PIP_TOPIC:
           return self.mqtt_pip(message)
+        case ALARM_TOPIC:
+          return self.mqtt_alarms(message)
       }
       console.log('No handler for topic %s', topic)
     });
   },
+
+  mqtt_alarms: function(message) {
+    json_data = JSON.parse(message)
+
+    timestamp = self.format_date(new Date(json_data.time))
+    code = json_data.code
+    active = json_data.active
+    level = json_data.level
+    message = timestamp + " -- [ Code = " + code + " ] -- " + json_data.message
+
+    if (active == true) {
+      database.add_alarm(code, level, message)
+    } else if (active == false) {
+      database.remove_alarm(code, level)
+    }
+    console.log(message)
+  },
+
+  format_date: function (date) {
+    var hours = date.getHours()
+    var minutes = date.getMinutes()
+    var seconds = date.getSeconds()
+    var ampm = hours >= 12 ? 'PM' : 'AM'
+    hours = hours % 12
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes
+    seconds = seconds < 10 ? '0'+seconds : seconds
+    var strTime = hours + ':' + minutes + ':' + seconds +' ' + ampm
+    return strTime
+},
 
   mqtt_chartdata: function(message) {
     json_data = JSON.parse(message)

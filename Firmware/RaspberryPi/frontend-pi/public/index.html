@@ -34,6 +34,10 @@
       font-color: #ffffff;
     }
 
+    #alert {
+      font-size: 13px;
+    }
+
     .highcharts-figure,
     .highcharts-data-table table {
       min-width: 100px;
@@ -43,17 +47,17 @@
 
     #pressureChart {
       width: 100%;
-      height: 230px;
+      height: 220px;
     }
 
     #flowChart {
       width: 100%;
-      height: 230px;
+      height: 220px;
     }
 
     #volumeChart {
       width: 100%;
-      height: 230px;
+      height: 220px;
     }
 
     .highcharts-background {
@@ -99,42 +103,75 @@
   <script type="text/javascript">
     jQuery(document).ready(function() {
       $("#fio2_input").bind("change paste keyup", function() {
-        $("#fio2").html($(this).val())
-        $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
+        if ($(this).val() < 0 || $(this).val() > 100) {
+          alert("Invalid FiO2, try again");
+          $("#fio2_input").focus();
+        } else {
+          $("#fio2").html($(this).val())
+          $.get("/api/configs/fio2?fio2=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#rr_input").bind("change paste keyup", function() {
-        $("#rr").html("1 : " + $(this).val())
-        $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <=0 || $(this).val() > 30) {
+          alert("Invalid RR, try again");
+          $("#rr_input").focus();
+        } else {
+          $("#rr").html($(this).val())
+          $.get("/api/configs/rr?rr=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#ie_ratio_input").bind("change paste keyup", function() {
-        $("#ie_ratio").html("1 : " + $(this).val())
-        $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <=0 || $(this).val() > 10) {
+          alert("Invalid IE ratio, try again");
+          $("#ie_ratio_input").focus();
+        } else {
+          $("#ie_ratio").html("1 : " + $(this).val())
+          $.get("/api/configs/ie?ie=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#peep_input").bind("change paste keyup", function() {
         $("#peep").html($(this).val())
         $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
       });
       $("#tidle_volume_input").bind("change paste keyup", function() {
-        $("#tidle_volume").html($(this).val())
-        $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <=0 || $(this).val() > 5000) {
+          alert("Invalid Tidle Volume, try again");
+          $("#tidle_volume_input").focus();
+        } else {
+          $("#tidle_volume").html($(this).val())
+          $.get("/api/configs/vt?vt=" + $(this).val(), function(data, status) {})
+        }
       });
-      $("#pressure_support_input").bind("change paste keyup", function() {
-        $("#pressure_support").html($(this).val())
-        $.get("/api/configs/ps?ps=" + $(this).val(), function(data, status) {})
+      $("#pmax_input").bind("change paste keyup", function() {
+        $("#pmax").html($(this).val())
+        $.get("/api/configs/pmax?pmax=" + $(this).val(), function(data, status) {})
       });
-      $("#min_volume_input").bind("change paste keyup", function() {
-        $("#min_volume").html($(this).val())
-        $.get("/api/configs/mv?mv=" + $(this).val(), function(data, status) {})
-      });
-      $("#peak_pressure_input").bind("change paste keyup", function() {
-        $("#peak_pressure").html($(this).val())
+      $("#pip_input").bind("change paste keyup", function() {
+        $("#pip").html($(this).val())
         $.get("/api/configs/pip?pip=" + $(this).val(), function(data, status) {})
       });
+
+      mode_selector(1);
+      $("#logo").show();
+      $("#alert").show();
     });
 
     function calib_flow() {
       $.get("/api/configs/calib_flow_rate?calib_flow_rate=" + $("#calibarate_flow_input").val(), function(data, status) {});
       $('#calibarate').modal('hide')
+    }
+
+    function mode_selector(mode) {
+      $.get("/api/configs/mode?mode=" + mode, function(data, status) {});
+      if (mode == 1) {
+        $("#tidle_volume_input").prop("disabled", true).css("background-color", "#3c3d3d");
+        $("#pmax_input").prop("disabled", false).css("background-color", "#737373");
+        $("#pip_input").prop("disabled", false).css("background-color", "#737373");
+      } else if (mode == 2) {
+        $("#pmax_input").prop("disabled", true).css("background-color", "#3c3d3d");
+        $("#pip_input").prop("disabled", true).css("background-color", "#3c3d3d");
+        $("#tidle_volume_input").prop("disabled", false).css("background-color", "#737373");
+      }
     }
   </script>
 </head>
@@ -163,25 +200,23 @@
         </div>
       </div>
       <div class="row align-items-center" width="100%">
-        <div class="col">
+        <div class="col-sm">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Ventilator Mode
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;">CMV-PC</a>
+              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;" onclick="mode_selector(1);">Pressure Control</a>
+              <a class="dropdown-item" href="#" style="font-size:30px;font-style:initial;" onclick="mode_selector(2);">Volume Control</a>
             </div>
           </div>
         </div>
         <div class="col-xl">
-          <div class="card text-center">
-            <img src="/images/librerespire.svg" style="z-index: 30" width="100%" height="100px" alt="">
-          </div>
-          <div class="alert alert-success" style="display: none;" role="alert">
-            <p>test alert!</p>
+          <div class="card text-center" id="logo">
+            <img src="/images/librerespire.svg" width="100%" height="100px" alt="">
           </div>
         </div>
-        <div class="col">
+        <div class="col-sm">
           <div class="dropdown">
             <button class="btn btn-lg btn-secondary dropdown-toggle" style="width: 100%" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               Settings
@@ -223,8 +258,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>Minute Volume</div>
-                      <div id="min_volume" style="font-size:40px;font-style:initial;">5</div>
-                      <input class="keyboard form-control" id="min_volume_input" type="number" onclick="show_easy_numpad(this);">
+                      <div id="min_volume" style="font-size:40px;font-style:initial;">5000</div>
+                      <br>
                     </div>
                   </div>
                 </td>
@@ -234,8 +269,8 @@
                   <div class="card bg-dark text-center">
                     <div class="card-body">
                       <div>PIP</div>
-                      <div id="peak_pressure" style="font-size:40px;font-style:initial;">20</div>
-                      <input class="keyboard form-control" id="peak_pressure_input" type="number" onclick="show_easy_numpad(this);">
+                      <div id="pip" style="font-size:40px;font-style:initial;">15</div>
+                      <input class="keyboard form-control" id="pip_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -273,9 +308,9 @@
                 <td>
                   <div class="card bg-dark text-center">
                     <div class="card-body">
-                      <div>Pressure Support</div>
-                      <div id="pressure_support" style="font-size:40px;font-style:initial;">20</div>
-                      <input class="keyboard form-control" id="pressure_support_input" type="number" onclick="show_easy_numpad(this);">
+                      <div>Pmax</div>
+                      <div id="pmax" style="font-size:40px;font-style:initial;">60</div>
+                      <input class="keyboard form-control" id="pmax_input" type="number" onclick="show_easy_numpad(this);">
                     </div>
                   </div>
                 </td>
@@ -293,59 +328,13 @@
           </table>
         </div>
       </div>
-      <!-- <div class="row align-items-end" width="100%">
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">FiO<sub>2</sub></div>
-              <input type="tel" class="keyboard form-control" id="fio2_input" type="number" onclick="this.value = show_easy_numpad(this);">
-            </div>
+      <div class="row align-items-center" width="100%">
+        <div class="col-xl">
+          <div class="card" id="alert" role="alert">
           </div>
         </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">VT</div>
-              <input type="tel" class="keyboard form-control" id="vt_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">R.R.</div>
-              <input type="tel" class="keyboard form-control" id="rr_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">IE Ratio</div>
-              <input type="tel" class="keyboard form-control" id="ie_ratio_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">PEEP</div>
-              <input type="tel" class="keyboard form-control" id="peep_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-        <div class="col-sm">
-          <div class="card text-white bg-secondary text-center">
-            <div class="card-body">
-              <div id="bottom_menu">Ps</div>
-              <input type="tel" class="keyboard form-control" id="pressure_support_input" type="number" onclick="show_easy_numpad(this);">
-            </div>
-          </div>
-        </div>
-      </div> -->
+      </div>
     </div>
-
-
 
     <!-- Chart JavaScript -->
     <script type="text/javascript">
@@ -384,7 +373,19 @@
               text: 'Pressure'
             },
             type: 'linear',
-            minorTickInterval: 'auto'
+            tickPositioner: function () {
+                var positions = [],
+                    tick = Math.floor(this.dataMin),
+                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+
+                if (this.dataMax !== null && this.dataMin !== null) {
+                    for (tick; tick - increment <= this.dataMax; tick += increment) {
+                        positions.push(tick);
+                    }
+                }
+                return positions;
+            },
+            //minorTickInterval: 'auto'
           },
           legend: {
             enabled: false
@@ -403,7 +404,7 @@
             PressureData = data['data'];
           });
           pressureChart.series[0].setData(PressureData);
-        }, 1000);
+        }, 100);
       });
 
       $(function() {
@@ -440,7 +441,19 @@
               text: 'Flow'
             },
             type: 'linear',
-            minorTickInterval: 'auto'
+            tickPositioner: function () {
+                var positions = [],
+                    tick = Math.floor(this.dataMin),
+                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+
+                if (this.dataMax !== null && this.dataMin !== null) {
+                    for (tick; tick - increment <= this.dataMax; tick += increment) {
+                        positions.push(tick);
+                    }
+                }
+                return positions;
+            },
+            //minorTickInterval: 'auto'
           },
           legend: {
             enabled: false
@@ -459,7 +472,7 @@
             flowData = data['data'];
           });
           flowChart.series[0].setData(flowData);
-        }, 1000);
+        }, 100);
       });
 
       $(function() {
@@ -494,7 +507,19 @@
               text: 'Volume'
             },
             type: 'linear',
-            minorTickInterval: 'auto'
+            tickPositioner: function () {
+                var positions = [],
+                    tick = Math.floor(this.dataMin),
+                    increment = Math.ceil((this.dataMax - this.dataMin) / 6);
+
+                if (this.dataMax !== null && this.dataMin !== null) {
+                    for (tick; tick - increment <= this.dataMax; tick += increment) {
+                        positions.push(tick);
+                    }
+                }
+                return positions;
+            },
+            //minorTickInterval: 'auto'
           },
           time: {
             useUTC: false
@@ -516,15 +541,68 @@
             volumeData = data['data'];
           });
           volumeChart.series[0].setData(volumeData);
-        }, 1000);
+        }, 100);
       });
 
       setInterval(function() {
         $.get("/api/table/values", function(data, status) {
           $("#tidle_volume").html(data['vt']);
           $("#min_volume").html(data['minute_volume']);
-          $("#peak_pressure").html(data['peak_pressure']);
+          $("#pip").html(data['pip']);
         });
+      }, 500);
+
+      setInterval(function() {
+        var major_alerts = false;
+        var minor_alerts = false;
+        var codes = [];
+        var minor_codes = [];
+        var major_codes = [];
+        messages = {};
+        $("#alert").empty();
+        $.get("/api/alarms/major", function(data, status) {
+          if (data) {
+            var div = "";
+            var keys = Object.keys(data);
+            var is_same = (major_codes.length == keys.length) && major_codes.every(function(element, index) {
+              return element === keys[index];
+            });
+            if (!is_same) {
+              major_alerts = true;
+              major_codes = keys;
+              var messages = Object.keys(data).map(function(key) {
+                return data[key];
+              });
+              div = "<div class='alert alert-danger alert-dismissible fade show' role='alert'> " + messages.toString() +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
+                "</button></div>";
+              $("#alert").append(div);
+            }
+          }
+        });
+        $.get("/api/alarms/minor", function(data, status) {
+          if (data) {
+            var div = "";
+            var keys = Object.keys(data);
+            var is_same = (minor_codes.length == keys.length) && minor_codes.every(function(element, index) {
+              return element === keys[index];
+            });
+            if (!is_same) {
+              minor_alerts = true;
+              minor_codes = keys;
+              var messages = Object.keys(data).map(function(key) {
+                return data[key];
+              });
+              div = "<div class='alert alert-warning alert-dismissible fade show' role='alert'> " + messages.toString() +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>' +
+                "</button></div>";
+              $("#alert").append(div);
+            }
+          }
+        });
+        // if (major_alerts || minor_alerts) {
+        //
+        // }
       }, 1000);
     </script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -16,6 +16,10 @@ class SensorReader:
     def __init__(self, bus_number):
         # Get I2C
         self.bus_number = bus_number
+        if Variables.demo == True:
+            self.bus_address = 0x77
+        else:
+            self.bus_address = 0x76
         self.bus = smbus.SMBus(self.bus_number)
 
     def read_bme680(self):
