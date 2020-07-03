@@ -339,7 +339,7 @@
     <!-- Chart JavaScript -->
     <script type="text/javascript">
       // Chart refresh interval
-      var refreshInterval = 1000;
+      var refreshInterval = 500;
       $(function() {
         // Pressure chart
         var PressureData = [];
@@ -407,7 +407,7 @@
           $.get("/api/graphs/pressure", function(data, status) {
             PressureData = data['data'];
           });
-          pressureChart.series[0].setData(PressureData);
+          pressureChart.series[0].setData(PressureData, true, false, true);
         }, refreshInterval);
       });
 
@@ -549,7 +549,7 @@
           $.get("/api/graphs/volume", function(data, status) {
             volumeData = data['data'];
           });
-          volumeChart.series[0].setData(volumeData);
+          volumeChart.series[0].setData(volumeData, true, false, true);
         }, refreshInterval);
       });
 
