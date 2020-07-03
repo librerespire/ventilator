@@ -130,8 +130,13 @@
         }
       });
       $("#peep_input").bind("change paste keyup", function() {
-        $("#peep").html($(this).val())
-        $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <= 0 || $(this).val() > 30) {
+          alert("Invalid PEEP, try again");
+          $("#peep_input").focus();
+        } else {
+          $("#peep").html($(this).val())
+          $.get("/api/configs/peep?peep=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#tidle_volume_input").bind("change paste keyup", function() {
         if ($(this).val() <= 0 || $(this).val() > 5000) {
@@ -143,12 +148,22 @@
         }
       });
       $("#pmax_input").bind("change paste keyup", function() {
-        $("#pmax").html($(this).val())
-        $.get("/api/configs/pmax?pmax=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <= 0 || $(this).val() > 70) {
+          alert("Invalid Pmax, try again");
+          $("#pmax_input").focus();
+        } else {
+          $("#pmax").html($(this).val())
+          $.get("/api/configs/pmax?pmax=" + $(this).val(), function(data, status) {})
+        }
       });
       $("#pip_input").bind("change paste keyup", function() {
-        $("#pip").html($(this).val())
-        $.get("/api/configs/pip?pip=" + $(this).val(), function(data, status) {})
+        if ($(this).val() <= 0 || $(this).val() > 70) {
+          alert("Invalid PIP, try again");
+          $("#pip_input").focus();
+        } else {
+          $("#pip").html($(this).val())
+          $.get("/api/configs/pip?pip=" + $(this).val(), function(data, status) {})
+        }
       });
 
       mode_selector(1);
