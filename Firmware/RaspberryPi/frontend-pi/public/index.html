@@ -505,10 +505,9 @@
           xAxis: {
             type: 'datetime',
             tickPixelInterval: 200,
-            labels:{
-               formatter:function(){
-                   return Highcharts.dateFormat('%M %S',this.value);
-               }
+            dateTimeLabelFormats: {
+                second: '%H:%M:%S',
+                minute: '%H:%M',
             },
             visible: true,
           },
