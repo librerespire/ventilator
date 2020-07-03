@@ -360,10 +360,10 @@
           xAxis: {
             type: 'datetime',
             //tickPixelInterval: 150,
-            dateTimeLabelFormats: {
-              millisecond: '%S.%L',
-              second: '%S'
-            },
+            // dateTimeLabelFormats: {
+            //   millisecond: '%S.%L',
+            //   second: '%S'
+            // },
           },
           time: {
             useUTC: false
@@ -404,7 +404,7 @@
             PressureData = data['data'];
           });
           pressureChart.series[0].setData(PressureData);
-        }, 100);
+        }, 1000);
       });
 
       $(function() {
@@ -432,10 +432,10 @@
           },
           xAxis: {
             type: 'datetime',
-            dateTimeLabelFormats: {
-              millisecond: '%S.%L',
-              second: '%S'
-            },
+            // dateTimeLabelFormats: {
+            //   millisecond: '%S.%L',
+            //   second: '%S'
+            // },
           },
           yAxis: {
             title: {
@@ -473,7 +473,7 @@
             flowData = data['data'];
           });
           flowChart.series[0].setData(flowData);
-        }, 100);
+        }, 1000);
       });
 
       $(function() {
@@ -542,17 +542,19 @@
             volumeData = data['data'];
           });
           volumeChart.series[0].setData(volumeData);
-        }, 100);
+        }, 1000);
       });
 
+      // This timeout is for table values
       setInterval(function() {
         $.get("/api/table/values", function(data, status) {
           $("#tidle_volume").html(data['vt']);
           $("#min_volume").html(data['minute_volume']);
           $("#pip").html(data['pip']);
         });
-      }, 500);
+      }, 1000);
 
+      // This timeout is for alarms
       setInterval(function() {
         var major_alerts = false;
         var minor_alerts = false;
