@@ -7,6 +7,7 @@ const CHART_DATA_TOPIC = 'Ventilator/chart_data'
 const ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
 const MINUTE_VOLUME_TOPIC = 'Ventilator/minute_volume'
 const PIP_TOPIC = 'Ventilator/pip'
+const PEEP_CALC_TOPIC = 'Ventilator/peep'
 const ALARM_TOPIC = 'Ventilator/alarms'
 
 var self = module.exports = {
@@ -23,6 +24,7 @@ var self = module.exports = {
       client.subscribe(MINUTE_VOLUME_TOPIC)
       client.subscribe(PIP_TOPIC)
       client.subscribe(ALARM_TOPIC)
+      client.subscribe(PEEP_CALC_TOPIC)
     });
 
     client.on('message', (topic, message) => {
@@ -36,6 +38,8 @@ var self = module.exports = {
           return self.mqtt_minute_volume(message)
         case PIP_TOPIC:
           return self.mqtt_pip(message)
+        case PEEP_CALC_TOPIC:
+          return self.mqtt_peep_calc(message)
         case ALARM_TOPIC:
           return self.mqtt_alarms(message)
       }
@@ -89,6 +93,11 @@ var self = module.exports = {
   mqtt_vt: function(message) {
     database.set_vt(parseInt(message))
     console.log("MQTT VT: " + parseInt(message));
+  },
+
+  mqtt_peep_calc: function(message) {
+    database.set_peep_calc(parseInt(message))
+    console.log("MQTT PEEP_CALC: " + parseInt(message));
   },
 
   mqtt_minute_volume: function(message) {

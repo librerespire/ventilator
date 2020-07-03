@@ -13,6 +13,7 @@ class MQTTTransceiver:
     ACTUAL_TIDAL_VOLUME_TOPIC = 'Ventilator/vt'
     MINUTE_VOLUME_TOPIC = 'Ventilator/minute_volume'
     PIP_TOPIC = 'Ventilator/pip'
+    PEEP_CALC_TOPIC = 'Ventilator/peep'
     PRESSURE_DATA_TOPIC = "Ventilator/pressure_data"
     ALARMS_TOPIC = 'Ventilator/alarms'
 

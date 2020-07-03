@@ -8,6 +8,7 @@ router.get('/values', function(req, res) {
     "vt": database.get_vt(),
     "minute_volume": database.get_minute_volume(),
     "pip": database.get_pip(),
+    "peep_calc": database.get_peep_calc(),
   });
 })
 

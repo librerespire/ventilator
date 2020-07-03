@@ -4,6 +4,7 @@ var volume = [];
 var tidle_volume
 var minute_volume
 var pip
+var peep_calc
 var major_alarms = {}   // major alarms {'code':'message'}
 var minor_alarms = {}   // minor alarms {'code':'message'}
 
@@ -50,6 +51,10 @@ module.exports = {
     pip = data
   },
 
+  set_peep_calc: function(data) {
+    peep_calc = data
+  },
+
   set_pressure: function(data) {
     if (pressure.length >= 60) {
       pressure.shift()
@@ -84,6 +89,10 @@ module.exports = {
 
   get_pip: function() {
     return pip
+  },
+
+  get_peep_calc: function() {
+    return peep_calc
   },
 
   get_volume: function() {

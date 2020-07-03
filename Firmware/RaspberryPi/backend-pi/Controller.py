@@ -283,6 +283,9 @@ def exp_phase():
     ti = 0
     q1, q2 = 0, 0
     vi, v_tot = 0, 0
+    peep = 0
+    peep_count = 0
+    peep_time = 0.8 * T_EX
 
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SO_PIN, DUTY_RATIO_0)
@@ -300,6 +303,11 @@ def exp_phase():
         q1 = q2
         q2, p3 = get_average_flow_rate_and_pressure(EXP_FLOW)
         t2 = datetime.now()
+
+        # calculate PEEP
+        if ti > peep_time:
+            peep += p3
+            peep_count += 1
 
         delta_t = 1000*(t2-t1).total_seconds()
         logger.debug("\n>>>>> Time constant %d = %.1f msec <<<<<" % (time_const, delta_t))
@@ -320,6 +328,9 @@ def exp_phase():
 
         send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - v_tot))
         logger.debug("ti = %.4f,     vi = %.1f" % (ti, vi))
+
+    peep /= peep_count
+    mqtt.sender(mqtt.PEEP_CALC_TOPIC, round(peep))
 
     logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % v_tot)
     mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, round(v_tot))
