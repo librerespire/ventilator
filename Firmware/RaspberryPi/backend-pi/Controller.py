@@ -451,10 +451,10 @@ def init_parameters():
     # Initialize AlarmManager
     alarms = AlarmManager(mqtt)
 
-    # Initially solenoids are all open
-    PWM_I.start(DUTY_RATIO_100)
-    PWM_O.start(DUTY_RATIO_100)
-    control_solenoid(SE_PIN, DUTY_RATIO_100)
+    # Initially solenoids are all closed
+    PWM_I.start(DUTY_RATIO_0)
+    PWM_O.start(DUTY_RATIO_0)
+    control_solenoid(SE_PIN, DUTY_RATIO_0)
 
     # Start the sensor reading service
     sensing_service = SensorReaderService()
