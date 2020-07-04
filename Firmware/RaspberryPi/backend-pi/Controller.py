@@ -485,10 +485,10 @@ def update_user_settings():
 
 
 def close_all_solenoids(delay):
-    # Set the solenoids to OFF state
+    # Set the solenoids to desired state
     control_solenoid(SI_PIN, DUTY_RATIO_0)
     control_solenoid(SO_PIN, DUTY_RATIO_0)
-    control_solenoid(SE_PIN, DUTY_RATIO_0)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
     time.sleep(delay)
 
 
