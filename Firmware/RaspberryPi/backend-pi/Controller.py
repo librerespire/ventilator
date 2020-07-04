@@ -454,7 +454,7 @@ def init_parameters():
     # Initially solenoids are all closed
     PWM_I.start(DUTY_RATIO_0)
     PWM_O.start(DUTY_RATIO_0)
-    control_solenoid(SE_PIN, DUTY_RATIO_0)
+    control_solenoid(SE_PIN, DUTY_RATIO_100)
 
     # Start the sensor reading service
     sensing_service = SensorReaderService()
