@@ -252,6 +252,8 @@ def insp_phase():
         # Calculate volume in milli-litres
         vi += 1000 * (q1 + q2) / 2 * (t2 - t1).total_seconds() / 60
 
+        # TODO: duty ratio calculation should be done based on the mode. Currently in both modes it's trying to achieve
+        #  a target pressure.
         # duty ratio for solenoids controlling medical air and oxygen flows
         di_i, di_o = calculate_pid_duty_ratio(p3)
         control_solenoid(SI_PIN, di_i)
@@ -474,6 +476,8 @@ def update_user_settings():
     """ User can change certain settings via GUI. Utilize the latest user settings for calculations """
 
     global VENTILATOR_MODE
+
+    # TODO: update the pid controller based on the mode. If volume_control, pid.SetPoint = Variables.vt
     # update the target pressure in pid controller
     pid.SetPoint = Variables.pip_target
 
