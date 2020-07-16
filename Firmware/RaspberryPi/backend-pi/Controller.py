@@ -282,7 +282,8 @@ def exp_phase():
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
-    q1, q2, q_avg = 0, 0, 0
+    q1, q2, = 0, 0
+    mavg_q = [0]*3  # moving average across 3 data points
     vi, v_tot = 0, 0
     peep = 0
     peep_count = 0
@@ -327,7 +328,9 @@ def exp_phase():
             logger.debug("<<< EXP - RESET >> vi=%.1f min_vol=%.1f", (vi, MINUTE_VOLUME))
             submit_minute_vol(t2)
 
-        send_to_display(t2, p3, (-1 * q2), (INSP_TOTAL_VOLUME - v_tot))
+        mavg_q.pop(0)
+        mavg_q.append(-1 * q2)
+        send_to_display(t2, p3, get_mavg_q(mavg_q), (INSP_TOTAL_VOLUME - v_tot))
         logger.debug("ti = %.4f,     vi = %.1f" % (ti, vi))
 
     peep /= peep_count
@@ -338,6 +341,8 @@ def exp_phase():
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
 
+def get_mavg_q(q_list):
+    return sum(q_list)/len(q_list)
 
 def send_pressure_data():
     """ send the pressure parameters to display unit via mqtt """
