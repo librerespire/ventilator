@@ -187,6 +187,7 @@ def insp_phase():
     pip = 0  # peak inspiratory pressure
     solenoids_closed = False
     only_exp_sol_open = False
+    skip_pid = False
     p_control_mode = VENTILATOR_MODE == Variables.P_CONTROL    # ventilator in pressure control mode
     logger.debug("Current mode is " + str(VENTILATOR_MODE))
 
@@ -259,9 +260,10 @@ def insp_phase():
         di_i, di_o = calculate_pid_duty_ratio(p3)
 
         # Compensation for leak
-        if p3 > (Variables.pip_target - 1):
+        if p3 > (Variables.pip_target - 1) or skip_pid:
             di_i = Variables.leak_duty_ratio
             di_o = Variables.leak_duty_ratio
+            skip_pid = True
 
         control_solenoid(SI_PIN, di_i)
         control_solenoid(SO_PIN, di_o)
@@ -342,7 +344,8 @@ def exp_phase():
 
         mavg_q.pop(0)
         mavg_q.append(-1 * q2)
-        send_to_display(t2, p3, get_average(mavg_q), (INSP_TOTAL_VOLUME - v_tot))
+        # send_to_display(t2, p3, get_average(mavg_q), (INSP_TOTAL_VOLUME - v_tot))
+        send_to_display(t2, p3, get_average(mavg_q), (-1 * v_tot))   # Absolute volume is sent as a negative number
         logger.debug("ti = %.4f,     vi = %.1f" % (ti, vi))
 
     peep /= peep_count
