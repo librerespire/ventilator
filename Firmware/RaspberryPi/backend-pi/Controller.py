@@ -256,6 +256,12 @@ def insp_phase():
         #  a target pressure.
         # duty ratio for solenoids controlling medical air and oxygen flows
         di_i, di_o = calculate_pid_duty_ratio(p3)
+
+        # Compensation for leak
+        if p3 > (Variables.pip_target - 1):
+            di_i = Variables.leak_duty_ratio
+            di_o = Variables.leak_duty_ratio
+
         control_solenoid(SI_PIN, di_i)
         control_solenoid(SO_PIN, di_o)
 
