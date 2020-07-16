@@ -181,7 +181,7 @@ def insp_phase():
     ti = 0  # instantaneous time
     q1, q2 = 0, 0  # flow rates
     mavg_q = [0.0] * 6  # moving average across N data points
-    mavg_p3 = [0.0] * 6  # moving average across N data points
+    mavg_p3 = [0.0] * 4  # moving average across N data points
     vi = 0  # volume
     exceeded_vt = 0 # In volume control mode, if vt had exceeded the intended one, it's stored here
     pip = 0  # peak inspiratory pressure
