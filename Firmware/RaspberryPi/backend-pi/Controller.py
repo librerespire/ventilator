@@ -180,7 +180,8 @@ def insp_phase():
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
     q1, q2 = 0, 0  # flow rates
-    mavg_q = [0.0] * 4  # moving average across 3 data points
+    mavg_q = [0.0] * 4  # moving average across 4 data points
+    mavg_p3 = [0.0] * 4  # moving average across 4 data points
     vi = 0  # volume
     exceeded_vt = 0 # In volume control mode, if vt had exceeded the intended one, it's stored here
     pip = 0  # peak inspiratory pressure
@@ -268,7 +269,9 @@ def insp_phase():
         ti = (t2 - start_time).total_seconds()
         mavg_q.pop(0)
         mavg_q.append(q2)
-        send_to_display(t2, p3, get_mavg_q(mavg_q), vi)
+        mavg_p3.pop(0)
+        mavg_p3.append(p3)
+        send_to_display(t2, get_average(mavg_p3), get_average(mavg_q), vi)
 
         logger.debug("Ptarget: %.1f, Pcurrent: %.1f, Duty_Ratio: %.2f" % (Variables.pip_target, p3, di_i))
 
@@ -339,7 +342,7 @@ def exp_phase():
 
         mavg_q.pop(0)
         mavg_q.append(-1 * q2)
-        send_to_display(t2, p3, get_mavg_q(mavg_q), (INSP_TOTAL_VOLUME - v_tot))
+        send_to_display(t2, p3, get_average(mavg_q), (INSP_TOTAL_VOLUME - v_tot))
         logger.debug("ti = %.4f,     vi = %.1f" % (ti, vi))
 
     peep /= peep_count
@@ -350,9 +353,12 @@ def exp_phase():
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
 
-def get_mavg_q(q_list):
-    logger.debug(q_list)
-    return sum(q_list)/len(q_list)
+
+# Get average of a given list
+def get_average(list):
+    logger.debug(list)
+    return sum(list)/len(list)
+
 
 def send_pressure_data():
     """ send the pressure parameters to display unit via mqtt """
