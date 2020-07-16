@@ -23,7 +23,7 @@ pid = None
 
 Ti = 4
 Te = 10
-leak_duty = 20
+leak_duty = 13
 
 mqtt = None
 

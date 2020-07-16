@@ -40,9 +40,9 @@ class Variables:
     mv = 0  # Minute Volume  ---  CURRENTLY NOT USED
 
     # PID controller parameters
-    Kp = 3
-    Ki = 0
-    Kd = 1
+    Kp = 5
+    Ki = 0.5
+    Kd = 0.75
     pid_sampling_period = 0.25
 
     # Flag to indicate demo setup, where P3 is read from a BME680 sensor
