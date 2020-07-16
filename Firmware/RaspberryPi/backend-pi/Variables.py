@@ -52,4 +52,4 @@ class Variables:
     PWM_FREQ = 20   # 10 means pwm period is 100 msec. So 50% duty ratio means ON-50 msec and OFF-50 msec
 
     # Duty ratio to compensate any leaks
-    leak_duty_ratio = 13
+    leak_duty_ratio = 13.5
