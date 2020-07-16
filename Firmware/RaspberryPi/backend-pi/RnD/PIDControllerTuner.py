@@ -13,7 +13,6 @@ from os import path
 import RPi.GPIO as GPIO
 
 # Constants
-PWM_FREQ = 20  # frequency for PWM
 SO_PIN = 13  # PIN (PWM) for O2 intake solenoid
 SI_PIN = 12  # PIN (PWM) for inspiratory solenoid
 SE_PIN = 6  # PIN (PWM) for expiratory solenoid
@@ -60,8 +59,8 @@ def init_parameters():
     GPIO.setup(SI_PIN, GPIO.OUT)
     GPIO.setup(SE_PIN, GPIO.OUT)
 
-    PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
-    PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
+    PWM_O = GPIO.PWM(SO_PIN, Variables.PWM_FREQ)
+    PWM_I = GPIO.PWM(SI_PIN, Variables.PWM_FREQ)
 
     # Start the sensor reading service
     sensing_service = SensorReaderService()

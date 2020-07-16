@@ -47,3 +47,7 @@ class Variables:
 
     # Flag to indicate demo setup, where P3 is read from a BME680 sensor
     demo = True
+
+    # PWM settings
+    PWM_FREQ = 20   # 10 means pwm period is 100 msec. So 50% duty ratio means ON-50 msec and OFF-50 msec
+

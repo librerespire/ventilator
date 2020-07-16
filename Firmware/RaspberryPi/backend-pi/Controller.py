@@ -22,7 +22,6 @@ T_IN = 2  # inspiratory time
 T_EX = 3  # expiratory time
 T_WT = 1  # waiting time
 
-PWM_FREQ = 2  # frequency for PWM
 pid = None
 
 # Constants
@@ -444,8 +443,8 @@ def init_parameters():
     GPIO.setup(SO_PIN, GPIO.OUT)
     GPIO.setup(SE_PIN, GPIO.OUT)
 
-    PWM_I = GPIO.PWM(SI_PIN, PWM_FREQ)
-    PWM_O = GPIO.PWM(SO_PIN, PWM_FREQ)
+    PWM_I = GPIO.PWM(SI_PIN, Variables.PWM_FREQ)
+    PWM_O = GPIO.PWM(SO_PIN, Variables.PWM_FREQ)
 
     # Start the MQTT transceiver to communicate with GUI
     mqtt = MQTTTransceiver()
