@@ -282,7 +282,7 @@ def exp_phase():
     start_time = datetime.now()
     t1, t2 = start_time, start_time
     ti = 0
-    q1, q2 = 0, 0
+    q1, q2, q_avg = 0, 0, 0
     vi, v_tot = 0, 0
     peep = 0
     peep_count = 0
@@ -506,6 +506,9 @@ try:
 
     # Calibrate the flow meter
     Ki, Ke = calibrate_flow_meter(Variables.calib_flow_rate)
+
+    # Extra delay to setup the respiratory value/balloon manually if needed
+    time.sleep(5)
 
     while True:
         insp_phase()
