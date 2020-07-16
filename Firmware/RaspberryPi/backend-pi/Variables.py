@@ -40,7 +40,7 @@ class Variables:
     mv = 0  # Minute Volume  ---  CURRENTLY NOT USED
 
     # PID controller parameters
-    Kp = 5
+    Kp = 3
     Ki = 0.5
     Kd = 0.75
     pid_sampling_period = 0.215
