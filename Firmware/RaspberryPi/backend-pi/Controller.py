@@ -180,8 +180,8 @@ def insp_phase():
     t1, t2 = start_time, start_time
     ti = 0  # instantaneous time
     q1, q2 = 0, 0  # flow rates
-    mavg_q = [0.0] * 4  # moving average across 4 data points
-    mavg_p3 = [0.0] * 4  # moving average across 4 data points
+    mavg_q = [0.0] * 6  # moving average across N data points
+    mavg_p3 = [0.0] * 6  # moving average across N data points
     vi = 0  # volume
     exceeded_vt = 0 # In volume control mode, if vt had exceeded the intended one, it's stored here
     pip = 0  # peak inspiratory pressure
@@ -295,7 +295,7 @@ def exp_phase():
     t1, t2 = start_time, start_time
     ti = 0
     q1, q2, = 0, 0
-    mavg_q = [0.0]*4  # moving average across 3 data points
+    mavg_q = [0.0]*6  # moving average across N data points
     vi, v_tot = 0, 0
     peep = 0
     peep_count = 0
