@@ -280,6 +280,10 @@ def insp_phase():
     # Store tidal volume for expiratory phase net volume calculation
     INSP_TOTAL_VOLUME = vi
 
+    # Temporaly send tidal volume calculated from inspiratory phase
+    # logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % v_tot)
+    mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, round(INSP_TOTAL_VOLUME))
+
     # Send pip to GUI
     mqtt.sender(mqtt.PIP_TOPIC, round(pip, 1))
 
@@ -351,8 +355,8 @@ def exp_phase():
     peep /= peep_count
     mqtt.sender(mqtt.PEEP_CALC_TOPIC, round(peep))
 
-    logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % v_tot)
-    mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, round(v_tot))
+    # logger.info("<< CHART >> Actual tidal volume delivered : %.3f mL " % v_tot)
+    # mqtt.sender(mqtt.ACTUAL_TIDAL_VOLUME_TOPIC, round(v_tot))
     INSP_TOTAL_VOLUME = 0
     logger.info("Leaving expiratory phase.")
 
