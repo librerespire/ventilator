@@ -22,9 +22,16 @@ The design will be publicly available for
 - Sell the design or hardware.
 
 
-##  Collaboration
+##  Collaborations
 
-If you wish to collaborate and contribute to the project, please take a moment to fill the form and send to us and we will reach back to you. We will respond to every request depending on the requirements.  
+Current colloborations include, 
+
+![ventilator](Images/TrinityCollege.png)
+
+
+Mechanical & Manufacturing Engineering, Trinity College, Dublin
+
+If you wish to collaborate and contribute to the project, please contact us via team@librerespire.org. We will respond to every request depending on the requirements.  
 
 
 ## Sections
