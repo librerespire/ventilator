@@ -1,11 +1,10 @@
 ## Overview
 
-This LibreRespire ventilator is organized in to two main components. This section
+The LibreRespire ventilator is organized in to two main components. This section
 mainly focused on the vBOX, the heart of the LibreRespire system.
 
 - vBOX
-  - The ventilator box which houses the main controllers and sensors and can functions
-    independent of the gas delivery system, vAIR.
+  - The ventilator box which houses the main controllers and sensors and can functions independent of the gas delivery system, vAIR.
 
 - vAIR
   - The ventilator air delivery system is responsible for the delivery of medical
