@@ -18,7 +18,8 @@ air, cylinders, compressors. bellows and pistons.
 ## Objective
 
 However this section focuses on development of vAIR, the LibreRespire gas air delivery
-system  which currently is based on commercially available diaphragm pump. We
+system  which currently designed to work with the wall oxygen
+and wall medical air. We
 intend to build efficient, cost effective and easily sourced driving mechanism for
 the vBOX.
 
